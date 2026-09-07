@@ -1,143 +1,363 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="hi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kcrish • Excel to Tally Automation</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-:root{
-  --g:#18b66a;--g2:#6af0aa;--n:#07131e;--muted:#a9bbc4;
-}
-*{box-sizing:border-box}html,body{height:100%}
-body{
-  margin:0;color:#eef8f3;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
-  background:
-    radial-gradient(800px 500px at 10% 0%,rgba(28,204,119,.24),transparent 65%),
-    radial-gradient(700px 500px at 95% 12%,rgba(59,130,246,.16),transparent 65%),
-    radial-gradient(900px 700px at 50% 110%,rgba(24,115,80,.24),transparent 65%),
-    linear-gradient(135deg,#031019,#081823 52%,#0a1a20);
-  overflow:hidden;
-}
-body:before{
-  content:"";position:fixed;inset:-20%;pointer-events:none;
-  background:conic-gradient(from 0deg,transparent 0 30%,rgba(65,220,144,.045) 38%,transparent 47% 68%,rgba(70,145,255,.04) 76%,transparent 86%);
-  filter:blur(26px);animation:spin 24s linear infinite;
-}
-.grain{position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.orb{position:fixed;border-radius:50%;filter:blur(18px);pointer-events:none}
-.o1{width:250px;height:250px;left:-70px;top:22%;background:rgba(35,211,125,.14);animation:float 8s ease-in-out infinite}
-.o2{width:210px;height:210px;right:-60px;bottom:12%;background:rgba(72,132,255,.13);animation:float 9s ease-in-out -2s infinite}
-.shell{
-  width:min(1280px,94vw);min-height:100vh;margin:auto;display:grid;
-  grid-template-columns:1.12fr .88fr;gap:72px;align-items:center;padding:38px;position:relative;z-index:1;
-}
-.brand{padding:10px 0}
-.badge{
-  width:max-content;padding:8px 13px;border:1px solid rgba(255,255,255,.12);border-radius:999px;
-  background:rgba(255,255,255,.055);backdrop-filter:blur(15px);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#d6eee2;
-  margin-bottom:22px;
-}
-.logo-card{
-  max-width:670px;padding:20px;border-radius:30px;
-  background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.025));
-  border:1px solid rgba(255,255,255,.16);box-shadow:0 28px 70px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.12);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-}
-.logo-card img{display:block;width:100%;border-radius:22px;filter:drop-shadow(0 16px 28px rgba(0,0,0,.25))}
-h1{font-size:clamp(36px,4vw,57px);line-height:1.03;letter-spacing:-.045em;margin:28px 0 14px}
-h1 span{background:linear-gradient(90deg,#fff,#c7f8dc,#70eaa7);-webkit-background-clip:text;background-clip:text;color:transparent}
-.desc{max-width:650px;color:var(--muted);font-size:15px;line-height:1.75}
-.pills{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}
-.pill{padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);font-size:11px;color:#d2e3e9;backdrop-filter:blur(10px)}
-.login{
-  position:relative;overflow:hidden;padding:33px;border-radius:29px;
-  background:linear-gradient(150deg,rgba(255,255,255,.13),rgba(255,255,255,.045) 58%,rgba(255,255,255,.075));
-  border:1px solid rgba(255,255,255,.19);box-shadow:0 35px 95px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.15);
-  backdrop-filter:blur(28px) saturate(140%);-webkit-backdrop-filter:blur(28px) saturate(140%);
-}
-.login:after{content:"";position:absolute;width:230px;height:70px;left:-70px;top:-20px;background:rgba(255,255,255,.08);filter:blur(25px);transform:rotate(-12deg);animation:shine 7s ease-in-out infinite}
-.head{position:relative;z-index:1;margin-bottom:22px}.head h2{margin:0;font-size:27px;letter-spacing:-.03em}.head p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.55}
-.tabs{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:5px;background:rgba(0,0,0,.16);padding:5px;border-radius:14px;border:1px solid rgba(255,255,255,.08);margin-bottom:21px}
-.tab{border:0;background:transparent;color:#93a8b1;padding:11px;border-radius:10px;font-weight:700;cursor:pointer}.tab.active{color:#fff;background:rgba(35,194,119,.17);box-shadow:inset 0 1px rgba(255,255,255,.08)}
-.field{position:relative;z-index:1;margin-bottom:15px}.field label{display:block;font-size:10px;color:#b6c8cf;letter-spacing:.08em;margin:0 0 7px 3px}.input{width:100%;height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.13);background:rgba(3,16,25,.38);color:#fff;padding:0 14px;outline:0;transition:.2s}.input:focus{border-color:rgba(71,227,149,.75);box-shadow:0 0 0 4px rgba(71,227,149,.09)}.input::placeholder{color:#7f949e}
-.submit{position:relative;z-index:1;width:100%;height:54px;border:0;border-radius:15px;background:linear-gradient(135deg,#62f2aa,#18b66a 60%,#129357);color:#04140b;font-weight:800;cursor:pointer;box-shadow:0 14px 32px rgba(24,182,106,.25);transition:.2s}.submit:hover{transform:translateY(-2px);box-shadow:0 18px 38px rgba(24,182,106,.31)}
-.status{min-height:20px;position:relative;z-index:1;margin-top:12px;font-size:11px;color:#ff9e9e}
-.foot{text-align:center;position:relative;z-index:1;color:#718791;font-size:11px;margin-top:20px;display:flex;justify-content:space-between;align-items:center}
-.foot a{color:#6af0aa;text-decoration:none;font-weight:600}
-.foot a:hover{text-decoration:underline}
-@keyframes float{50%{transform:translateY(-15px)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes shine{0%,65%,100%{transform:translateX(0) rotate(-12deg);opacity:0}20%{opacity:1}40%{transform:translateX(480px) rotate(-12deg);opacity:0}}
-@media(max-width:980px){body{overflow:auto}.shell{grid-template-columns:1fr;width:min(720px,94vw);gap:34px;padding:25px 16px 40px}.brand{text-align:center}.badge{margin-left:auto;margin-right:auto}.logo-card{margin:auto}.desc{margin-left:auto;margin-right:auto}.pills{justify-content:center}.login{width:min(470px,100%);margin:auto}}
-</style>
-</head>
-<body>
-<div class="grain"></div><div class="orb o1"></div><div class="orb o2"></div>
-<main class="shell">
-  <section class="brand">
-    <div class="badge">● Secure Automation Workspace</div>
-    <h1>Excel to Tally <span>Automation Hub</span></h1>
-    <p class="desc">Transform complex supplier sheets into accounting-ready formats instantly with client-side local processing and zero infrastructure bottlenecks.</p>
-    <div class="pills">
-      <div class="pill">SheetJS Parser</div>
-      <div class="pill">Client-Side Storage</div>
-      <div class="pill">Instant CSV Export</div>
-    </div>
-  </section>
-
-  <section class="login">
-    <div class="head">
-      <h2>Workspace Access</h2>
-      <p>Enter your username or connect via Google Drive session.</p>
-    </div>
-
-    <div class="tabs">
-      <button class="tab active" id="tabLogin">Client Login</button>
-      <button class="tab" id="tabGoogle" onclick="handleGoogleLogin()">Google Drive</button>
-    </div>
-
-    <form id="loginForm">
-      <div class="field">
-        <label>CLIENT USERNAME / ID</label>
-        <input type="text" id="usernameInput" class="input" placeholder="e.g. Ashok_Gitiyal" required autocomplete="off">
-      </div>
-      <div class="status" id="errorBox"></div>
-      <button type="submit" class="submit" style="margin-top:10px;">Launch Workspace</button>
-    </form>
-
-    <div class="foot">
-      <span>© Kcrish Systems</span>
-      <a href="about.html"><i class="fa-solid fa-circle-info"></i> About Hub</a>
-    </div>
-  </section>
-</main>
-
-<script>
-  // Redirect if already logged in
-  if (localStorage.getItem('client_username')) {
-    window.location.href = 'dashboard.html';
-  }
-
-  document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('usernameInput').value.trim();
-    const errorBox = document.getElementById('errorBox');
-
-    if (!username || username.length < 2) {
-      errorBox.textContent = 'Please enter a valid username (at least 2 characters).';
-      return;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kcrish Excel to Tally Automation - Portal</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary-green: #0d7a44;
+      --primary-green-hover: #0a6337;
+      --card-bg: #ffffff;
+      --text-dark: #111827;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+      --radius: 16px;
     }
 
-    localStorage.setItem('client_username', username);
-    localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${username.replace(/\s+/g, '_')}/`);
-    window.location.href = 'dashboard.html';
-  });
+    * { box-sizing: border-box; }
 
-  function handleGoogleLogin() {
-    const googleUser = 'Google_User_Drive';
-    localStorage.setItem('client_username', googleUser);
-    localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${googleUser}/`);
-    window.location.href = 'dashboard.html';
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: var(--text-dark);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* BACKGROUND WATERMARK USING LOCAL LOGO */
+    .bg-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      background-image: url('logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: blur(60px);
+      opacity: 0.08;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .portal-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 950px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border-color);
+      display: flex;
+      overflow: hidden;
+    }
+
+    .left-pane {
+      flex: 1;
+      background: #fafafa;
+      border-right: 1px solid var(--border-color);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .logo-box {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-color);
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo-img {
+      max-width: 100%;
+      height: auto;
+      max-height: 240px;
+      object-fit: contain;
+    }
+
+    .right-pane {
+      flex: 1;
+      padding: 40px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+    .badge span { width: 6px; height: 6px; background: #059669; border-radius: 50%; }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin: 0 0 6px 0;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0 0 28px 0;
+      line-height: 1.5;
+    }
+
+    .input-group {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      background: #fff;
+      color: var(--text-dark);
+      transition: border-color 0.2s;
+    }
+
+    .input-wrapper input:focus { border-color: var(--primary-green); }
+
+    .input-wrapper i.icon-prefix {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .input-wrapper i.toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+
+    .form-options label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .form-options input[type="checkbox"] { accent-color: var(--primary-green); cursor: pointer; }
+
+    .form-options a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .form-options a:hover { color: var(--primary-green); text-decoration: underline; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary-green);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 4px 10px rgba(13, 122, 68, 0.2);
+    }
+    .btn-submit:hover { background: var(--primary-green-hover); }
+
+    .divider-auth {
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      line-height: 0.1em;
+      margin: 28px 0 20px 0;
+      font-size: 11px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .divider-auth span { background: #fff; padding: 0 10px; }
+
+    .footer-security {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .footer-security .secure-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    @media(max-width: 768px) {
+      .portal-container { flex-direction: column; }
+      .left-pane { padding: 30px 20px; }
+      .right-pane { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Watermark -->
+  <div class="bg-watermark"></div>
+
+  <div class="portal-container">
+    
+    <!-- LEFT PANE: OFFICIAL LOGO -->
+    <div class="left-pane">
+      <div class="logo-box">
+        <img src="logo.png" alt="Kcrish Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/200?text=Kcrish+Logo'" />
+      </div>
+    </div>
+
+    <!-- RIGHT PANE: LOGIN FORM & GOOGLE SYNC -->
+    <div class="right-pane">
+      <div class="badge"><span></span> Secure Business Portal</div>
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to continue to your Kcrish Excel to Tally Automation workspace.</p>
+
+      <div class="input-group">
+        <label>Username / Email</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-user icon-prefix"></i>
+          <input type="text" id="loginEmail" placeholder="Enter your username or email" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-lock icon-prefix"></i>
+          <input type="password" id="loginPassword" placeholder="Enter your password" />
+          <i class="fa-solid fa-eye toggle-password" id="togglePassBtn" onclick="togglePasswordVisibility()"></i>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label><input type="checkbox" id="rememberMe" /> Remember me</label>
+        <a href="about.html">About Portal</a>
+      </div>
+
+      <button class="btn-submit" onclick="handleGoogleLogin()">Sign in to Portal</button>
+
+      <div class="divider-auth"><span>Authorized Access</span></div>
+
+      <div class="footer-security">
+        <div class="secure-row"><i class="fa-solid fa-shield-halved" style="color:#059669;"></i> Secure login • Your account is protected</div>
+        <div>© 2026 Kcrish • Excel to Tally Automation</div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+const CLIENT_ID = "306902298167-6o9o8o84955pu92k5k07u5al7djhp6op.apps.googleusercontent.com";
+const SCOPES = "https://www.googleapis.com/auth/drive.file";
+
+let tokenClient;
+
+window.onload = function() {
+  let savedToken = localStorage.getItem("google_access_token");
+  if(savedToken) {
+    window.location.href = "dashboard.html";
   }
+
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (response) => {
+      if (response.error !== undefined) {
+        alert("Google Authentication failed!");
+        return;
+      }
+      localStorage.setItem("google_access_token", response.access_token);
+      let userVal = document.getElementById("loginEmail").value.trim() || "Ashok Gitiyal";
+      localStorage.setItem("client_username", userVal);
+      localStorage.setItem("active_user_folder", `/Kcrish_Data/Users/${userVal.replace(/\s+/g, '_')}/`);
+      window.location.href = "dashboard.html";
+    },
+  });
+};
+
+function togglePasswordVisibility() {
+  let passInput = document.getElementById("loginPassword");
+  let eyeBtn = document.getElementById("togglePassBtn");
+  if (passInput.type === "password") {
+    passInput.type = "text";
+    eyeBtn.className = "fa-solid fa-eye-slash toggle-password";
+  } else {
+    passInput.type = "password";
+    eyeBtn.className = "fa-solid fa-eye toggle-password";
+  }
+}
+
+function handleGoogleLogin() {
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
 </script>
 </body>
 </html>
