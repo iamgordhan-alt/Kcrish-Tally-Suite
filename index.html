@@ -3,299 +3,116 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kcrish Tally Automation Suite - Secure Client Portal</title>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <title>Kcrish Tally Suite - Login</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://apis.google.com/js/api.js" async defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --success: #059669;
-      --success-hover: #047857;
-      --bg: #f8fafc;
+      --primary: #5835df;
+      --primary-hover: #4729c6;
+      --bg: #f4f5f9;
       --card-bg: #ffffff;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --border: #cbd5e1;
-      --radius: 8px;
+      --text: #1e1b4b;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --radius: 16px;
     }
-
     * { box-sizing: border-box; }
-
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--bg);
-      margin: 0;
-      padding: 30px 16px;
-      color: var(--text);
+      margin: 0; min-height: 100vh;
+      display: flex; justify-content: center; align-items: center; padding: 20px; color: var(--text);
     }
-
-    .app-container { max-width: 1000px; margin: 0 auto; }
-
-    #authScreen {
-      max-width: 420px;
-      margin: 80px auto;
-      background: var(--card-bg);
-      padding: 30px 40px;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--border);
-      text-align: center;
+    .auth-card {
+      width: 100%; max-width: 440px; background: var(--card-bg);
+      padding: 40px 36px; border-radius: var(--radius);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border); text-align: center;
     }
-
-    #authScreen h2 { margin: 0 0 6px 0; color: var(--text); font-size: 22px; font-weight: 600; }
-    #authScreen p { margin: 0 0 20px 0; color: var(--text-muted); font-size: 13px; }
-
-    .form-group { text-align: left; margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
-    .form-group input {
-      width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none;
+    h2 { margin: 0 0 28px 0; font-size: 28px; font-weight: 700; color: var(--text); }
+    .social-btns { display: flex; gap: 12px; margin-bottom: 24px; }
+    .btn-social {
+      flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 12px;
+      background: white; cursor: pointer; font-size: 16px; display: flex; justify-content: center; align-items: center;
     }
-    .form-group input:focus { border-color: var(--primary); }
-
-    .dashboard-header {
-      background: #1e293b;
-      color: white; padding: 20px 24px; border-radius: var(--radius);
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
+    .btn-social:hover { background: #f9fafb; border-color: #d1d5db; }
+    .btn-social.google { color: #ea4335; }
+    .btn-social.facebook { background: #1877f2; color: white; border-color: #1877f2; }
+    .divider {
+      display: flex; align-items: center; text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 24px;
     }
-    .dashboard-header h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px 0; }
-    .dashboard-header p { margin: 0; font-size: 12px; color: #94a3b8; }
-    .header-actions { display: flex; align-items: center; gap: 12px; }
-
-    .sync-badge {
-      background: rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 4px;
-      font-size: 11px; font-weight: 500; display: flex; align-items: center; gap: 6px; color: #cbd5e1;
+    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+    .divider::before { margin-right: 12px; } .divider::after { margin-left: 12px; }
+    .input-field-group { text-align: left; margin-bottom: 18px; }
+    .input-field-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+    .input-wrapper { position: relative; }
+    .input-wrapper input {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; background: #fff;
     }
-    .sync-badge span { width: 6px; height: 6px; background: #34d399; border-radius: 50%; }
-
-    .btn-logout {
-      background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: none;
-      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;
+    .input-wrapper input:focus { border-color: var(--primary); }
+    .toggle-password { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); cursor: pointer; }
+    .forgot-link-box { text-align: left; margin-bottom: 24px; }
+    .forgot-link-box a { color: var(--primary); text-decoration: none; font-size: 13px; font-weight: 600; }
+    .btn-main {
+      width: 100%; background: var(--primary); color: white; border: none; padding: 13px;
+      border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 20px;
     }
-    .btn-logout:hover { background: #dc2626; color: white; }
-
-    .card {
-      background: var(--card-bg); border-radius: var(--radius);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03); border: 1px solid var(--border); padding: 24px;
-    }
-
-    .tab-bar { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
-    .tab-btn {
-      padding: 10px 14px; font-size: 12px; font-weight: 600; background: transparent; border: none;
-      border-bottom: 2px solid transparent; cursor: pointer; color: var(--text-muted);
-      display: flex; align-items: center; gap: 6px; white-space: nowrap; margin-bottom: -1px;
-    }
-    .tab-btn:hover { color: var(--primary); }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    .step-box {
-      background: #f1f5f9; border: 1px solid var(--border); border-radius: 6px;
-      padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
-    }
-    .step-box span { font-size: 12px; font-weight: 500; color: var(--text); }
-
-    .btn-template {
-      background: white; border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px;
-      cursor: pointer; font-weight: 600; font-size: 12px; color: var(--primary); display: flex; align-items: center; gap: 6px;
-    }
-    .btn-template:hover { background: #f8fafc; border-color: var(--primary); }
-
-    .dropzone {
-      border: 2px dashed var(--border); border-radius: 6px; padding: 36px 16px;
-      text-align: center; cursor: pointer; background: #fafafa; transition: all 0.2s ease;
-    }
-    .dropzone:hover, .dropzone.dragover { border-color: var(--primary); background: #f0fdf4; }
-    .dropzone input { display: none; }
-    .dropzone .icon { font-size: 32px; color: var(--primary); margin-bottom: 8px; }
-    .dropzone .msg { font-size: 13px; color: var(--text-muted); }
-    .file-name { margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--success); }
-
-    .options-box {
-      margin-top: 16px; padding: 12px 16px; background: #f1f5f9; border: 1px solid var(--border);
-      border-radius: 6px; display: flex; align-items: center; gap: 10px; font-size: 13px;
-    }
-    .options-box input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
-
-    .btn-action {
-      width: 100%; background: var(--success); color: white; border: none; padding: 12px;
-      border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 20px;
-      display: flex; justify-content: center; align-items: center; gap: 6px;
-    }
-    .btn-action:hover { background: var(--success-hover); }
-    .btn-action.blue { background: var(--primary); }
-    .btn-action.blue:hover { background: var(--primary-hover); }
-
-    .alert { margin-top: 16px; padding: 12px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; display: none; }
-    .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
-    .alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
-
-    .preview-table-box {
-      margin-top: 20px; max-height: 400px; overflow-x: auto; overflow-y: auto;
-      border: 1px solid var(--border); border-radius: 6px; display: none;
-    }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-    th, td { padding: 8px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
-    th { background: #f1f5f9; position: sticky; top: 0; color: #334155; font-weight: 600; z-index: 2; }
-    td { color: #334155; }
+    .btn-main:hover { background: var(--primary-hover); }
+    .auth-footer-links { font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 10px; }
+    .auth-footer-links a { color: var(--primary); text-decoration: none; font-weight: 600; }
   </style>
 </head>
 <body>
 
-<div class="app-container">
-
-  <!-- CLIENT LOGIN SCREEN -->
-  <div id="authScreen">
-    <h2>Kcrish Portal</h2>
-    <p>Enter your client credentials & link personal Drive</p>
-    
-    <div class="form-group">
-      <label>Client Username / ID</label>
-      <input type="text" id="clientUser" placeholder="Enter your username" value="Client_01" />
-    </div>
-    <div class="form-group">
-      <label>Security Password</label>
-      <input type="password" id="clientPass" placeholder="Enter password" value="kcrish123" />
-    </div>
-
-    <button class="btn-action blue" onclick="handleCustomLogin()"><i class="fa-solid fa-lock" style="margin-right:8px;"></i> Login & Connect Drive</button>
+<div class="auth-card">
+  <h2>Log in</h2>
+  <div class="social-btns">
+    <button class="btn-social google" onclick="handleGoogleLogin()"><i class="fa-brands fa-google"></i></button>
+    <button class="btn-social facebook" onclick="alert('Facebook login feature.')"><i class="fa-brands fa-facebook-f"></i></button>
   </div>
 
-  <!-- MAIN DASHBOARD -->
-  <div id="dashboardApp" style="display: none;">
-    <div class="dashboard-header">
-      <div>
-        <h1 id="welcomeClientTitle">Kcrish Tally Automation Suite</h1>
-        <p>Personal Google Drive Cloud Sync Active</p>
-      </div>
-      <div class="header-actions">
-        <div class="sync-badge"><span></span> Personal Drive Connected</div>
-        <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
-      </div>
-    </div>
+  <div class="divider">or</div>
 
-    <div class="card">
-      <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('tab-purchase')"><i class="fa-solid fa-cart-shopping"></i> Purchase Import</button>
-        <button class="tab-btn" onclick="switchTab('tab-master')"><i class="fa-solid fa-boxes-stacked"></i> Item Master</button>
-        <button class="tab-btn" onclick="switchTab('tab-ledger')"><i class="fa-solid fa-address-book"></i> General Ledger</button>
-        <button class="tab-btn" onclick="switchTab('tab-converter')"><i class="fa-solid fa-file-excel"></i> XML to Excel</button>
-        <button class="tab-btn" onclick="switchTab('tab-restore')"><i class="fa-solid fa-cloud-arrow-down"></i> Drive Restore</button>
-      </div>
-
-      <!-- TAB 1: PURCHASE VOUCHER -->
-      <div id="tab-purchase" class="tab-content active">
-        <div class="step-box">
-          <span>Download structured purchase template with calculations:</span>
-          <button class="btn-template" onclick="downloadPurchaseTemplate()"><i class="fa-solid fa-download"></i> Template</button>
-        </div>
-        <div class="dropzone" id="dropzonePurch" onclick="document.getElementById('purchExcelFile').click()" ondragover="handleDragOver(event, 'dropzonePurch')" ondragleave="handleDragLeave(event, 'dropzonePurch')" ondrop="handleDrop(event, 'purchExcelFile', 'purchFileName', 'dropzonePurch')">
-          <input type="file" id="purchExcelFile" accept=".xlsx, .xls" onchange="fileSelected('purchExcelFile', 'purchFileName')" />
-          <div class="icon"><i class="fa-solid fa-file-excel"></i></div>
-          <div class="msg">Upload Purchase Excel (Click or Drag & Drop File Here)</div>
-          <div id="purchFileName" class="file-name"></div>
-        </div>
-        
-        <div class="options-box">
-          <input type="checkbox" id="partyWiseCheck" />
-          <label for="partyWiseCheck" style="cursor: pointer;">Generate party-wise separate XML packages (ZIP archive)</label>
-        </div>
-
-        <button class="btn-action" onclick="generatePurchaseXML()"><i class="fa-solid fa-bolt"></i> Process & Sync to Personal Drive</button>
-      </div>
-
-      <!-- TAB 2: ITEM MASTER -->
-      <div id="tab-master" class="tab-content">
-        <div class="step-box">
-          <span>Download standard inventory stock item master template:</span>
-          <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
-        </div>
-        <div class="dropzone" id="dropzoneMaster" onclick="document.getElementById('masterExcelFile').click()" ondragover="handleDragOver(event, 'dropzoneMaster')" ondragleave="handleDragLeave(event, 'dropzoneMaster')" ondrop="handleDrop(event, 'masterExcelFile', 'masterFileName', 'dropzoneMaster')">
-          <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" />
-          <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
-          <div class="msg">Upload Stock Inventory (Click or Drag & Drop File Here)</div>
-          <div id="masterFileName" class="file-name"></div>
-        </div>
-        <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML & Sync</button>
-      </div>
-
-      <!-- TAB 3: LEDGER MASTER -->
-      <div id="tab-ledger" class="tab-content">
-        <div class="step-box">
-          <span>Download general ledger master template:</span>
-          <button class="btn-template" onclick="downloadLedgerTemplate()"><i class="fa-solid fa-download"></i> Template</button>
-        </div>
-        <div class="dropzone" id="dropzoneLedger" onclick="document.getElementById('ledgerExcelFile').click()" ondragover="handleDragOver(event, 'dropzoneLedger')" ondragleave="handleDragLeave(event, 'dropzoneLedger')" ondrop="handleDrop(event, 'ledgerExcelFile', 'ledgerFileName', 'dropzoneLedger')">
-          <input type="file" id="ledgerExcelFile" accept=".xlsx, .xls" onchange="fileSelected('ledgerExcelFile', 'ledgerFileName')" />
-          <div class="icon"><i class="fa-solid fa-address-card"></i></div>
-          <div class="msg">Upload Ledger Spreadsheet (Click or Drag & Drop File Here)</div>
-          <div id="ledgerFileName" class="file-name"></div>
-        </div>
-        <button class="btn-action" onclick="generateLedgerXML()"><i class="fa-solid fa-bolt"></i> Generate Ledger XML & Sync</button>
-      </div>
-
-      <!-- TAB 4: XML TO EXCEL -->
-      <div id="tab-converter" class="tab-content">
-        <div class="step-box" style="background:#f8fafc;">
-          <span style="color:var(--text); font-weight: 500;">Transform Tally XML exports into structured Debit & Credit spreadsheets</span>
-        </div>
-        <div class="dropzone" id="dropzoneXml" onclick="document.getElementById('xmlFile').click()" ondragover="handleDragOver(event, 'dropzoneXml')" ondragleave="handleDragLeave(event, 'dropzoneXml')" ondrop="handleDrop(event, 'xmlFile', 'xmlFileName', 'dropzoneXml')">
-          <input type="file" id="xmlFile" accept=".xml" onchange="fileSelected('xmlFile', 'xmlFileName')" />
-          <div class="icon"><i class="fa-solid fa-file-code"></i></div>
-          <div class="msg">Select Tally XML File (Click or Drag & Drop File Here)</div>
-          <div id="xmlFileName" class="file-name"></div>
-        </div>
-        <button class="btn-action blue" onclick="convertXmlToExcel()"><i class="fa-solid fa-file-excel"></i> Convert XML to Excel</button>
-        <div id="previewContainer" class="preview-table-box">
-          <table id="previewTable"><thead></thead><tbody></tbody></table>
-        </div>
-      </div>
-
-      <!-- TAB 5: DRIVE RESTORE -->
-      <div id="tab-restore" class="tab-content">
-        <div class="step-box" style="background:#f8fafc;">
-          <span style="color:var(--text); font-weight: 500;">Retrieve and audit synced JSON archives from personal Google Drive</span>
-          <button class="btn-template" onclick="loadPersonalDriveFiles()" style="border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-rotate"></i> Refresh</button>
-        </div>
-        <div id="driveJsonContainer" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; padding: 16px; background: #fafafa; font-size: 12px; text-align: center; color: var(--text-muted);">
-          Click "Refresh" to load files from your Drive.
-        </div>
-        
-        <div id="restorePreviewContainer" class="preview-table-box" style="margin-top: 20px;">
-          <div style="padding: 10px 14px; background: #f1f5f9; font-weight: 600; font-size: 11px; color: #475569;">Cloud Archive Audit Preview:</div>
-          <table id="restorePreviewTable"><thead></thead><tbody></tbody></table>
-        </div>
-      </div>
-
-      <div id="alertBox" class="alert"></div>
+  <div class="input-field-group">
+    <label>Email address</label>
+    <div class="input-wrapper">
+      <input type="email" id="loginEmail" placeholder="name@example.com" />
     </div>
   </div>
 
+  <div class="input-field-group" style="margin-bottom: 8px;">
+    <label>Password</label>
+    <div class="input-wrapper">
+      <input type="password" id="loginPassword" placeholder="••••••••" />
+      <i class="fa-solid fa-eye toggle-password" id="togglePassBtn" onclick="togglePasswordVisibility()"></i>
+    </div>
+  </div>
+
+  <div class="forgot-link-box">
+    <a href="#" onclick="alert('Password reset instructions sent.'); return false;">Forgot password?</a>
+  </div>
+
+  <button class="btn-main" onclick="handleGoogleLogin()">Log in</button>
+
+  <div class="auth-footer-links">
+    <a href="#" onclick="alert('Please use Google Sign-in to link your personal Drive.'); return false;">Can't Access Your Account?</a>
+    <div>Don't have an account? <a href="signup.html">Sign Up</a></div>
+  </div>
 </div>
 
 <script>
-const FIXED_COMPANY_NAME = "Experiments";
 const CLIENT_ID = "306902298167-6o9o8o84955pu92k5k07u5al7djhp6op.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
 let tokenClient;
-let accessToken = null;
 
 window.onload = function() {
   let savedToken = localStorage.getItem("google_access_token");
-  let savedUser = localStorage.getItem("client_username");
-  
-  if(savedToken && savedUser) {
-    accessToken = savedToken;
-    document.getElementById("welcomeClientTitle").innerText = "Welcome, " + savedUser + " | Tally Suite";
-    document.getElementById("authScreen").style.display = "none";
-    document.getElementById("dashboardApp").style.display = "block";
+  if(savedToken) {
+    window.location.href = "dashboard.html";
   }
 
   tokenClient = google.accounts.oauth2.initTokenClient({
@@ -306,664 +123,29 @@ window.onload = function() {
         alert("Google Authentication failed!");
         return;
       }
-      accessToken = response.access_token;
-      localStorage.setItem("google_access_token", accessToken);
-      
-      let username = document.getElementById("clientUser").value || "Client";
-      localStorage.setItem("client_username", username);
-
-      document.getElementById("welcomeClientTitle").innerText = "Welcome, " + username + " | Tally Suite";
-      document.getElementById("authScreen").style.display = "none";
-      document.getElementById("dashboardApp").style.display = "block";
+      localStorage.setItem("google_access_token", response.access_token);
+      let emailVal = document.getElementById("loginEmail").value || "Google User";
+      localStorage.setItem("client_username", emailVal);
+      window.location.href = "dashboard.html";
     },
   });
 };
 
-function handleCustomLogin() {
-  let user = document.getElementById("clientUser").value.trim();
-  let pass = document.getElementById("clientPass").value.trim();
-
-  if(!user || !pass) {
-    alert("Please enter both username and password.");
-    return;
+function togglePasswordVisibility() {
+  let passInput = document.getElementById("loginPassword");
+  let eyeBtn = document.getElementById("togglePassBtn");
+  if (passInput.type === "password") {
+    passInput.type = "text";
+    eyeBtn.className = "fa-solid fa-eye-slash toggle-password";
+  } else {
+    passInput.type = "password";
+    eyeBtn.className = "fa-solid fa-eye toggle-password";
   }
+}
 
-  // Trigger Google Drive Token popup to bind this secure session to their personal Google account
+function handleGoogleLogin() {
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
-
-function handleLogout() {
-  localStorage.removeItem("google_access_token");
-  localStorage.removeItem("client_username");
-  accessToken = null;
-  document.getElementById("dashboardApp").style.display = "none";
-  document.getElementById("authScreen").style.display = "block";
-}
-
-async function uploadJsonToPersonalDrive(jsonData, fileName) {
-  if (!accessToken) return alert("Google Session Expired. Please sign in again.");
-  try {
-    let metadata = { name: fileName + ".json", mimeType: "application/json" };
-    let fileContent = JSON.stringify(jsonData, null, 2);
-    let form = new FormData();
-    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-    form.append('file', new Blob([fileContent], { type: 'application/json' }));
-
-    await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-      method: 'POST',
-      headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
-      body: form
-    });
-  } catch(err) {
-    console.error("Personal Drive Sync Error:", err);
-  }
-}
-
-async function loadPersonalDriveFiles() {
-  const container = document.getElementById('driveJsonContainer');
-  container.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Loading from your Google Drive...";
-  try {
-    let res = await fetch('https://www.googleapis.com/drive/v3/files?q=mimeType=\'application/json\'', {
-      headers: new Headers({ 'Authorization': 'Bearer ' + accessToken })
-    });
-    let data = await res.json();
-    let files = data.files || [];
-    
-    if(files.length === 0) {
-        container.innerHTML = "No JSON files found in your Google Drive.";
-        return;
-    }
-    let html = "<table style='width:100%; border-collapse:collapse;'><thead><tr><th>File Name</th><th style='text-align:right;'>Action</th></tr></thead><tbody>";
-    files.forEach(file => {
-        html += `<tr>
-          <td>${file.name}</td>
-          <td style='text-align:right;'>
-            <button onclick="downloadPersonalFile('${file.id}', '${file.name}')" style="background:var(--primary); color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:600;">Download JSON</button>
-          </td>
-        </tr>`;
-    });
-    html += "</tbody></table>";
-    container.innerHTML = html;
-  } catch(err) {
-    container.innerHTML = "Failed to load files from Drive.";
-  }
-}
-
-async function downloadPersonalFile(fileId, fileName) {
-  try {
-    let res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
-      headers: new Headers({ 'Authorization': 'Bearer ' + accessToken })
-    });
-    let jsonData = await res.json();
-    let blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
-    let dl = document.createElement("a");
-    dl.href = URL.createObjectURL(blob);
-    dl.download = fileName;
-    document.body.appendChild(dl);
-    dl.click();
-    document.body.removeChild(dl);
-  } catch(err) {
-    showAlert("Download failed.", "error");
-  }
-}
-
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  hideAlert();
-  document.getElementById('previewContainer').style.display = "none";
-  document.getElementById('restorePreviewContainer').style.display = "none";
-
-  const btnMap = { 'tab-purchase': 0, 'tab-master': 1, 'tab-ledger': 2, 'tab-converter': 3, 'tab-restore': 4 };
-  if(btnMap[tabId] !== undefined) {
-    document.querySelectorAll('.tab-btn')[btnMap[tabId]].classList.add('active');
-  }
-  document.getElementById(tabId).classList.add('active');
-
-  if(tabId === 'tab-restore') {
-    loadPersonalDriveFiles();
-  }
-}
-
-function fileSelected(inputId, displayId) {
-  const file = document.getElementById(inputId).files[0];
-  if (file) document.getElementById(displayId).innerText = "File: " + file.name;
-}
-
-function handleDragOver(e, dropzoneId) {
-  e.preventDefault();
-  e.stopPropagation();
-  document.getElementById(dropzoneId).classList.add('dragover');
-}
-
-function handleDragLeave(e, dropzoneId) {
-  e.preventDefault();
-  e.stopPropagation();
-  document.getElementById(dropzoneId).classList.remove('dragover');
-}
-
-function handleDrop(e, inputId, displayId, dropzoneId) {
-  e.preventDefault();
-  e.stopPropagation();
-  document.getElementById(dropzoneId).classList.remove('dragover');
-  
-  const files = e.dataTransfer.files;
-  if (files && files.length > 0) {
-    document.getElementById(inputId).files = files;
-    document.getElementById(displayId).innerText = "File: " + files[0].name;
-  }
-}
-
-function xmlEscape(str) {
-  if (!str) return "";
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
-}
-
-function parseToTallyDate(dateVal) {
-  if (!dateVal) return "20260401";
-  let str = String(dateVal).trim();
-  if (!isNaN(str) && Number(str) > 30000) {
-    let d = new Date((Number(str) - (25567 + 2)) * 86400 * 1000);
-    return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
-  }
-  let parts = str.split(/[-/]/);
-  if (parts.length === 3) {
-    let day = parts[0].padStart(2, '0');
-    let month = parts[1];
-    let year = parts[2].length === 2 ? "20" + parts[2] : parts[2];
-    const months = { jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06", jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12" };
-    month = isNaN(month) ? (months[month.toLowerCase().substring(0, 3)] || "04") : month.padStart(2, '0');
-    return `${year}${month}${day}`;
-  }
-  return "20260401";
-}
-
-function formatTallyDate(rawDate) {
-  if (!rawDate) return "";
-  rawDate = rawDate.trim();
-  if (rawDate.length === 8 && !isNaN(rawDate)) {
-    return `${rawDate.substring(6, 8)}-${rawDate.substring(4, 6)}-${rawDate.substring(0, 4)}`;
-  }
-  return rawDate;
-}
-
-function getPackDenominator(name) {
-  const t = name.toLowerCase();
-  let m = t.match(/(\d+)\s*(?:cans?|bottles?|btls?|bottle|can|nips|pcs)/i);
-  if (m && parseInt(m[1]) > 1) return parseInt(m[1]);
-  if (t.includes("750") || t.includes("quarts") || t.includes("650") || t.includes("700") || t.includes("1000")) return 12;
-  if (t.includes("375") || t.includes("pints") || t.includes("330") || t.includes("275") || t.includes("250")) return 24;
-  if (t.includes("180") || t.includes("nips") || t.includes("200")) return 48;
-  if (t.includes("90") || t.includes("60") || t.includes("50")) return 96;
-  return 12;
-}
-
-function downloadPurchaseTemplate() {
-  const ws_data = [
-    ["Invoice No", "Date", "Party Name", "Godown", "Purchase Ledger", "#", "Item Nam", "MRP", "Rate/CB", "Qty. Case", "Qty. Bottle", "Qty. BL", "Purchase Amount", "Excise Fee", "Composition Amt / VAT", "Surcharge On C.A./VAT", "TCS(2%)", "AED to be Paid", "Invoice value", "Loading Charges", "Bill Amount"],
-    ["RSBCL-ITP-RSGSM-ITP-JSM01-4424", "01-04-2026", "Rsbcl", "Main Location", "Imfl Purchase", 1, "100 Pipers Blended Malt Scotch Whisky_180-(Nips)", 1200, 1000.00, 0, 12, 2.16, 171518.22, 10320.48, 45900.18, 9180.15, 4766.60, 1410.79, 243096.42, 230.10, {t: 'n', f: 'IF(A2<>A1, S2+T2, "")'}]
-  ];
-  const ws = XLSX.utils.aoa_to_sheet(ws_data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Purchase_Bill");
-  XLSX.writeFile(wb, "RSBCL_Purchase_Template.xlsx");
-}
-
-function buildSingleVoucherXML(inv) {
-  let totalItemsAmt = inv.items.reduce((s, it) => s + it.amount, 0);
-  let totalTax = inv.excise + inv.vat + inv.surcharge + inv.tcs + inv.aed + inv.loading;
-  let finalBill = inv.totalBill > 0 ? inv.totalBill : (totalItemsAmt + totalTax);
-
-  let xml = `        <TALLYMESSAGE xmlns:UDF="TallyUDF">\n`;
-  xml += `          <VOUCHER VCHTYPE="Purchase" ACTION="Create" OBJVIEW="Invoice Voucher View" ISINVOICE="Yes">\n`;
-  xml += `            <DATE>${inv.date}</DATE>\n`;
-  xml += `            <REFERENCEDATE>${inv.date}</REFERENCEDATE>\n`;
-  xml += `            <VOUCHERTYPENAME>Purchase</VOUCHERTYPENAME>\n`;
-  xml += `            <PARTYLEDGERNAME>${xmlEscape(inv.party)}</PARTYLEDGERNAME>\n`;
-  xml += `            <VOUCHERNUMBER>${xmlEscape(inv.invNo)}</VOUCHERNUMBER>\n`;
-  xml += `            <REFERENCE>${xmlEscape(inv.invNo)}</REFERENCE>\n`;
-  xml += `            <PERSISTEDVIEW>Invoice Voucher View</PERSISTEDVIEW>\n`;
-  xml += `            <VCHENTRYMODE>Item Invoice</VCHENTRYMODE>\n`;
-  xml += `            <ISINVOICE>Yes</ISINVOICE>\n\n`;
-
-  inv.items.forEach(it => {
-    xml += `            <ALLINVENTORYENTRIES.LIST>\n`;
-    xml += `              <STOCKITEMNAME>${xmlEscape(it.name)}</STOCKITEMNAME>\n`;
-    xml += `              <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>\n`;
-    xml += `              <RATE>${it.rateStr}</RATE>\n`;
-    xml += `              <AMOUNT>-${it.amount.toFixed(2)}</AMOUNT>\n`;
-    xml += `              <ACTUALQTY>${it.qtyStr}</ACTUALQTY>\n`;
-    xml += `              <BILLEDQTY>${it.qtyStr}</BILLEDQTY>\n`;
-    xml += `              <BATCHALLOCATIONS.LIST>\n`;
-    xml += `                <GODOWNNAME>${xmlEscape(it.godown)}</GODOWNNAME>\n`;
-    xml += `                <BATCHNAME>Primary Batch</BATCHNAME>\n`;
-    xml += `                <AMOUNT>-${it.amount.toFixed(2)}</AMOUNT>\n`;
-    xml += `                <ACTUALQTY>${it.qtyStr}</ACTUALQTY>\n`;
-    xml += `                <BILLEDQTY>${it.qtyStr}</BILLEDQTY>\n`;
-    xml += `              </BATCHALLOCATIONS.LIST>\n`;
-    xml += `              <ACCOUNTINGALLOCATIONS.LIST>\n`;
-    xml += `                <LEDGERNAME>${xmlEscape(it.ledger)}</LEDGERNAME>\n`;
-    xml += `                <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>\n`;
-    xml += `                <AMOUNT>-${it.amount.toFixed(2)}</AMOUNT>\n`;
-    xml += `              </ACCOUNTINGALLOCATIONS.LIST>\n`;
-    xml += `            </ALLINVENTORYENTRIES.LIST>\n`;
-  });
-
-  xml += `            <LEDGERENTRIES.LIST>\n`;
-  xml += `              <LEDGERNAME>${xmlEscape(inv.party)}</LEDGERNAME>\n`;
-  xml += `              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>\n`;
-  xml += `              <ISPARTYLEDGER>Yes</ISPARTYLEDGER>\n`;
-  xml += `              <AMOUNT>${finalBill.toFixed(2)}</AMOUNT>\n`;
-  xml += `              <BILLALLOCATIONS.LIST>\n`;
-  xml += `                <NAME>${xmlEscape(inv.invNo)}</NAME>\n`;
-  xml += `                <BILLTYPE>New Ref</BILLTYPE>\n`;
-  xml += `                <AMOUNT>${finalBill.toFixed(2)}</AMOUNT>\n`;
-  xml += `              </BILLALLOCATIONS.LIST>\n`;
-  xml += `            </LEDGERENTRIES.LIST>\n`;
-
-  const taxLedgers = [
-    { name: "Excise Fee", amt: inv.excise },
-    { name: "Composition Amt / VAT", amt: inv.vat },
-    { name: "Surcharge On C.A./VAT", amt: inv.surcharge },
-    { name: "TCS(2%)", amt: inv.tcs },
-    { name: "AED to be Paid", amt: inv.aed },
-    { name: "Loading Charges", amt: inv.loading }
-  ];
-
-  taxLedgers.forEach(tl => {
-    if (tl.amt > 0) {
-      xml += `            <LEDGERENTRIES.LIST>\n`;
-      xml += `              <LEDGERNAME>${tl.name}</LEDGERNAME>\n`;
-      xml += `              <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>\n`;
-      xml += `              <AMOUNT>-${tl.amt.toFixed(2)}</AMOUNT>\n`;
-      xml += `            </LEDGERENTRIES.LIST>\n`;
-    }
-  });
-
-  xml += `          </VOUCHER>\n`;
-  xml += `        </TALLYMESSAGE>\n`;
-  return xml;
-}
-
-function wrapEnvelope(innerXml) {
-  return `<?xml version="1.0"?>\n<ENVELOPE>\n  <HEADER>\n    <TALLYREQUEST>Import Data</TALLYREQUEST>\n  </HEADER>\n  <BODY>\n    <IMPORTDATA>\n      <REQUESTDESC>\n        <REPORTNAME>Vouchers</REPORTNAME>\n        <STATICVARIABLES>\n          <SVCURRENTCOMPANY>${FIXED_COMPANY_NAME}</SVCURRENTCOMPANY>\n        </STATICVARIABLES>\n      </REQUESTDESC>\n      <REQUESTDATA>\n${innerXml}      </REQUESTDATA>\n    </IMPORTDATA>\n  </BODY>\n</ENVELOPE>`;
-}
-
-function buildPurchaseXMLString(invoices) {
-  let innerXml = "";
-  for (let k in invoices) {
-    let inv = invoices[k];
-    if (!inv.items || inv.items.length === 0) continue;
-    innerXml += buildSingleVoucherXML(inv);
-  }
-  return wrapEnvelope(innerXml);
-}
-
-async function generatePurchaseXML() {
-  const fileInput = document.getElementById('purchExcelFile');
-  if (!fileInput.files.length) return showAlert("Please select a Purchase Excel file.", "error");
-
-  const isPartyWise = document.getElementById('partyWiseCheck').checked;
-
-  const reader = new FileReader();
-  reader.onload = async function(e) {
-    try {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-
-      if (!json || json.length === 0) throw new Error("Excel sheet is empty.");
-
-      const invoices = {};
-      json.forEach(row => {
-        let invNo = row["Invoice No"] ? String(row["Invoice No"]).trim() : "";
-        let dateVal = row["Date"] ? String(row["Date"]).trim() : "";
-        let partyName = row["Party Name"] ? String(row["Party Name"]).trim() : "";
-        let itemName = row["Item Nam"] || row["Item Name"] || "";
-        let name = String(itemName).trim();
-        if (!name) return;
-
-        let activeKey = invNo !== "" ? invNo : (Object.keys(invoices).length > 0 ? Object.keys(invoices)[Object.keys(invoices).length - 1] : "INV-001");
-
-        if (!invoices[activeKey]) {
-          let exactInvNo = invNo !== "" ? invNo : "RSBCL-ITP-JSM01-1";
-
-          invoices[activeKey] = {
-            invNo: exactInvNo,
-            date: parseToTallyDate(dateVal || "01-04-2026"),
-            party: partyName || "Rsbcl",
-            totalBill: 0, excise: 0, vat: 0, surcharge: 0, tcs: 0, aed: 0, loading: 0,
-            items: []
-          };
-        }
-
-        let inv = invoices[activeKey];
-        if (dateVal && inv.date === "20260401") inv.date = parseToTallyDate(dateVal);
-        if (partyName && inv.party === "Rsbcl") inv.party = partyName;
-
-        let godown = row["Godown"] || "Main Location";
-        let purchLedger = row["Purchase Ledger"] || "Imfl Purchase";
-        let cases = parseFloat(row["Qty. Case"] || row["Qty Case"] || 0);
-        let bottles = parseFloat(row["Qty. Bottle"] || row["Qty Bottle"] || 0);
-        let rate = parseFloat(row["Rate/CB"] || row["Rate Per Unit"] || row["Rate"] || 0);
-        let btlPerCase = getPackDenominator(name);
-
-        let totalBottles = (cases * btlPerCase) + bottles;
-        let calcAmount = parseFloat(row["Purchase Amount"] || row["Amount"]) || (totalBottles * (rate / btlPerCase));
-        let tallyQtyStr = `${totalBottles} Btl = ${cases} case`;
-
-        inv.items.push({
-          name: name, godown: godown, ledger: purchLedger,
-          qtyStr: tallyQtyStr, rateStr: `${rate.toFixed(2)}/Btl`, amount: calcAmount
-        });
-
-        let ex = parseFloat(row["Excise Fee"] || 0);
-        let vt = parseFloat(row["Composition Amt / VAT"] || row["VAT Amount"] || 0);
-        let sr = parseFloat(row["Surcharge On C.A./VAT"] || row["Surcharge"] || 0);
-        let tc = parseFloat(row["TCS(2%)"] || row["TCS"] || 0);
-        let ae = parseFloat(row["AED to be Paid"] || row["AED"] || 0);
-        let ld = parseFloat(row["Loading Charges"] || 0);
-        let bt = parseFloat(row["Bill Amount"] || 0);
-
-        if (ex > 0 && inv.excise === 0) inv.excise = ex;
-        if (vt > 0 && inv.vat === 0) inv.vat = vt;
-        if (sr > 0 && inv.surcharge === 0) inv.surcharge = sr;
-        if (tc > 0 && inv.tcs === 0) inv.tcs = tc;
-        if (ae > 0 && inv.aed === 0) inv.aed = ae;
-        if (ld > 0 && inv.loading === 0) inv.loading = ld;
-        if (bt > 0 && inv.totalBill === 0) inv.totalBill = bt;
-      });
-
-      uploadJsonToPersonalDrive(invoices, "Purchase_Voucher_Data");
-
-      if (isPartyWise) {
-        const partyGroups = {};
-        for (let k in invoices) {
-          let inv = invoices[k];
-          let pName = inv.party || "Unknown_Party";
-          if (!partyGroups[pName]) partyGroups[pName] = {};
-          partyGroups[pName][k] = inv;
-        }
-
-        const zip = new JSZip();
-        for (let pName in partyGroups) {
-          let partyInvoices = partyGroups[pName];
-          let innerXml = "";
-          for (let k in partyInvoices) {
-            innerXml += buildSingleVoucherXML(partyInvoices[k]);
-          }
-          let fullXml = wrapEnvelope(innerXml);
-          let fileName = `Purchase_Party_${pName.replace(/[^a-zA-Z0-9]/g, "_")}.xml`;
-          zip.file(fileName, fullXml);
-        }
-
-        let content = await zip.generateAsync({ type: "blob" });
-        let dl = document.createElement("a");
-        dl.href = URL.createObjectURL(content);
-        dl.download = "Party_Wise_XMLs.zip";
-        document.body.appendChild(dl);
-        dl.click();
-        document.body.removeChild(dl);
-        showAlert("Party-wise ZIP downloaded and synced to your Drive.", "success");
-
-      } else {
-        let xml = buildPurchaseXMLString(invoices);
-        const blob = new Blob([xml], { type: "application/xml" });
-        const dl = document.createElement("a");
-        dl.href = URL.createObjectURL(blob);
-        dl.download = "Purchase_Voucher_Import.xml";
-        document.body.appendChild(dl);
-        dl.click();
-        document.body.removeChild(dl);
-        showAlert("Purchase XML generated and synced to your Drive.", "success");
-      }
-
-    } catch (err) { showAlert("Error: " + err.message, "error"); }
-  };
-  reader.readAsArrayBuffer(fileInput.files[0]);
-}
-
-function downloadMasterTemplate() {
-  const templateRows = [{ "Item Name": "Tuborg Strong Beer_(650 Ml)", "Part Number": "TBS650", "Group": "English", "Category": "650", "Base Unit": "Btl", "Alternate Unit": "case", "Qty In Box": 12 }];
-  const ws = XLSX.utils.json_to_sheet(templateRows);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Items");
-  XLSX.writeFile(wb, "Kcrish_Master_Template.xlsx");
-}
-
-function buildMasterXMLString(json) {
-  let xml = `<?xml version="1.0"?>\n<ENVELOPE>\n  <HEADER>\n    <TALLYREQUEST>Import Data</TALLYREQUEST>\n  </HEADER>\n  <BODY>\n    <IMPORTDATA>\n      <REQUESTDESC>\n        <REPORTNAME>All Masters</REPORTNAME>\n        <STATICVARIABLES>\n          <SVCURRENTCOMPANY>${FIXED_COMPANY_NAME}</SVCURRENTCOMPANY>\n        </STATICVARIABLES>\n      </REQUESTDESC>\n      <REQUESTDATA>\n`;
-
-  json.forEach(row => {
-    let name = row["Item Name"];
-    if (!name) return;
-    let grp = row["Group"] || "English";
-    let cat = row["Category"] || "";
-    let bUnit = row["Base Unit"] || "Btl";
-    let aUnit = row["Alternate Unit"] || "case";
-    let qty = row["Qty In Box"] || 12;
-
-    xml += `        <TALLYMESSAGE xmlns:UDF="TallyUDF">\n`;
-    xml += `          <STOCKITEM NAME="${xmlEscape(name)}" ACTION="Alter" RESERVEDNAME="">\n`;
-    xml += `            <PARENT>${xmlEscape(grp)}</PARENT>\n`;
-    if (cat) xml += `            <CATEGORY>${xmlEscape(cat)}</CATEGORY>\n`;
-    xml += `            <BASEUNITS>${xmlEscape(bUnit)}</BASEUNITS>\n`;
-    xml += `            <ADDITIONALUNITS>${xmlEscape(aUnit)}</ADDITIONALUNITS>\n`;
-    xml += `            <DENOMINATOR>${qty}</DENOMINATOR>\n`;
-    xml += `            <CONVERSION>1</CONVERSION>\n`;
-    xml += `            <LANGUAGENAME.LIST><NAME.LIST TYPE="String"><NAME>${xmlEscape(name)}</NAME></NAME.LIST></LANGUAGENAME.LIST>\n`;
-    xml += `          </STOCKITEM>\n`;
-    xml += `        </TALLYMESSAGE>\n`;
-  });
-
-  xml += `      </REQUESTDATA>\n    </IMPORTDATA>\n  </BODY>\n</ENVELOPE>`;
-  return xml;
-}
-
-function generateMasterXML() {
-  const fileInput = document.getElementById('masterExcelFile');
-  if (!fileInput.files.length) return showAlert("Please select an item master file.", "error");
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-      uploadJsonToPersonalDrive(json, "Item_Masters_Data");
-      let xml = buildMasterXMLString(json);
-      const blob = new Blob([xml], { type: "application/xml" });
-      const dl = document.createElement("a");
-      dl.href = URL.createObjectURL(blob);
-      dl.download = "Tally_Ready_Masters.xml";
-      document.body.appendChild(dl);
-      dl.click();
-      document.body.removeChild(dl);
-      showAlert("Master XML generated and synced to your Drive.", "success");
-    } catch (err) { showAlert("Error: " + err.message, "error"); }
-  };
-  reader.readAsArrayBuffer(fileInput.files[0]);
-}
-
-function downloadLedgerTemplate() {
-  const ws_data = [
-    ["Ledger Name", "New Name", "Alias", "Group", "OB Amt (Dr)/Cr", "Delete?", "Maintain Bill?", "Cost Centre?", "Affects Stock?", "Description", "Notes", "GSTIN", "Registration Type", "PAN", "Mailing Name", "Address 1", "Address 2", "State", "PIN Code", "Country", "ISD Code", "Mobile No.", "Contact Person", "Phone", "Email ID"],
-    ["RSGSM_Bhagwati Pal Singh_4051_Union Choraha(1501057)", "", "", "Sundry Creditors", "", "", "Yes", "No", "No", "", "", "", "", "", "RSGSM_Bhagwati Pal Singh_4051_Union Choraha(1501057)", "", "", "", "", "India", "+91", "", "", "", ""]
-  ];
-  const ws = XLSX.utils.aoa_to_sheet(ws_data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Ledgers");
-  XLSX.writeFile(wb, "Kcrish_General_Ledger_Template.xlsx");
-}
-
-function buildLedgerXMLString(json) {
-  let xml = `<?xml version="1.0"?>\n<ENVELOPE>\n  <HEADER>\n    <TALLYREQUEST>Import Data</TALLYREQUEST>\n  </HEADER>\n  <BODY>\n    <IMPORTDATA>\n      <REQUESTDESC>\n        <REPORTNAME>All Masters</REPORTNAME>\n        <STATICVARIABLES>\n          <SVCURRENTCOMPANY>${FIXED_COMPANY_NAME}</SVCURRENTCOMPANY>\n        </STATICVARIABLES>\n      </REQUESTDESC>\n      <REQUESTDATA>\n`;
-
-  json.forEach(row => {
-    let lName = row["Ledger Name"] || row["Party Name"] || row["Name"];
-    if (!lName) return;
-    let parentGrp = row["Group"] || row["Parent Group"] || row["Parent"] || "Sundry Creditors";
-    let mailingName = row["Mailing Name"] || lName;
-    let address = row["Address 1"] || "";
-    let address2 = row["Address 2"] || "";
-    let state = row["State"] || "";
-    let pincode = row["PIN Code"] || "";
-    let country = row["Country"] || "India";
-    let mobile = row["Mobile No."] || row["Mobile"] || "";
-    let email = row["Email ID"] || row["Email"] || "";
-    let maintBill = String(row["Maintain Bill?"] || "").toLowerCase() === "yes" ? "Yes" : "No";
-
-    xml += `        <TALLYMESSAGE xmlns:UDF="TallyUDF">\n`;
-    xml += `          <LEDGER NAME="${xmlEscape(lName)}" ACTION="Alter" RESERVEDNAME="">\n`;
-    xml += `            <PARENT>${xmlEscape(parentGrp)}</PARENT>\n`;
-    xml += `            <ISBILLWISEON>${maintBill}</ISBILLWISEON>\n`;
-    xml += `            <COUNTRYNAME>${xmlEscape(country)}</COUNTRYNAME>\n`;
-    xml += `            <COUNTRYOFRESIDENCE>${xmlEscape(country)}</COUNTRYOFRESIDENCE>\n`;
-    if (state) xml += `            <STATENAME>${xmlEscape(state)}</STATENAME>\n`;
-    if (pincode) xml += `            <PINCODE>${xmlEscape(pincode)}</PINCODE>\n`;
-    if (address) {
-      xml += `            <ADDRESS.LIST>\n`;
-      xml += `              <ADDRESS>${xmlEscape(address)}</ADDRESS>\n`;
-      if (address2) xml += `              <ADDRESS>${xmlEscape(address2)}</ADDRESS>\n`;
-      xml += `            </ADDRESS.LIST>\n`;
-    }
-    xml += `            <MAILINGNAME.LIST TYPE="String">\n`;
-    xml += `              <MAILINGNAME>${xmlEscape(mailingName)}</MAILINGNAME>\n`;
-    xml += `            </MAILINGNAME.LIST>\n`;
-    if (mobile || email) {
-      xml += `            <CONTACTDETAILS.LIST>\n`;
-      if (mobile) xml += `              <NAME>${xmlEscape(mobile)}</NAME>\n`;
-      if (email) xml += `              <EMAIL>${xmlEscape(email)}</EMAIL>\n`;
-      xml += `            </CONTACTDETAILS.LIST>\n`;
-    }
-    xml += `            <ASORIGINAL>Yes</ASORIGINAL>\n`;
-    xml += `            <LANGUAGENAME.LIST>\n`;
-    xml += `              <NAME.LIST TYPE="String">\n`;
-    xml += `                <NAME>${xmlEscape(lName)}</NAME>\n`;
-    xml += `              </NAME.LIST>\n`;
-    xml += `            </LANGUAGENAME.LIST>\n`;
-    xml += `          </LEDGER>\n`;
-    xml += `        </TALLYMESSAGE>\n`;
-  });
-
-  xml += `      </REQUESTDATA>\n    </IMPORTDATA>\n  </BODY>\n</ENVELOPE>`;
-  return xml;
-}
-
-function generateLedgerXML() {
-  const fileInput = document.getElementById('ledgerExcelFile');
-  if (!fileInput.files.length) return showAlert("Please select a ledger file.", "error");
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-      uploadJsonToPersonalDrive(json, "General_Ledgers_Data");
-      let xml = buildLedgerXMLString(json);
-      const blob = new Blob([xml], { type: "application/xml" });
-      const dl = document.createElement("a");
-      dl.href = URL.createObjectURL(blob);
-      dl.download = "Tally_Ready_General_Ledgers.xml";
-      document.body.appendChild(dl);
-      dl.click();
-      document.body.removeChild(dl);
-      showAlert("Ledger XML generated and synced to your Drive.", "success");
-    } catch (err) { showAlert("Error: " + err.message, "error"); }
-  };
-  reader.readAsArrayBuffer(fileInput.files[0]);
-}
-
-function convertXmlToExcel() {
-  const fileInput = document.getElementById('xmlFile');
-  if (!fileInput.files.length) return showAlert("Please select an XML file.", "error");
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const xmlDoc = new DOMParser().parseFromString(e.target.result, "text/xml");
-      let extractedData = [];
-      const vouchers = xmlDoc.getElementsByTagName("VOUCHER");
-
-      for (let v = 0; v < vouchers.length; v++) {
-        const vch = vouchers[v];
-        let vDate = formatTallyDate(vch.getElementsByTagName("DATE")[0] ? vch.getElementsByTagName("DATE")[0].textContent.trim() : "");
-        let vNo = vch.getElementsByTagName("VOUCHERNUMBER")[0] ? vch.getElementsByTagName("VOUCHERNUMBER")[0].textContent.trim() : "";
-        let party = vch.getElementsByTagName("PARTYLEDGERNAME")[0] ? vch.getElementsByTagName("PARTYLEDGERNAME")[0].textContent.trim() : "Rsbcl";
-        
-        let invEntries = vch.getElementsByTagName("ALLINVENTORYENTRIES.LIST");
-        for (let j = 0; j < invEntries.length; j++) {
-          let it = invEntries[j];
-          let amt = Math.abs(parseFloat(it.getElementsByTagName("AMOUNT")[0].textContent.trim() || 0));
-          extractedData.push({
-            "Date": vDate, "Voucher No": vNo, "Party Name": party,
-            "Item / Ledger": it.getElementsByTagName("STOCKITEMNAME")[0].textContent.trim(),
-            "Qty": it.getElementsByTagName("BILLEDQTY")[0] ? it.getElementsByTagName("BILLEDQTY")[0].textContent.trim() : "",
-            "Rate": it.getElementsByTagName("RATE")[0] ? it.getElementsByTagName("RATE")[0].textContent.trim() : "",
-            "Type": "Dr", "Debit Amount": amt, "Credit Amount": 0
-          });
-        }
-
-        let ledEntries = vch.getElementsByTagName("LEDGERENTRIES.LIST");
-        for (let l = 0; l < ledEntries.length; l++) {
-          let led = ledEntries[l];
-          let name = led.getElementsByTagName("LEDGERNAME")[0].textContent.trim();
-          let amt = Math.abs(parseFloat(led.getElementsByTagName("AMOUNT")[0].textContent.trim() || 0));
-          if (name.toLowerCase() === party.toLowerCase()) {
-            extractedData.push({
-              "Date": vDate, "Voucher No": vNo, "Party Name": party,
-              "Item / Ledger": name, "Qty": "-", "Rate": "-",
-              "Type": "Cr", "Debit Amount": 0, "Credit Amount": amt
-            });
-          } else {
-            extractedData.push({
-              "Date": vDate, "Voucher No": vNo, "Party Name": party,
-              "Item / Ledger": name, "Qty": "-", "Rate": "-",
-              "Type": "Dr", "Debit Amount": amt, "Credit Amount": 0
-            });
-          }
-        }
-      }
-
-      renderTablePreview(extractedData);
-      const ws = XLSX.utils.json_to_sheet(extractedData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Data");
-      XLSX.writeFile(wb, "Tally_Dr_Cr_Data.xlsx");
-      showAlert(`Converted ${extractedData.length} records.`, "success");
-    } catch (err) { showAlert("Error: " + err.message, "error"); }
-  };
-  reader.readAsText(fileInput.files[0]);
-}
-
-function renderTablePreview(data) {
-  const table = document.getElementById('previewTable');
-  const thead = table.querySelector('thead');
-  const tbody = table.querySelector('tbody');
-  thead.innerHTML = ""; tbody.innerHTML = "";
-  if (data.length === 0) return;
-  const cols = Object.keys(data[0]);
-  let trHead = document.createElement('tr');
-  cols.forEach(c => { let th = document.createElement('th'); th.innerText = c; trHead.appendChild(th); });
-  thead.appendChild(trHead);
-  
-  data.forEach(row => {
-    let tr = document.createElement('tr');
-    cols.forEach(c => { let td = document.createElement('td'); td.innerText = row[c] !== undefined ? row[c] : ""; tr.appendChild(td); });
-    tbody.appendChild(tr);
-  });
-  document.getElementById('previewContainer').style.display = "block";
-}
-
-function showAlert(msg, type) {
-  const box = document.getElementById('alertBox');
-  box.className = type === 'success' ? 'alert alert-success' : 'alert alert-error';
-  box.innerText = msg;
-  box.style.display = 'block';
-}
-
-function hideAlert() { document.getElementById('alertBox').style.display = 'none'; }
 </script>
 </body>
 </html>
