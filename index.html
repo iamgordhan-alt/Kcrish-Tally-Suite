@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kcrish Automation Suite - Secure Client Login">
+<meta name="description" content="Kcrish Automation Suite - Secure Client Login & Google Workspace Integration">
 <meta name="theme-color" content="#061219">
-<title>Kcrish Workspace • Secure Login</title>
+<title>Kcrish Workspace • Google Workspace Login</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -93,6 +93,25 @@ body {
   transform: translateY(-2px); box-shadow: 0 15px 25px rgba(16, 185, 129, 0.35);
 }
 
+/* Google Login Button Style */
+.btn-google {
+  width: 100%; height: 48px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15); 
+  background: rgba(255, 255, 255, 0.05); color: #fff; font-weight: 700; font-size: 13px; cursor: pointer; 
+  margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s;
+}
+.btn-google:hover {
+  background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3);
+}
+
+.divider {
+  display: flex; align-items: center; text-align: center; margin: 20px 0; color: var(--text-dim); font-size: 12px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.divider::before { margin-right: 10px; }
+.divider::after { margin-left: 10px; }
+
 .error-msg {
   background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
   padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 16px; display: none; text-align: left;
@@ -115,14 +134,21 @@ body {
 <div class="login-card">
   <div class="brand-logo-large">KA</div>
   <h2>Kcrish Automation Suite</h2>
-  <p>Secure Enterprise Workspace Login</p>
+  <p>Secure Enterprise Workspace &amp; Drive Login</p>
 
   <div class="error-msg" id="errorBox">Please enter a valid username.</div>
+
+  <!-- Google Direct Login Button -->
+  <button type="button" class="btn-google" id="googleLoginBtn">
+    <i class="fa-brands fa-google" style="color: #ea4335;"></i> Continue with Google Drive
+  </button>
+
+  <div class="divider">OR MANUAL LOGIN</div>
 
   <form id="loginForm">
     <div class="input-group">
       <label for="usernameInput">Client Username / ID</label>
-      <input type="text" id="usernameInput" class="input-field" placeholder="Enter your username..." required autocomplete="off">
+      <input type="text" id="usernameInput" class="input-field" placeholder="Enter your username..." autocomplete="off">
     </div>
 
     <button type="submit" class="btn-login">
@@ -142,6 +168,7 @@ body {
     window.location.href = 'dashboard.html';
   }
 
+  // Manual Login Handler
   document.getElementById('loginForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const username = document.getElementById('usernameInput').value.trim();
@@ -153,11 +180,19 @@ body {
       return;
     }
 
-    // Save session data
+    // Save session data & Google Drive active folder path
     localStorage.setItem('client_username', username);
     localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${username.replace(/\s+/g, '_')}/`);
     
-    // Redirect to dashboard
+    window.location.href = 'dashboard.html';
+  });
+
+  // Google Direct Login Handler
+  document.getElementById('googleLoginBtn').addEventListener('click', () => {
+    const googleUser = 'Google_User_Drive';
+    localStorage.setItem('client_username', googleUser);
+    localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${googleUser}/`);
+    
     window.location.href = 'dashboard.html';
   });
 </script>
