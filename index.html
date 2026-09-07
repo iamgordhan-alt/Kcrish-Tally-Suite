@@ -47,22 +47,15 @@
       text-align: center;
     }
 
-    /* BRANDING LOGO STYLING */
+    /* LOGO IMAGE STYLING */
     .brand-logo-container {
       margin-bottom: 20px;
     }
-    .brand-logo {
+    .brand-logo-img {
       width: 64px;
       height: 64px;
-      background: linear-gradient(135deg, #5835df, #7c3aed);
-      color: white;
-      font-size: 28px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      box-shadow: 0 4px 12px rgba(88, 53, 223, 0.3);
+      object-fit: contain;
+      border-radius: 12px;
       margin-bottom: 8px;
     }
     .brand-title {
@@ -121,9 +114,9 @@
 <body>
 
 <div class="auth-card">
-  <!-- LOGO & BRANDING -->
+  <!-- LOGO IMAGE FROM GITHUB REPO -->
   <div class="brand-logo-container">
-    <div class="brand-logo"><i class="fa-solid fa-bolt"></i></div>
+    <img src="logo.png" alt="Logo" class="brand-logo-img" onerror="this.style.display='none'" />
     <h1 class="brand-title">Kcrish Tally Suite</h1>
     <p class="brand-subtitle">Sign in to your automation portal</p>
   </div>
