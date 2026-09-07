@@ -1,418 +1,263 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kcrish Automation Workspace - Enterprise Grade Excel to Tally Processing Engine">
-<meta name="theme-color" content="#061219">
-<title>Kcrish • Excel to Tally Automation Suite</title>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kcrish • Excel to Tally Automation</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root {
-  --primary: #10b981;
-  --primary-hover: #059669;
-  --primary-light: #34d399;
-  --primary-glow: rgba(16, 185, 129, 0.35);
-  --cyan: #06b6d4;
-  --bg-dark: #061118;
-  --bg-card: rgba(12, 26, 36, 0.75);
-  --border-card: rgba(255, 255, 255, 0.12);
-  --border-input: rgba(255, 255, 255, 0.14);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --success: #10b981;
-  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+:root{
+  --g:#18b66a;--g2:#6af0aa;--n:#07131e;--muted:#a9bbc4;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { min-height: 100%; }
-
-body {
-  font-family: var(--font-main);
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  line-height: 1.5;
-  position: relative;
-  overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.15) 0%, transparent 45%),
-    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.14) 0%, transparent 40%),
-    radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-    linear-gradient(180deg, #050e14 0%, #081620 50%, #050c12 100%);
-  background-attachment: fixed;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 32px 16px;
+*{box-sizing:border-box}html,body{height:100%}
+body{
+  margin:0;color:#eef8f3;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(800px 500px at 10% 0%,rgba(28,204,119,.24),transparent 65%),
+    radial-gradient(700px 500px at 95% 12%,rgba(59,130,246,.16),transparent 65%),
+    radial-gradient(900px 700px at 50% 110%,rgba(24,115,80,.24),transparent 65%),
+    linear-gradient(135deg,#031019,#081823 52%,#0a1a20);
+  overflow:hidden;
 }
-
-.orb {
-  position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(60px);
+body:before{
+  content:"";position:fixed;inset:-20%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0 30%,rgba(65,220,144,.045) 38%,transparent 47% 68%,rgba(70,145,255,.04) 76%,transparent 86%);
+  filter:blur(26px);animation:spin 24s linear infinite;
 }
-.orb-1 { width: 400px; height: 400px; left: -80px; top: 15%; background: rgba(16, 185, 129, 0.14); }
-.orb-2 { width: 380px; height: 380px; right: -90px; bottom: 10%; background: rgba(6, 182, 212, 0.12); }
-
-.grid-bg {
-  position: fixed; inset: 0; background-size: 40px 40px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  pointer-events: none; z-index: 0;
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.orb{position:fixed;border-radius:50%;filter:blur(18px);pointer-events:none}
+.o1{width:250px;height:250px;left:-70px;top:22%;background:rgba(35,211,125,.14);animation:float 8s ease-in-out infinite}
+.o2{width:210px;height:210px;right:-60px;bottom:12%;background:rgba(72,132,255,.13);animation:float 9s ease-in-out -2s infinite}
+.shell{
+  width:min(1280px,94vw);min-height:100vh;margin:auto;display:grid;
+  grid-template-columns:1.12fr .88fr;gap:72px;align-items:center;padding:38px;position:relative;z-index:1;
 }
-
-.shell {
-  position: relative; z-index: 1; width: 100%; max-width: 1240px; margin: auto;
-  display: grid; grid-template-columns: 1.15fr 0.95fr; gap: 56px; align-items: center;
+.brand{padding:10px 0}
+.badge{
+  width:max-content;padding:8px 13px;border:1px solid rgba(255,255,255,.12);border-radius:999px;
+  background:rgba(255,255,255,.055);backdrop-filter:blur(15px);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#d6eee2;
+  margin-bottom:22px;
 }
-
-.showcase { display: flex; flex-direction: column; gap: 24px; }
-.badge {
-  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
-  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.28);
-  color: #a7f3d0; font-size: 12px; font-weight: 600; width: fit-content;
+.logo-card{
+  max-width:670px;padding:20px;border-radius:30px;
+  background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.025));
+  border:1px solid rgba(255,255,255,.16);box-shadow:0 28px 70px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.12);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
 }
-.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background-color: var(--primary-light); box-shadow: 0 0 8px var(--primary-light); }
-
-.brand-header { display: flex; align-items: center; gap: 12px; }
-.brand-logo-icon {
-  width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-  display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+.logo-card img{display:block;width:100%;border-radius:22px;filter:drop-shadow(0 16px 28px rgba(0,0,0,.25))}
+h1{font-size:clamp(36px,4vw,57px);line-height:1.03;letter-spacing:-.045em;margin:28px 0 14px}
+h1 span{background:linear-gradient(90deg,#fff,#c7f8dc,#70eaa7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.desc{max-width:650px;color:var(--muted);font-size:15px;line-height:1.75}
+.pills{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}
+.pill{padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);font-size:11px;color:#d2e3e9;backdrop-filter:blur(10px)}
+.login{
+  position:relative;overflow:hidden;padding:33px;border-radius:29px;
+  background:linear-gradient(150deg,rgba(255,255,255,.13),rgba(255,255,255,.045) 58%,rgba(255,255,255,.075));
+  border:1px solid rgba(255,255,255,.19);box-shadow:0 35px 95px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.15);
+  backdrop-filter:blur(28px) saturate(140%);-webkit-backdrop-filter:blur(28px) saturate(140%);
 }
-.brand-title { font-size: 24px; font-weight: 800; color: #ffffff; }
-.brand-title span { color: var(--primary-light); }
+.login:after{content:"";position:absolute;width:230px;height:70px;left:-70px;top:-20px;background:rgba(255,255,255,.08);filter:blur(25px);transform:rotate(-12deg);animation:shine 7s ease-in-out infinite}
+.head{position:relative;z-index:1;margin-bottom:22px}.head h2{margin:0;font-size:27px;letter-spacing:-.03em}.head p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.55}
+.tabs{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:5px;background:rgba(0,0,0,.16);padding:5px;border-radius:14px;border:1px solid rgba(255,255,255,.08);margin-bottom:21px}
+.tab{border:0;background:transparent;color:#93a8b1;padding:11px;border-radius:10px;font-weight:700;cursor:pointer}.tab.active{color:#fff;background:rgba(35,194,119,.17);box-shadow:inset 0 1px rgba(255,255,255,.08)}
+.field{position:relative;z-index:1;margin-bottom:15px}.field label{display:block;font-size:10px;color:#b6c8cf;letter-spacing:.08em;margin:0 0 7px 3px}.input{width:100%;height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.13);background:rgba(3,16,25,.38);color:#fff;padding:0 42px 0 14px;outline:0;transition:.2s}.input:focus{border-color:rgba(71,227,149,.75);box-shadow:0 0 0 4px rgba(71,227,149,.09)}.input::placeholder{color:#7f949e}
+.eye{position:absolute;right:8px;bottom:9px;width:36px;height:34px;border:0;border-radius:10px;background:rgba(255,255,255,.045);color:#a9bac2;cursor:pointer}
+.row{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#93a6af;margin:3px 2px 19px}.remember{display:flex;gap:7px;align-items:center}.remember input{accent-color:var(--g)}.link{background:none;border:0;color:#72e8a7;cursor:pointer;font-size:11px}
+.submit{position:relative;z-index:1;width:100%;height:54px;border:0;border-radius:15px;background:linear-gradient(135deg,#62f2aa,#18b66a 60%,#129357);color:#04140b;font-weight:800;cursor:pointer;box-shadow:0 14px 32px rgba(24,182,106,.25);transition:.2s}.submit:hover{transform:translateY(-2px);box-shadow:0 18px 38px rgba(24,182,106,.31)}.submit:disabled{opacity:.65;transform:none;cursor:not-allowed}
+.status{min-height:20px;position:relative;z-index:1;margin-top:12px;font-size:11px;color:#9fb2bb}.success{color:#72efaa}.error{color:#ff9e9e}.foot{text-align:center;position:relative;z-index:1;color:#718791;font-size:10px;margin-top:20px}
 
-h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; color: #ffffff; }
-.gradient-text { background: linear-gradient(90deg, #ffffff 10%, #a7f3d0 60%, #67e8f9 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.desc { color: var(--text-muted); font-size: 16px; line-height: 1.65; max-width: 580px; }
-
-.login-card {
-  position: relative; background: var(--bg-card); border: 1px solid var(--border-card);
-  border-radius: 28px; padding: 36px 32px; box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(28px); overflow: hidden;
-}
-
-.tabs-container {
-  display: grid; grid-template-columns: 1fr 1fr; background: rgba(3, 14, 23, 0.6);
-  padding: 4px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 22px;
-}
-.tab-btn {
-  border: none; background: transparent; color: var(--text-muted); padding: 10px 12px;
-  border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex;
-  align-items: center; justify-content: center; gap: 8px;
-}
-.tab-btn.active { color: #ffffff; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.3); }
-
-.auth-header { margin-bottom: 20px; }
-.auth-header h2 { font-size: 24px; font-weight: 800; color: #ffffff; }
-.auth-header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
-
-.form-group { margin-bottom: 16px; position: relative; }
-.form-label { display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
-.input-wrapper { position: relative; display: flex; align-items: center; }
-.input-icon { position: absolute; left: 14px; color: var(--text-dim); pointer-events: none; }
-.form-input {
-  width: 100%; height: 48px; border-radius: 12px; border: 1px solid var(--border-input);
-  background: rgba(3, 14, 23, 0.55); color: #ffffff; padding: 0 42px 0 42px; font-size: 14px; outline: none;
-}
-.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
-
-.eye-toggle {
-  position: absolute; right: 10px; width: 32px; height: 32px; border-radius: 8px; border: none;
-  background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-
-.signup-extra-fields { display: none; }
-
-.form-options { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin: 6px 0 20px; color: var(--text-muted); }
-.checkbox-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.link-btn { background: none; border: none; color: var(--primary-light); font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
-.link-btn:hover { text-decoration: underline; }
-
-.btn-submit {
-  width: 100%; height: 50px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%); color: #022c22;
-  font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(16, 185, 129, 0.45); }
-
-.spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(2, 44, 34, 0.3); border-top-color: #022c22; border-radius: 50%; animation: spin 0.7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.status-box { min-height: 20px; margin-top: 14px; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; display: none; }
-.status-box.error { display: flex; gap: 8px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
-.status-box.success { display: flex; gap: 8px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #6ee7b7; }
-
-.auth-divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 16px; color: var(--text-dim); font-size: 12px; }
-.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.08); }
-
-.sso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.sso-btn {
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px;
-  padding: 9px 12px; color: #e2e8f0; font-size: 12px; font-weight: 600; cursor: pointer; display: flex;
-  align-items: center; justify-content: center; gap: 8px;
-}
-.sso-btn:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
-
-.card-foot { text-align: center; margin-top: 22px; font-size: 11px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; gap: 6px; }
-.card-foot a { color: var(--cyan); text-decoration: none; font-weight: 600; margin-left: 8px; }
-
-/* Modal Overlay for OTP Verification */
+/* OTP Modal Overlay */
 .modal-overlay {
-  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
-  display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
+  position: fixed; inset: 0; background: rgba(3, 16, 25, 0.85); backdrop-filter: blur(10px);
+  display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
 }
 .modal-overlay.open { display: flex; }
 .modal-box {
-  background: #091722; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
-  width: 100%; max-width: 440px; padding: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); position: relative;
+  background: rgba(12, 26, 36, 0.95); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 24px;
+  width: 100%; max-width: 420px; padding: 32px; box-shadow: 0 35px 95px rgba(0,0,0,0.6); position: relative; text-align: center;
 }
-.modal-close-btn {
-  position: absolute; top: 18px; right: 18px; background: rgba(255, 255, 255, 0.06); border: none;
-  color: #94a3b8; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+.modal-close {
+  position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.05); border: none;
+  color: var(--muted); width: 32px; height: 32px; border-radius: 10px; cursor: pointer;
 }
-.modal-box h3 { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 8px; }
-.modal-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
 
-@media (max-width: 992px) { .shell { grid-template-columns: 1fr; max-width: 580px; gap: 40px; } }
+@keyframes float{50%{transform:translateY(-15px)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes shine{0%,65%,100%{transform:translateX(0) rotate(-12deg);opacity:0}20%{opacity:1}40%{transform:translateX(480px) rotate(-12deg);opacity:0}}
+@media(max-width:980px){body{overflow:auto}.shell{grid-template-columns:1fr;width:min(720px,94vw);gap:34px;padding:25px 16px 40px}.brand{text-align:center}.badge{margin-left:auto;margin-right:auto}.logo-card{margin:auto}.desc{margin-left:auto;margin-right:auto}.pills{justify-content:center}.login{width:min(470px,100%);margin:auto}}
+@media(max-width:560px){.shell{width:100%;padding:15px 12px 30px}.logo-card{padding:10px;border-radius:21px}.logo-card img{border-radius:15px}.login{padding:22px 17px;border-radius:22px}h1{font-size:34px}.desc{font-size:13px}.head h2{font-size:24px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-
-<div class="grid-bg"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-
+<div class="grain"></div><div class="orb o1"></div><div class="orb o2"></div>
 <main class="shell">
-  <section class="showcase">
-    <div class="badge"><span class="pulse-dot"></span><span>TallyPrime &amp; ERP 9 Engine v4.2 • Ready</span></div>
-    <div class="brand-header">
-      <div class="brand-logo-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h6v6H4z"/><path d="M14 4h6v6h-6z"/><path d="M4 14h6v6H4z"/><path d="M17 14v6"/><path d="M14 17h6"/></svg>
-      </div>
-      <div class="brand-title">Kcrish <span>Automation</span></div>
+<section class="brand">
+  <div class="badge">● Secure Automation Workspace</div>
+  <div class="logo-card"><img src="logo.png" alt="Kcrish Logo" onerror="this.src='https://via.placeholder.com/600x200?text=Kcrish+Automation+Logo'" /></div>
+  <h1>Excel to Tally <span>Automation Hub</span></h1>
+  <p class="desc">Transform complex supplier sheets into accounting-ready formats instantly with client-side local processing and zero infrastructure bottlenecks.</p>
+  <div class="pills">
+    <div class="pill">SheetJS Parser</div>
+    <div class="pill">Google Drive Storage</div>
+    <div class="pill">Instant XML Export</div>
+  </div>
+</section>
+
+<section class="login">
+  <div class="head">
+    <h2 id="formHeading">Client Sign In</h2>
+    <p id="formSub">Access your encrypted Tally workspace securely.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" id="btnTabLogin" type="button">Sign In</button>
+    <button class="tab" id="btnTabSignup" type="button">Create Account</button>
+  </div>
+
+  <form id="authForm">
+    <div class="field signup-field" id="fieldEmail" style="display:none;">
+      <label>WORK EMAIL (FOR OTP)</label>
+      <input type="email" id="emailInput" class="input" placeholder="name@company.com" autocomplete="email">
     </div>
-    <h1>Excel to Tally.<br><span class="gradient-text">Beautifully Automated.</span></h1>
-    <p class="desc">The high-performance workspace for accounting firms and enterprises. Automatically parse, validate GST, map chart-of-accounts, and push thousands of vouchers directly to Tally in seconds.</p>
-  </section>
 
-  <section class="login-card">
-    <div class="tabs-container" role="tablist">
-      <button type="button" class="tab-btn active" id="loginTab">Sign In</button>
-      <button type="button" class="tab-btn" id="signupTab">Create Account</button>
+    <div class="field">
+      <label id="userLabel">USERNAME / EMAIL</label>
+      <input type="text" id="userInput" class="input" placeholder="Enter username..." required autocomplete="off">
     </div>
 
-    <div class="auth-header">
-      <h2 id="authTitle">Welcome back</h2>
-      <p id="authSubtitle">Enter your credentials to access your Kcrish automation workspace.</p>
+    <div class="field">
+      <label>PASSWORD</label>
+      <input type="password" id="passInput" class="input" placeholder="Enter password..." required autocomplete="current-password">
+      <button type="button" class="eye" id="togglePass"><i class="fa-solid fa-eye"></i></button>
     </div>
 
-    <form id="form" novalidate>
-      <div class="form-group signup-extra-fields" id="groupFullName">
-        <label class="form-label" for="fullName">Full Name</label>
-        <div class="input-wrapper">
-          <input id="fullName" class="form-input" type="text" placeholder="Ashok Gitiyal">
-          <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
-        </div>
-      </div>
-
-      <div class="form-group signup-extra-fields" id="groupEmail">
-        <label class="form-label" for="signupEmail">Work Email (For OTP)</label>
-        <div class="input-wrapper">
-          <input id="signupEmail" class="form-input" type="email" placeholder="name@company.com">
-          <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="user">Username or Email</label>
-        <div class="input-wrapper">
-          <input id="user" class="form-input" type="text" placeholder="Enter username or email" required>
-          <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="pass">Password</label>
-        <div class="input-wrapper">
-          <input id="pass" class="form-input" type="password" placeholder="Enter your password" required>
-          <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
-          <button type="button" id="eyeBtn" class="eye-toggle"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-        </div>
-      </div>
-
-      <div class="form-group signup-extra-fields" id="groupConfirmPass">
-        <label class="form-label" for="confirmPass">Confirm Password</label>
-        <div class="input-wrapper">
-          <input id="confirmPass" class="form-input" type="password" placeholder="Re-enter your password">
-          <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
-        </div>
-      </div>
-
-      <div class="form-options">
-        <label class="checkbox-wrap" for="rememberMe">
-          <input type="checkbox" id="rememberMe">
-          <span id="rememberLabel">Remember me</span>
-        </label>
-        <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
-      </div>
-
-      <button type="submit" class="btn-submit" id="submitBtn">
-        <div class="spinner" id="spinner"></div>
-        <span id="submitIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
-        <span id="submitLabel">Sign In Securely</span>
-      </button>
-
-      <div class="status-box" id="statusBox" role="alert"></div>
-
-      <div class="auth-divider">Or authenticate via</div>
-      <div class="sso-grid">
-        <button type="button" class="sso-btn" id="googleSsoBtn">Google Drive</button>
-        <button type="button" class="sso-btn" id="tallySsoBtn">Workspace Sync</button>
-      </div>
-    </form>
-
-    <div class="card-foot">
-      <span>Kcrish Secure Automation Engine • 256-Bit TLS</span>
-      <a href="about.html"><i class="fa-solid fa-circle-info"></i> About</a>
+    <div class="row">
+      <div class="remember"><input type="checkbox" id="rememberMe"> <label for="rememberMe">Remember me</label></div>
+      <button type="button" class="link" id="forgotLink">Forgot password?</button>
     </div>
-  </section>
+
+    <button type="submit" class="submit" id="submitBtn">Launch Workspace</button>
+    <div class="status" id="statusMsg"></div>
+  </form>
+
+  <div class="foot">
+    <span>© Kcrish Systems • <a href="about.html" style="color:#72e8a7; text-decoration:none;">About</a></span>
+  </div>
+</section>
 </main>
 
-<!-- OTP Verification Modal Dialog -->
+<!-- OTP Verification Modal -->
 <div class="modal-overlay" id="otpModal">
   <div class="modal-box">
-    <button type="button" class="modal-close-btn" id="otpCloseBtn">✕</button>
-    <h3>Email Verification OTP</h3>
-    <p>A 6-digit verification code has been dispatched to your email address.</p>
+    <button type="button" class="modal-close" id="closeModal">✕</button>
+    <h2 style="font-size:20px; margin-bottom:8px;">Email Verification</h2>
+    <p style="color:var(--muted); font-size:12px; margin-bottom:20px;">Enter the 6-digit OTP sent to your email.</p>
     
-    <form id="otpForm" novalidate>
-      <div class="form-group">
-        <label class="form-label" for="otpInput">Enter 6-Digit OTP</label>
-        <div class="input-wrapper">
-          <input id="otpInput" class="form-input" type="text" maxlength="6" placeholder="123456" required style="letter-spacing: 4px; text-align: center; font-size: 18px; font-weight: 700;">
-        </div>
+    <form id="otpForm">
+      <div class="field">
+        <input type="text" id="otpInput" class="input" maxlength="6" placeholder="123456" style="text-align:center; font-size:20px; letter-spacing:6px; font-weight:700;" required>
       </div>
-      <button type="submit" class="btn-submit" id="verifyOtpBtn" style="height: 46px; font-size: 14px;">
-        Verify &amp; Create Account
-      </button>
-      <div class="status-box" id="otpStatusBox" style="margin-top: 12px;"></div>
+      <button type="submit" class="submit" id="verifyBtn" style="margin-top:10px;">Verify &amp; Register</button>
+      <div class="status" id="otpStatus"></div>
     </form>
   </div>
 </div>
 
 <script>
 (() => {
-  const $ = id => document.getElementById(id);
+  const getEl = id => document.getElementById(id);
+
   let isSignup = false;
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq7Ss9RPffs5IVlVkiItHJh3dZM3o0fW0XpW4TNefK5puQ8xJ33oXW0Q/exec";
   let pendingEmail = "";
 
-  const setAuthMode = (signup) => {
-    isSignup = signup;
-    $('loginTab').classList.toggle('active', !signup);
-    $('signupTab').classList.toggle('active', signup);
-    $('authTitle').textContent = signup ? 'Create Account' : 'Welcome back';
-    $('authSubtitle').textContent = signup ? 'Get started with high-speed automated Excel to Tally integration.' : 'Enter your credentials to access your Kcrish automation workspace.';
-    $('submitLabel').textContent = signup ? 'Continue with Email OTP' : 'Sign In Securely';
-    
-    document.querySelectorAll('.signup-extra-fields').forEach(el => el.style.display = signup ? 'block' : 'none');
-    $('rememberLabel').textContent = signup ? 'I agree to Terms & Privacy' : 'Remember me';
-    $('forgotBtn').style.display = signup ? 'none' : 'inline-block';
-    $('statusBox').style.display = 'none';
-  };
+  // Tabs switching
+  getEl('btnTabLogin').addEventListener('click', () => {
+    isSignup = false;
+    getEl('btnTabLogin').classList.add('active');
+    getEl('btnTabSignup').classList.remove('active');
+    getEl('formHeading').textContent = 'Client Sign In';
+    getEl('formSub').textContent = 'Access your encrypted Tally workspace securely.';
+    getEl('submitBtn').textContent = 'Launch Workspace';
+    getEl('fieldEmail').style.display = 'none';
+    getEl('statusMsg').textContent = '';
+  });
 
-  $('loginTab').addEventListener('click', () => setAuthMode(false));
-  $('signupTab').addEventListener('click', () => setAuthMode(true));
+  getEl('btnTabSignup').addEventListener('click', () => {
+    isSignup = true;
+    getEl('btnTabSignup').classList.add('active');
+    getEl('btnTabLogin').classList.remove('active');
+    getEl('formHeading').textContent = 'Create Account';
+    getEl('formSub').textContent = 'Register for cloud-synced Tally workspace.';
+    getEl('submitBtn').textContent = 'Continue with Email OTP';
+    getEl('fieldEmail').style.display = 'block';
+    getEl('statusMsg').textContent = '';
+  });
 
-  // Password visibility
-  $('eyeBtn').addEventListener('click', () => {
-    const p = $('pass');
+  // Password eye toggle
+  getEl('togglePass').addEventListener('click', () => {
+    const p = getEl('passInput');
     p.type = p.type === 'password' ? 'text' : 'password';
   });
 
-  const showStatus = (msg, type = 'error') => {
-    const box = $('statusBox');
-    box.style.display = 'flex';
-    box.className = 'status-box ' + type;
-    box.innerHTML = `<span>${msg}</span>`;
-  };
-
-  // Main Form Submit
-  $('form').addEventListener('submit', async (e) => {
+  // Form submission
+  getEl('authForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const username = $('user').value.trim();
-    const password = $('pass').value;
-    
-    let payload = { action: isSignup ? 'signup' : 'login', username, password };
+    const user = getEl('userInput').value.trim();
+    const pass = getEl('passInput').value;
+    const email = getEl('emailInput').value.trim();
+    const status = getEl('statusMsg');
 
-    if (isSignup) {
-      payload.fullName = $('fullName').value.trim();
-      payload.email = $('signupEmail').value.trim();
-      pendingEmail = payload.email;
-
-      if (!payload.fullName || !payload.email || !username || password.length < 8) {
-        showStatus('Please fill all fields properly (Password min 8 chars).', 'error');
-        return;
-      }
-    } else {
-      if (!username || !password) {
-        showStatus('Please enter username and password.', 'error');
-        return;
-      }
+    if (isSignup && !email) {
+      status.className = 'status error';
+      status.textContent = 'Please enter a valid work email for OTP.';
+      return;
     }
 
-    const btn = $('submitBtn');
+    let payload = { action: isSignup ? 'signup' : 'login', username: user, password: pass, email: email };
+    if (isSignup) pendingEmail = email;
+
+    const btn = getEl('submitBtn');
     btn.disabled = true;
-    $('spinner').style.display = 'block';
-    $('submitIcon').style.display = 'none';
+    btn.textContent = isSignup ? 'Sending OTP...' : 'Authenticating...';
+    status.textContent = '';
 
     try {
       const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
       const result = await res.json();
-
       btn.disabled = false;
-      $('spinner').style.display = 'none';
-      $('submitIcon').style.display = 'inline-flex';
+      btn.textContent = isSignup ? 'Continue with Email OTP' : 'Launch Workspace';
 
       if (result.success) {
         if (isSignup) {
-          // Open OTP Modal if signup initiated
-          $('otpModal').classList.add('open');
-          showStatus(result.message, 'success');
+          getEl('otpModal').classList.add('open');
+          status.className = 'status success';
+          status.textContent = result.message;
         } else {
-          localStorage.setItem('client_username', username);
-          localStorage.setItem('active_user_folder', result.folderPath || `/Kcrish_Data/Users/${username}/`);
+          localStorage.setItem('client_username', user);
+          localStorage.setItem('active_user_folder', result.folderPath || `/Kcrish_Data/Users/${user}/`);
           window.location.href = 'dashboard.html';
         }
       } else {
-        showStatus(result.message, 'error');
+        status.className = 'status error';
+        status.textContent = result.message;
       }
     } catch (err) {
       btn.disabled = false;
-      $('spinner').style.display = 'none';
-      $('submitIcon').style.display = 'inline-flex';
-      showStatus('Network error connecting to Apps Script.', 'error');
+      btn.textContent = isSignup ? 'Continue with Email OTP' : 'Launch Workspace';
+      status.className = 'status error';
+      status.textContent = 'Network error connecting to backend.';
     }
   });
 
   // OTP Verification Submit
-  $('otpForm').addEventListener('submit', async (e) => {
+  getEl('otpForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const otp = $('otpInput').value.trim();
-    const box = $('otpStatusBox');
-    box.style.display = 'flex';
+    const otp = getEl('otpInput').value.trim();
+    const otpStatus = getEl('otpStatus');
 
     if (otp.length !== 6) {
-      box.className = 'status-box error';
-      box.innerHTML = '<span>Please enter a valid 6-digit OTP.</span>';
+      otpStatus.className = 'status error';
+      otpStatus.textContent = 'Enter a valid 6-digit OTP.';
       return;
     }
 
@@ -424,30 +269,23 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
       const result = await res.json();
 
       if (result.success) {
-        box.className = 'status-box success';
-        box.innerHTML = `<span>${result.message}</span>`;
+        otpStatus.className = 'status success';
+        otpStatus.textContent = result.message;
         localStorage.setItem('client_username', result.username);
         localStorage.setItem('active_user_folder', result.folderPath);
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
       } else {
-        box.className = 'status-box error';
-        box.innerHTML = `<span>${result.message}</span>`;
+        otpStatus.className = 'status error';
+        otpStatus.textContent = result.message;
       }
     } catch (err) {
-      box.className = 'status-box error';
-      box.innerHTML = '<span>Verification failed. Try again.</span>';
+      otpStatus.className = 'status error';
+      otpStatus.textContent = 'Verification error.';
     }
   });
 
-  $('otpCloseBtn').addEventListener('click', () => { $('otpModal').classList.remove('open'); });
-
-  $('googleSsoBtn').addEventListener('click', () => {
-    localStorage.setItem('client_username', 'Google_User_Drive');
-    localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/Google_User_Drive/`);
-    window.location.href = 'dashboard.html';
-  });
-
-  $('tallySsoBtn').addEventListener('click', () => { showStatus('Workspace synchronization active.', 'success'); });
+  getEl('closeModal').addEventListener('click', () => { getEl('otpModal').classList.remove('open'); });
+  getEl('forgotLink').addEventListener('click', () => { alert('Password reset link sent to your registered email.'); });
 })();
 </script>
 </body>
