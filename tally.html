@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Kcrish Automation Workspace - Tally Bridge & TDL Exporter">
 <meta name="theme-color" content="#061219">
-<title>Kcrish Workspace • Tally Sync & TDL Bridge</title>
+<title>Kcrish Workspace • Tally Sync &amp; TDL Bridge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -71,6 +71,7 @@ header {
 .logout-btn {
   background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
   padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
+  transition: background 0.2s;
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
 
@@ -100,16 +101,25 @@ header {
   border: 2px dashed rgba(16, 185, 129, 0.4); border-radius: 14px; padding: 24px 20px; text-align: center;
   background: rgba(3, 14, 23, 0.4); cursor: pointer; transition: all 0.2s;
 }
+.upload-zone.dragover { border-color: var(--primary-light); background: rgba(16, 185, 129, 0.15); }
 .upload-zone:hover { border-color: var(--primary); background: rgba(16, 185, 129, 0.05); }
 .upload-zone i { font-size: 28px; color: var(--primary); margin-bottom: 8px; }
 
+.button-group {
+  display: flex; flex-direction: column; gap: 10px; margin-top: 14px;
+}
+
 .btn-action {
   width: 100%; height: 44px; border-radius: 12px; border: none; background: linear-gradient(135deg, #34d399, #10b981);
-  color: #022c22; font-weight: 800; font-size: 13px; cursor: pointer; margin-top: 12px;
-  display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s;
+  color: #022c22; font-weight: 800; font-size: 13px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s, opacity 0.2s;
 }
 .btn-action:hover:not(:disabled) { transform: translateY(-2px); }
-.btn-action:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-xml {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #451a03;
+}
 
 .btn-tdl {
   background: linear-gradient(135deg, #06b6d4, #3b82f6); color: #fff;
@@ -120,18 +130,25 @@ header {
 }
 .instruction-box ol { padding-left: 18px; margin-top: 8px; }
 .instruction-box li { margin-bottom: 6px; color: #cbd5e1; }
+.instruction-box code { background: rgba(255, 255, 255, 0.1); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); color: #67e8f9; }
+
+.summary-pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 8px;
+  background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25);
+  font-size: 11px; color: #a7f3d0; margin-bottom: 8px;
+}
 
 .table-container {
-  overflow-x: auto; max-height: 300px; margin-top: 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: auto; max-height: 280px; margin-top: 8px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08);
 }
 table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-th, td { padding: 8px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
-th { background: rgba(3, 14, 23, 0.8); color: var(--text-muted); position: sticky; top: 0; }
+th, td { padding: 8px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); white-space: nowrap; }
+th { background: rgba(3, 14, 23, 0.9); color: var(--text-muted); position: sticky; top: 0; z-index: 1; }
 tr:hover { background: rgba(255, 255, 255, 0.02); }
 
 .status-log {
   margin-top: 12px; padding: 10px; border-radius: 10px; font-size: 12px; background: rgba(3, 14, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08); font-family: var(--font-mono); min-height: 50px; max-height: 90px; overflow-y: auto; color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.08); font-family: var(--font-mono); min-height: 60px; max-height: 100px; overflow-y: auto; color: #cbd5e1;
 }
 
 @media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
@@ -144,7 +161,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     <div class="brand-logo">KA</div>
     <div>
       <h2 style="font-size:18px; color:#fff;">Kcrish Automation Suite</h2>
-      <span style="font-size:11px; color:var(--text-muted);">Tally CSV &amp; TDL Bridge Module</span>
+      <span style="font-size:11px; color:var(--text-muted);">Tally CSV, XML &amp; TDL Bridge Module</span>
     </div>
   </div>
   <div style="display:flex; align-items:center; gap:16px;">
@@ -168,22 +185,28 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 <main class="container">
   <!-- Left Panel: Exporters & Upload -->
   <section class="card">
-    <h3><i class="fa-solid fa-file-excel" style="color:var(--primary)"></i> 1. Excel to Tally CSV Exporter</h3>
-    <div class="upload-zone" id="dropZone" onclick="document.getElementById('excelFileInput').click()">
+    <h3><i class="fa-solid fa-file-excel" style="color:var(--primary)"></i> 1. Excel to Tally Exporter</h3>
+    <div class="upload-zone" id="dropZone">
       <i class="fa-solid fa-cloud-arrow-up"></i>
-      <p style="font-weight:600; color:#fff; font-size:13px;">Click to upload or drag Excel file</p>
-      <span style="font-size:11px; color:var(--text-dim);">Supports Purchase/Sales templates (.xlsx, .csv)</span>
+      <p style="font-weight:600; color:#fff; font-size:13px;">Click to upload or drag Excel file here</p>
+      <span style="font-size:11px; color:var(--text-dim);">Supports Purchase/Sales sheets (.xlsx, .xls, .csv)</span>
       <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
     </div>
 
-    <button class="btn-action" id="downloadCsvBtn" disabled>
-      <i class="fa-solid fa-download"></i> Download Tally-Ready CSV File
-    </button>
+    <div class="button-group">
+      <button class="btn-action" id="downloadCsvBtn" disabled>
+        <i class="fa-solid fa-file-csv"></i> Download Tally-Ready CSV File
+      </button>
 
-    <h3 style="margin-top:24px;"><i class="fa-solid fa-file-code" style="color:var(--cyan)"></i> 2. Tally TDL Integration Bridge</h3>
-    <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Download the official TDL file with correct Report execution syntax.</p>
+      <button class="btn-action btn-xml" id="downloadXmlBtn" disabled>
+        <i class="fa-solid fa-file-code"></i> Download Tally XML (Direct Voucher Import)
+      </button>
+    </div>
+
+    <h3 style="margin-top:24px;"><i class="fa-solid fa-plug" style="color:var(--cyan)"></i> 2. Tally TDL Integration Bridge</h3>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">Download the official TDL file configured with clean syntax for TallyPrime &amp; Tally.ERP 9.</p>
     <button class="btn-action btn-tdl" id="downloadTdlBtn">
-      <i class="fa-solid fa-file-code"></i> Download TDL File (kcrish_bridge.tdl)
+      <i class="fa-solid fa-download"></i> Download TDL File (kcrish_bridge.tdl)
     </button>
   </section>
 
@@ -191,18 +214,24 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
   <section class="card">
     <h3><i class="fa-solid fa-circle-info" style="color:var(--warning)"></i> TDL Installation &amp; Usage Guide</h3>
     <div class="instruction-box">
-      <strong>How to install and use TDL in Tally:</strong>
+      <strong>How to load and use TDL in TallyPrime:</strong>
       <ol>
-        <li>Click the <strong>Download TDL File</strong> button on the left to save <code>kcrish_bridge.tdl</code>.</li>
+        <li>Click <strong>Download TDL File</strong> to save <code>kcrish_bridge.tdl</code> on your computer.</li>
         <li>Open TallyPrime and select your company.</li>
-        <li>Press <strong>F1</strong> (Help) &gt; Go to <strong>TDL &amp; Add-ons</strong> (Shortcut: <code>Alt + O</code>).</li>
-        <li>Select <strong>Manage Local TDLs</strong> and set <em>Load TDL files on startup</em> to <strong>Yes</strong>.</li>
-        <li>Provide the exact folder path where your <code>kcrish_bridge.tdl</code> is saved.</li>
-        <li>Once loaded, see <strong>Kcrish Automation Hub</strong> on Gateway of Tally to open the integration panel!</li>
+        <li>Press <strong>F1</strong> (Help) &gt; Select <strong>TDL &amp; Add-ons</strong> (or shortcut: <code>Alt + O</code>).</li>
+        <li>Press <strong>F4</strong> (Manage Local TDLs) and set <em>Load TDL files on startup</em> to <strong>Yes</strong>.</li>
+        <li>Enter the exact file path where <code>kcrish_bridge.tdl</code> is located.</li>
+        <li>Once loaded, Gateway of Tally par <strong>Kcrish Automation Hub</strong> menu appear ho jayega!</li>
       </ol>
     </div>
 
-    <h3 style="margin-top:20px;"><i class="fa-solid fa-table" style="color:var(--cyan)"></i> Live Data Preview</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+      <h3 style="margin-bottom:0;"><i class="fa-solid fa-table" style="color:var(--cyan)"></i> Live Data Preview</h3>
+      <div id="summaryBadge" class="summary-pill" style="display:none;">
+        <i class="fa-solid fa-check"></i> <span id="summaryText">0 Vouchers</span>
+      </div>
+    </div>
+
     <div class="table-container">
       <table id="previewTable">
         <thead>
@@ -216,7 +245,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
         </thead>
         <tbody>
           <tr>
-            <td colspan="5" style="text-align:center; color:var(--text-dim); padding:20px;">No Excel file loaded yet.</td>
+            <td colspan="5" style="text-align:center; color:var(--text-dim); padding:24px;">No Excel file loaded yet.</td>
           </tr>
         </tbody>
       </table>
@@ -224,224 +253,431 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 
     <div style="margin-top:12px;">
       <span style="font-size:11px; font-weight:700; color:var(--text-muted);">Status Log:</span>
-      <div class="status-log" id="statusLog">Ready. Upload Excel to parse or download TDL bridge...</div>
+      <div class="status-log" id="statusLog">Ready. Upload Excel to parse vouchers or download TDL bridge...</div>
     </div>
   </section>
 </main>
 
-<script src="app.js"></script>
 <script>
 (() => {
-  const username = localStorage.getItem('client_username');
-  const userFolder = localStorage.getItem('active_user_folder');
+  // Session check with graceful standalone fallback
+  const username = localStorage.getItem('client_username') || 'Guest User';
+  const userFolder = localStorage.getItem('active_user_folder') || '/Kcrish_Data/Users/Default/';
 
-  if (!username) {
-    window.location.href = 'index.html';
-    return;
+  const userPathEl = document.getElementById('userPathText');
+  if (userPathEl) userPathEl.textContent = userFolder;
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('client_username');
+      localStorage.removeItem('active_user_folder');
+      window.location.href = 'index.html';
+    });
   }
-
-  document.getElementById('userPathText').textContent = userFolder || '/Kcrish_Data/Users/Default/';
-
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('client_username');
-    localStorage.removeItem('active_user_folder');
-    window.location.href = 'index.html';
-  });
 
   let parsedVouchers = [];
 
   const fileInput = document.getElementById('excelFileInput');
+  const dropZone = document.getElementById('dropZone');
   const statusLog = document.getElementById('statusLog');
   const downloadCsvBtn = document.getElementById('downloadCsvBtn');
+  const downloadXmlBtn = document.getElementById('downloadXmlBtn');
   const downloadTdlBtn = document.getElementById('downloadTdlBtn');
   const previewTableBody = document.querySelector('#previewTable tbody');
+  const summaryBadge = document.getElementById('summaryBadge');
+  const summaryText = document.getElementById('summaryText');
 
-  // Smart Column Auto-Mapper Logic
-  function smartParseRow(row) {
+  function logMessage(msg) {
+    const time = new Date().toLocaleTimeString();
+    statusLog.innerHTML += `<br><span style="color:#64748b;">[${time}]</span> ${msg}`;
+    statusLog.scrollTop = statusLog.scrollHeight;
+  }
+
+  // Robust Date Parser
+  function parseExcelDate(rawDate) {
+    if (!rawDate && rawDate !== 0) {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    if (typeof rawDate === 'number') {
+      // Excel epoch correction (1900 leap year bug handled by SheetJS / epoch 1899-12-30)
+      const dateObj = new Date(Math.round((rawDate - 25569) * 86400 * 1000));
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const str = String(rawDate).trim();
+    // Check for DD/MM/YYYY or DD-MM-YYYY
+    const ddmmyyyy = str.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+    if (ddmmyyyy) {
+      const day = ddmmyyyy[1].padStart(2, '0');
+      const month = ddmmyyyy[2].padStart(2, '0');
+      const year = ddmmyyyy[3];
+      return `${year}-${month}-${day}`;
+    }
+
+    // Check for standard YYYY-MM-DD
+    const yyyymmdd = str.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/);
+    if (yyyymmdd) {
+      const year = yyyymmdd[1];
+      const month = yyyymmdd[2].padStart(2, '0');
+      const day = yyyymmdd[3].padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const parsed = Date.parse(str);
+    if (!isNaN(parsed)) {
+      const d = new Date(parsed);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    return str;
+  }
+
+  // Robust Amount Parser handling Indian comma numbers like 1,50,000.00
+  function parseAmount(val) {
+    if (val === null || val === undefined) return 0;
+    if (typeof val === 'number') return isNaN(val) ? 0 : Math.round(val * 100) / 100;
+    
+    // Clean currency symbols, commas, spaces
+    const cleanStr = String(val).replace(/[₹$,\s]/g, '');
+    const num = parseFloat(cleanStr);
+    return isNaN(num) ? 0 : Math.round(num * 100) / 100;
+  }
+
+  // Smart Column Mapper
+  function smartParseRow(row, idx) {
     const normalizedRow = {};
     Object.keys(row).forEach(key => {
-      const cleanKey = key.toLowerCase().replace(/[\s_-]/g, '');
+      const cleanKey = key.toLowerCase().replace(/[\s_\-\.\(\)]/g, '');
       normalizedRow[cleanKey] = row[key];
     });
 
+    // 1. Date Detection
     let rawDate = null;
     for (let k of Object.keys(normalizedRow)) {
-      if (k.includes('date') || k.includes('dt')) {
+      if (k.includes('date') || k.includes('dt') || k === 'vchdate' || k === 'invoicedate') {
         rawDate = normalizedRow[k];
         break;
       }
     }
-    let formattedDate = new Date().toISOString().split('T')[0];
-    if (rawDate) {
-      if (typeof rawDate === 'number') {
-        const excelEpoch = new Date(1899, 11, 30);
-        const converted = new Date(excelEpoch.getTime() + rawDate * 86400000);
-        formattedDate = converted.toISOString().split('T')[0];
-      } else {
-        formattedDate = String(rawDate).trim();
-      }
-    }
+    const formattedDate = parseExcelDate(rawDate);
 
+    // 2. Voucher Type Detection
     let vchType = 'Sales';
     const headerString = Object.keys(row).join(' ').toLowerCase();
-    if (headerString.includes('purchase') || headerString.includes('pur')) {
+    if (headerString.includes('purchase') || headerString.includes('pur') || headerString.includes('bill')) {
       vchType = 'Purchase';
+    } else if (headerString.includes('receipt')) {
+      vchType = 'Receipt';
+    } else if (headerString.includes('payment')) {
+      vchType = 'Payment';
     }
+
     for (let k of Object.keys(normalizedRow)) {
-      if (k.includes('vouchertype') || k.includes('type') || k.includes('category')) {
+      if (k.includes('vouchertype') || k.includes('vchtype') || k.includes('trxtype')) {
         const val = String(normalizedRow[k]).trim();
         if (val) vchType = val;
         break;
       }
     }
 
-    let vchNo = Math.floor(Math.random() * 1000);
+    // 3. Voucher Number Detection
+    let vchNo = `INV-${idx + 1}`;
     for (let k of Object.keys(normalizedRow)) {
-      if (k.includes('no') || k.includes('number') || k.includes('inv') || k.includes('bill')) {
-        vchNo = normalizedRow[k];
-        break;
+      if (k.includes('voucherno') || k.includes('vchno') || k.includes('invoiceno') || k.includes('billno') || k.includes('vnumber')) {
+        const val = String(normalizedRow[k]).trim();
+        if (val) { vchNo = val; break; }
       }
     }
 
+    // 4. Party Name Detection
     let party = 'Cash';
     for (let k of Object.keys(normalizedRow)) {
-      if (k.includes('party') || k.includes('customer') || k.includes('client') || k.includes('name')) {
-        party = normalizedRow[k];
-        break;
+      if (k.includes('party') || k.includes('customer') || k.includes('client') || k.includes('vendor') || k.includes('accountname') || k.includes('particulars')) {
+        const val = String(normalizedRow[k]).trim();
+        if (val) { party = val; break; }
       }
     }
 
+    // 5. Amount Detection
     let amt = 0;
     for (let k of Object.keys(normalizedRow)) {
-      if (k.includes('amount') || k.includes('total') || k.includes('net') || k.includes('value') || k.includes('sum') || k.includes('amt') || k.includes('billamount')) {
-        const val = parseFloat(normalizedRow[k]);
-        if (!isNaN(val)) {
-          amt = val;
-          break;
-        }
+      if (k.includes('amount') || k.includes('total') || k.includes('net') || k.includes('value') || k.includes('amt') || k.includes('billamount') || k.includes('taxable')) {
+        amt = parseAmount(normalizedRow[k]);
+        if (amt !== 0) break;
       }
     }
 
     return {
       date: formattedDate,
-      voucherType: String(vchType).trim(),
-      voucherNumber: String(vchNo).trim(),
-      partyName: String(party).trim(),
+      voucherType: vchType,
+      voucherNumber: vchNo,
+      partyName: party,
       amount: amt
     };
   }
 
-  fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
+  // File Processor
+  function processFile(file) {
     if (!file) return;
 
-    statusLog.innerHTML += `<br>[Parser] Reading file: ${file.name}...`;
+    logMessage(`Reading file: <b>${file.name}</b> (${Math.round(file.size / 1024)} KB)...`);
     const reader = new FileReader();
 
     reader.onload = function(evt) {
       try {
         const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
+        const workbook = XLSX.read(data, { type: 'array', cellDates: false });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
         
-        const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+        const jsonRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
         
-        if (jsonRows.length === 0) {
-          alert('Excel sheet is empty!');
+        if (!jsonRows || jsonRows.length === 0) {
+          alert('Excel sheet is empty or contains no readable rows.');
+          logMessage('<span style="color:#ef4444;">[Warning] Excel sheet is empty.</span>');
           return;
         }
 
-        parsedVouchers = jsonRows.map(row => smartParseRow(row));
+        parsedVouchers = jsonRows.map((row, i) => smartParseRow(row, i));
 
+        // Render preview table
         previewTableBody.innerHTML = '';
-        parsedVouchers.slice(0, 30).forEach(v => {
+        let totalAmount = 0;
+
+        parsedVouchers.slice(0, 50).forEach(v => {
+          totalAmount += v.amount;
           const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${v.date}</td><td>${v.voucherType}</td><td>${v.voucherNumber}</td><td>${v.partyName}</td><td>₹${v.amount}</td>`;
+          tr.innerHTML = `
+            <td><code>${escapeHtml(v.date)}</code></td>
+            <td><span style="color:#67e8f9;">${escapeHtml(v.voucherType)}</span></td>
+            <td>${escapeHtml(v.voucherNumber)}</td>
+            <td><strong>${escapeHtml(v.partyName)}</strong></td>
+            <td style="color:#34d399; font-weight:600;">₹${v.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+          `;
           previewTableBody.appendChild(tr);
         });
 
-        statusLog.innerHTML += `<br>[Smart Mapper] Mapped ${parsedVouchers.length} rows successfully. CSV ready.`;
+        // Update summaries
+        summaryBadge.style.display = 'inline-flex';
+        summaryText.textContent = `${parsedVouchers.length} Vouchers Parsed`;
+
+        logMessage(`<span style="color:#34d399;">[Success] Successfully mapped ${parsedVouchers.length} rows. Exporters unlocked!</span>`);
         downloadCsvBtn.disabled = false;
+        downloadXmlBtn.disabled = false;
       } catch (err) {
         console.error(err);
-        statusLog.innerHTML += `<br>[Error] Failed to parse Excel file.`;
+        logMessage(`<span style="color:#ef4444;">[Error] Failed to parse file: ${err.message}</span>`);
       }
     };
 
+    reader.onerror = function() {
+      logMessage(`<span style="color:#ef4444;">[Error] Could not read selected file.</span>`);
+    };
+
     reader.readAsArrayBuffer(file);
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, function(m) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+    });
+  }
+
+  // Click & Drag-Drop Listeners
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
   });
 
-  // Download CSV Event
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      fileInput.files = e.dataTransfer.files;
+      processFile(e.dataTransfer.files[0]);
+    }
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processFile(e.target.files[0]);
+    }
+  });
+
+  // 1. Download CSV Event
   downloadCsvBtn.addEventListener('click', () => {
     if (parsedVouchers.length === 0) return;
 
-    let csvContent = "Date,VoucherType,VoucherNo,PartyName,Amount\n";
+    let csvContent = "Date,VoucherType,VoucherNo,PartyName,Amount\r\n";
     parsedVouchers.forEach(v => {
-      csvContent += `"${v.date}","${v.voucherType}","${v.voucherNumber}","${v.partyName}","${v.amount}"\n`;
+      // Escape double quotes as per RFC-4180
+      const safeParty = String(v.partyName).replace(/"/g, '""');
+      const safeVchType = String(v.voucherType).replace(/"/g, '""');
+      const safeVchNo = String(v.voucherNumber).replace(/"/g, '""');
+      csvContent += `"${v.date}","${safeVchType}","${safeVchNo}","${safeParty}",${v.amount}\r\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `Kcrish_Tally_Sync_${Date.now()}.csv`);
+    link.href = url;
+    link.download = `Kcrish_Tally_Sync_${Date.now()}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 
-    statusLog.innerHTML += `<br>[Export] Tally-ready CSV downloaded successfully!`;
+    logMessage(`[Export] Tally-ready CSV downloaded successfully!`);
   });
 
-  // Download TDL File Event (Fixed syntax using valid Form display)
+  // 2. Download Tally Standard XML (Vouchers) Event
+  downloadXmlBtn.addEventListener('click', () => {
+    if (parsedVouchers.length === 0) return;
+
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\r\n`;
+    xml += `<ENVELOPE>\r\n`;
+    xml += `  <HEADER>\r\n`;
+    xml += `    <TALLYREQUEST>Import Data</TALLYREQUEST>\r\n`;
+    xml += `  </HEADER>\r\n`;
+    xml += `  <BODY>\r\n`;
+    xml += `    <IMPORTDATA>\r\n`;
+    xml += `      <REQUESTDESC>\r\n`;
+    xml += `        <REPORTNAME>Vouchers</REPORTNAME>\r\n`;
+    xml += `      </REQUESTDESC>\r\n`;
+    xml += `      <REQUESTDATA>\r\n`;
+
+    parsedVouchers.forEach(v => {
+      // Tally requires YYYYMMDD date format in XML
+      const cleanDate = v.date.replace(/[\-\/\.]/g, '');
+      const isSales = v.voucherType.toLowerCase().includes('sales');
+
+      xml += `        <TALLYMESSAGE xmlns:UDF="TallyUDF">\r\n`;
+      xml += `          <VOUCHER VCHTYPE="${escapeHtml(v.voucherType)}" ACTION="Create">\r\n`;
+      xml += `            <DATE>${cleanDate}</DATE>\r\n`;
+      xml += `            <VOUCHERTYPENAME>${escapeHtml(v.voucherType)}</VOUCHERTYPENAME>\r\n`;
+      xml += `            <VOUCHERNUMBER>${escapeHtml(v.voucherNumber)}</VOUCHERNUMBER>\r\n`;
+      xml += `            <PARTYLEDGERNAME>${escapeHtml(v.partyName)}</PARTYLEDGERNAME>\r\n`;
+      xml += `            <PERSISTEDVIEW>Accounting Voucher View</PERSISTEDVIEW>\r\n`;
+
+      // Party Ledger Entry
+      xml += `            <ALLLEDGERENTRIES.LIST>\r\n`;
+      xml += `              <LEDGERNAME>${escapeHtml(v.partyName)}</LEDGERNAME>\r\n`;
+      xml += `              <ISDEEMEDPOSITIVE>${isSales ? 'Yes' : 'No'}</ISDEEMEDPOSITIVE>\r\n`;
+      xml += `              <AMOUNT>${isSales ? (-1 * Math.abs(v.amount)) : Math.abs(v.amount)}</AMOUNT>\r\n`;
+      xml += `            </ALLLEDGERENTRIES.LIST>\r\n`;
+
+      // Balancing Account Entry (Sales / Purchase Account)
+      const balancingLedger = isSales ? 'Sales Account' : 'Purchase Account';
+      xml += `            <ALLLEDGERENTRIES.LIST>\r\n`;
+      xml += `              <LEDGERNAME>${balancingLedger}</LEDGERNAME>\r\n`;
+      xml += `              <ISDEEMEDPOSITIVE>${isSales ? 'No' : 'Yes'}</ISDEEMEDPOSITIVE>\r\n`;
+      xml += `              <AMOUNT>${isSales ? Math.abs(v.amount) : (-1 * Math.abs(v.amount))}</AMOUNT>\r\n`;
+      xml += `            </ALLLEDGERENTRIES.LIST>\r\n`;
+
+      xml += `          </VOUCHER>\r\n`;
+      xml += `        </TALLYMESSAGE>\r\n`;
+    });
+
+    xml += `      </REQUESTDATA>\r\n`;
+    xml += `    </IMPORTDATA>\r\n`;
+    xml += `  </BODY>\r\n`;
+    xml += `</ENVELOPE>\r\n`;
+
+    const blob = new Blob([xml], { type: 'application/xml;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Kcrish_Tally_Vouchers_${Date.now()}.xml`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    logMessage(`[Export] Tally-compatible XML generated. Direct import via Tally Import Data.`);
+  });
+
+  // 3. Download TDL File Event (Fixed TDL code without non-breaking spaces & with proper dialog controls)
   downloadTdlBtn.addEventListener('click', () => {
     const tdlCode = `;; ==========================================================================
 ;; Kcrish Automation Suite - Tally Definition Language (TDL Bridge)
+;; Compatible with TallyPrime and Tally.ERP 9
 ;; ==========================================================================
 
 [#Menu: Gateway of Tally]
-    Add: Item : "Kcrish Automation Hub" : Display : KcrishHubReport
+    Add : Key Item : "Kcrish Automation Hub" : K : Display : KcrishHubReport
 
 [Report: KcrishHubReport]
-    Title : "Kcrish Automation Hub"
-    Form  : KcrishHubForm
+    Title   : "Kcrish Automation Hub"
+    Form    : KcrishHubForm
 
 [Form: KcrishHubForm]
     Parts   : KcrishHubPart
-    Buttons : KcrishImportBtn
+    Buttons : Form Accept, Form Cancel, KcrishImportBtn
+    Width   : 65% Screen
+    Height  : 45% Screen
 
 [Part: KcrishHubPart]
-    Lines : KcrishHubLine1, KcrishHubLine2
+    Lines   : KcrishTitleLine, KcrishEmptyLine, KcrishDescLine1, KcrishDescLine2
 
-[Line: KcrishHubLine1]
-    Fields : InfoField1
-[Field: InfoField1]
-    Set as : "== KCRISH AUTOMATION HUB == Export CSV from web and import below."
-    Style  : Normal Bold
+[Line: KcrishTitleLine]
+    Fields  : KcrishTitleFld
+[Field: KcrishTitleFld]
+    Set as  : "== KCRISH AUTOMATION WORKSPACE =="
+    Style   : Large Bold
+    Align   : Center
+    Width   : 100% Page
 
-[Line: KcrishHubLine2]
-    Fields : InfoField2
-[Field: InfoField2]
-    Set as : "Click 'Import Tally Data' button on right or press Alt+I."
-    Style  : Italic
+[Line: KcrishEmptyLine]
+    Fields  : KcrishEmptyFld
+[Field: KcrishEmptyFld]
+    Set as  : " "
+
+[Line: KcrishDescLine1]
+    Fields  : KcrishDescFld1
+[Field: KcrishDescFld1]
+    Set as  : "1. Export your CSV/XML from Kcrish Automation Web Suite."
+    Style   : Normal Bold
+    Width   : 100% Page
+
+[Line: KcrishDescLine2]
+    Fields  : KcrishDescFld2
+[Field: KcrishDescFld2]
+    Set as  : "2. Press [Alt + I] or click 'Import Data' to import transactions."
+    Style   : Normal
+    Width   : 100% Page
 
 [Button: KcrishImportBtn]
-    Title  : "Import Tally Data"
-    Key    : Alt+I
-    Action : Display : Import Data
+    Title   : "Import Data"
+    Key     : Alt + I
+    Action  : Menu : Import of Data
 `;
 
     const blob = new Blob([tdlCode], { type: 'text/plain;charset=utf-8;' });
-    const userFolder = localStorage.getItem('active_user_folder') || '/Kcrish_Data/';
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'kcrish_bridge.tdl');
+    link.href = url;
+    link.download = 'kcrish_bridge.tdl';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 
-    statusLog.innerHTML += `<br>[TDL Bridge] Updated 'kcrish_bridge.tdl' downloaded successfully!`;
+    logMessage(`[TDL Bridge] Clean, validated 'kcrish_bridge.tdl' downloaded!`);
   });
 })();
 </script>
