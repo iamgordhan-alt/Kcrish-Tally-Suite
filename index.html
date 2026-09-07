@@ -1128,6 +1128,7 @@ h1 {
 
   let isSignup = false;
   const userKey = 'kcrish_remembered_username';
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq7Ss9RPffs5IVlVkiItHJh3dZM3o0fW0XpW4TNefK5puQ8xJ33oXW0Q/exec";
   const CLIENT_ID = "306902298167-6o9o8o84955pu92k5k07u5al7djhp6op.apps.googleusercontent.com";
   const SCOPES = "https://www.googleapis.com/auth/drive.file";
   let tokenClient;
@@ -1284,27 +1285,33 @@ h1 {
     document.querySelectorAll('.form-input').forEach(i => i.classList.remove('error'));
   };
 
-  // Main Form Validation and Submission (Manual Login / Signup)
-  $('form').addEventListener('submit', (e) => {
+  // Main Form Validation and Submission (Connected with Google Apps Script Backend)
+  $('form').addEventListener('submit', async (e) => {
     e.preventDefault();
     clearErrors();
 
     const username = $('user').value.trim();
     const password = $('pass').value;
 
+    let payload = {
+      action: isSignup ? 'signup' : 'login',
+      username: username,
+      password: password
+    };
+
     if (isSignup) {
-      const fullName = $('fullName').value.trim();
-      const email = $('signupEmail').value.trim();
+      payload.fullName = $('fullName').value.trim();
+      payload.email = $('signupEmail').value.trim();
       const confirmPass = $('confirmPass').value;
       const termsAccepted = $('rememberMe').checked;
 
-      if (!fullName) {
+      if (!payload.fullName) {
         showStatus('Please enter your full name.', 'error');
         $('fullName').classList.add('error');
         $('fullName').focus();
         return;
       }
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (!payload.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
         showStatus('Please enter a valid work email address.', 'error');
         $('signupEmail').classList.add('error');
         $('signupEmail').focus();
@@ -1347,33 +1354,46 @@ h1 {
       }
     }
 
-    // Remember Me logic
-    if (!isSignup) {
-      try {
-        if ($('rememberMe').checked) {
-          localStorage.setItem(userKey, username);
-        } else {
-          localStorage.removeItem(userKey);
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-
     // Set Loading State
     const submitBtn = $('submitBtn');
     submitBtn.disabled = true;
     $('spinner').style.display = 'block';
     $('submitIcon').style.display = 'none';
-    $('submitLabel').textContent = isSignup ? 'Creating Workspace...' : 'Authenticating...';
+    $('submitLabel').textContent = isSignup ? 'Saving to Drive...' : 'Authenticating...';
     hideStatus();
 
-    // Save session and redirect to dashboard smoothly
-    setTimeout(() => {
-      localStorage.setItem('client_username', username || 'Ashok Gitiyal');
-      localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${(username || 'Ashok_Gitiyal').replace(/\s+/g, '_')}/`);
-      window.location.href = 'dashboard.html';
-    }, 800);
+    try {
+      // Send data to Google Apps Script Web App
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      const result = await res.json();
+
+      submitBtn.disabled = false;
+      $('spinner').style.display = 'none';
+      $('submitIcon').style.display = 'inline-flex';
+      $('submitLabel').textContent = isSignup ? 'Create Workspace Account' : 'Sign In Securely';
+
+      if (result.success) {
+        showStatus(result.message, 'success');
+        if (!isSignup || result.message.includes("success")) {
+          localStorage.setItem('client_username', username);
+          localStorage.setItem('active_user_folder', result.folderPath || `/Kcrish_Data/Users/${username}/`);
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 800);
+        }
+      } else {
+        showStatus(result.message || 'Operation failed. Please try again.', 'error');
+      }
+    } catch (err) {
+      submitBtn.disabled = false;
+      $('spinner').style.display = 'none';
+      $('submitIcon').style.display = 'inline-flex';
+      $('submitLabel').textContent = isSignup ? 'Create Workspace Account' : 'Sign In Securely';
+      showStatus('Network error. Check connection or Apps Script permissions.', 'error');
+    }
   });
 
   // Modal Dialog Workflow (Forgot Password)
