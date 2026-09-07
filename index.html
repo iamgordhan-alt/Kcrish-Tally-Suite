@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kcrish Tally Suite - Login</title>
+  <title>Kcrish Excel to Tally Automation - Portal</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
     :root {
-      --primary: #5835df;
-      --primary-hover: #4729c6;
+      --primary-green: #0d7a44;
+      --primary-green-hover: #0a6337;
       --card-bg: #ffffff;
-      --text: #1e1b4b;
+      --text-dark: #111827;
       --text-muted: #6b7280;
-      --border: #e5e7eb;
+      --border-color: #e5e7eb;
       --radius: 16px;
     }
 
@@ -23,157 +23,296 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #1e1b4b, #312e81, #4c1d95);
-      margin: 0; 
+      background: #f8fafc;
+      margin: 0;
       min-height: 100vh;
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      padding: 20px; 
-      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: var(--text-dark);
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
-    /* BACKGROUND BLURRED LOGO WATERMARK */
+    /* BACKGROUND WATERMARK USING LOCAL LOGO */
     .bg-watermark {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 500px;
-      height: 500px;
+      width: 700px;
+      height: 700px;
       background-image: url('logo.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      filter: blur(40px);
-      opacity: 0.12;
+      filter: blur(60px);
+      opacity: 0.08;
       z-index: 0;
       pointer-events: none;
     }
 
-    .auth-card {
+    .portal-container {
       position: relative;
       z-index: 1;
-      width: 100%; 
-      max-width: 440px; 
+      width: 100%;
+      max-width: 950px;
       background: var(--card-bg);
-      padding: 40px 36px; 
       border-radius: var(--radius);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--border); 
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border-color);
+      display: flex;
+      overflow: hidden;
+    }
+
+    .left-pane {
+      flex: 1;
+      background: #fafafa;
+      border-right: 1px solid var(--border-color);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
     }
 
-    .brand-logo-container {
-      margin-bottom: 20px;
-    }
-    .brand-logo-img {
-      width: 64px;
-      height: 64px;
-      object-fit: contain;
+    .logo-box {
+      background: white;
+      padding: 24px;
       border-radius: 12px;
-      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-color);
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .brand-title {
-      font-size: 20px;
+
+    .logo-img {
+      max-width: 100%;
+      height: auto;
+      max-height: 240px;
+      object-fit: contain;
+    }
+
+    .right-pane {
+      flex: 1;
+      padding: 40px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+    .badge span { width: 6px; height: 6px; background: #059669; border-radius: 50%; }
+
+    h2 {
+      font-size: 24px;
       font-weight: 700;
-      color: var(--text);
-      margin: 0 0 4px 0;
+      color: var(--text-dark);
+      margin: 0 0 6px 0;
     }
-    .brand-subtitle {
-      font-size: 13px;
+
+    .subtitle {
+      font-size: 12px;
       color: var(--text-muted);
-      margin: 0 0 24px 0;
+      margin: 0 0 28px 0;
+      line-height: 1.5;
     }
 
-    .social-btns { display: flex; gap: 12px; margin-bottom: 20px; }
-    .btn-social {
-      flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 12px;
-      background: white; cursor: pointer; font-size: 16px; display: flex; justify-content: center; align-items: center;
-      transition: background 0.2s;
+    .input-group {
+      text-align: left;
+      margin-bottom: 18px;
     }
-    .btn-social:hover { background: #f9fafb; border-color: #d1d5db; }
-    .btn-social.google { color: #ea4335; }
-    .btn-social.facebook { background: #1877f2; color: white; border-color: #1877f2; }
 
-    .divider {
-      display: flex; align-items: center; text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 20px;
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 6px;
     }
-    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
-    .divider::before { margin-right: 12px; } .divider::after { margin-left: 12px; }
 
-    .input-field-group { text-align: left; margin-bottom: 16px; }
-    .input-field-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
-    .input-wrapper { position: relative; }
+    .input-wrapper {
+      position: relative;
+    }
+
     .input-wrapper input {
-      width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; background: #fff;
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      background: #fff;
+      color: var(--text-dark);
+      transition: border-color 0.2s;
     }
-    .input-wrapper input:focus { border-color: var(--primary); }
-    .toggle-password { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); cursor: pointer; }
 
-    .forgot-link-box { text-align: left; margin-bottom: 20px; }
-    .forgot-link-box a { color: var(--primary); text-decoration: none; font-size: 13px; font-weight: 600; }
-    .forgot-link-box a:hover { text-decoration: underline; }
+    .input-wrapper input:focus { border-color: var(--primary-green); }
 
-    .btn-main {
-      width: 100%; background: var(--primary); color: white; border: none; padding: 13px;
-      border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 20px;
+    .input-wrapper i.icon-prefix {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .input-wrapper i.toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+
+    .form-options label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .form-options input[type="checkbox"] { accent-color: var(--primary-green); cursor: pointer; }
+
+    .form-options a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .form-options a:hover { color: var(--primary-green); text-decoration: underline; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary-green);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
       transition: background 0.2s;
+      box-shadow: 0 4px 10px rgba(13, 122, 68, 0.2);
     }
-    .btn-main:hover { background: var(--primary-hover); }
+    .btn-submit:hover { background: var(--primary-green-hover); }
 
-    .auth-footer-links { font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px; }
-    .auth-footer-links a { color: var(--primary); text-decoration: none; font-weight: 600; }
-    .auth-footer-links a:hover { text-decoration: underline; }
+    .divider-auth {
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      line-height: 0.1em;
+      margin: 28px 0 20px 0;
+      font-size: 11px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .divider-auth span { background: #fff; padding: 0 10px; }
+
+    .footer-security {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .footer-security .secure-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    @media(max-width: 768px) {
+      .portal-container { flex-direction: column; }
+      .left-pane { padding: 30px 20px; }
+      .right-pane { padding: 30px 20px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- BACKGROUND BLURRED LOGO WATERMARK -->
+  <!-- Background Watermark -->
   <div class="bg-watermark"></div>
 
-<div class="auth-card">
-  <div class="brand-logo-container">
-    <img src="logo.png" alt="Logo" class="brand-logo-img" onerror="this.style.display='none'" />
-    <h1 class="brand-title">Kcrish Tally Suite</h1>
-    <p class="brand-subtitle">Sign in to your automation portal</p>
-  </div>
-
-  <div class="social-btns">
-    <button class="btn-social google" onclick="handleGoogleLogin()" title="Sign in with Google"><i class="fa-brands fa-google"></i></button>
-    <button class="btn-social facebook" onclick="alert('Facebook login feature.')" title="Sign in with Facebook"><i class="fa-brands fa-facebook-f"></i></button>
-  </div>
-
-  <div class="divider">or sign in with email</div>
-
-  <div class="input-field-group">
-    <label>Email address</label>
-    <div class="input-wrapper">
-      <input type="email" id="loginEmail" placeholder="name@example.com" />
+  <div class="portal-container">
+    
+    <!-- LEFT PANE: OFFICIAL LOGO -->
+    <div class="left-pane">
+      <div class="logo-box">
+        <img src="logo.png" alt="Kcrish Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/200?text=Kcrish+Logo'" />
+      </div>
     </div>
-  </div>
 
-  <div class="input-field-group" style="margin-bottom: 8px;">
-    <label>Password</label>
-    <div class="input-wrapper">
-      <input type="password" id="loginPassword" placeholder="••••••••" />
-      <i class="fa-solid fa-eye toggle-password" id="togglePassBtn" onclick="togglePasswordVisibility()"></i>
+    <!-- RIGHT PANE: LOGIN FORM & GOOGLE SYNC -->
+    <div class="right-pane">
+      <div class="badge"><span></span> Secure Business Portal</div>
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to continue to your Kcrish Excel to Tally Automation workspace.</p>
+
+      <div class="input-group">
+        <label>Username / Email</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-user icon-prefix"></i>
+          <input type="text" id="loginEmail" placeholder="Enter your username or email" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-lock icon-prefix"></i>
+          <input type="password" id="loginPassword" placeholder="Enter your password" />
+          <i class="fa-solid fa-eye toggle-password" id="togglePassBtn" onclick="togglePasswordVisibility()"></i>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label><input type="checkbox" /> Remember me</label>
+        <a href="#" onclick="alert('Password reset instructions sent.'); return false;">Forgot password?</a>
+      </div>
+
+      <button class="btn-submit" onclick="handleGoogleLogin()">Sign in to Portal</button>
+
+      <div class="divider-auth"><span>Authorized Access</span></div>
+
+      <div class="footer-security">
+        <div class="secure-row"><i class="fa-solid fa-shield-halved" style="color:#059669;"></i> Secure login • Your account is protected</div>
+        <div>© 2026 Kcrish • Excel to Tally Automation</div>
+      </div>
     </div>
-  </div>
 
-  <div class="forgot-link-box">
-    <a href="#" onclick="alert('Password reset instructions sent.'); return false;">Forgot password?</a>
   </div>
-
-  <button class="btn-main" onclick="handleGoogleLogin()">Log in</button>
-
-  <div class="auth-footer-links">
-    <a href="#" onclick="alert('Please use Google Sign-in to link your personal Drive.'); return false;">Can't Access Your Account?</a>
-    <div>Don't have an account? <a href="signup.html">Sign Up</a></div>
-  </div>
-</div>
 
 <script>
 const CLIENT_ID = "306902298167-6o9o8o84955pu92k5k07u5al7djhp6op.apps.googleusercontent.com";
@@ -196,8 +335,8 @@ window.onload = function() {
         return;
       }
       localStorage.setItem("google_access_token", response.access_token);
-      let emailVal = document.getElementById("loginEmail").value || "Google User";
-      localStorage.setItem("client_username", emailVal);
+      let userVal = document.getElementById("loginEmail").value.trim() || "Kcrish User";
+      localStorage.setItem("client_username", userVal);
       window.location.href = "dashboard.html";
     },
   });
