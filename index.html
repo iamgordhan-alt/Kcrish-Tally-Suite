@@ -10,67 +10,63 @@
   
   <style>
     :root {
-      --primary-green: #0d7a44;
-      --primary-green-hover: #0a6337;
-      --card-bg: #ffffff;
-      --text-dark: #111827;
-      --text-muted: #6b7280;
-      --border-color: #e5e7eb;
-      --radius: 16px;
+      --primary-green: #10b981;
+      --primary-green-hover: #059669;
+      --card-glass: rgba(30, 41, 59, 0.7);
+      --border-glass: rgba(255, 255, 255, 0.12);
+      --text-dark: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius: 20px;
     }
 
     * { box-sizing: border-box; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #f8fafc;
+      background-color: #090d16;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 40%);
+      background-attachment: fixed;
       margin: 0;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 24px;
       color: var(--text-dark);
       position: relative;
       overflow-x: hidden;
     }
 
-    /* BACKGROUND WATERMARK USING LOCAL LOGO */
-    .bg-watermark {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px;
-      height: 700px;
-      background-image: url('logo.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      filter: blur(60px);
-      opacity: 0.08;
-      z-index: 0;
-      pointer-events: none;
-    }
-
+    /* ANIMATED PORTAL CONTAINER */
     .portal-container {
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 950px;
-      background: var(--card-bg);
+      max-width: 1050px;
+      background: var(--card-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-radius: var(--radius);
-      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.08);
-      border: 1px solid var(--border-color);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-glass);
       display: flex;
       overflow: hidden;
+      animation: pageSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
+    @keyframes pageSlideUp {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* LEFT PANE (LOGO SHOWCASE) */
     .left-pane {
       flex: 1;
-      background: #fafafa;
-      border-right: 1px solid var(--border-color);
-      padding: 40px;
+      background: rgba(15, 23, 42, 0.4);
+      border-right: 1px solid var(--border-glass);
+      padding: 48px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -79,16 +75,18 @@
     }
 
     .logo-box {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: transform 0.4s ease;
     }
+    .logo-box:hover { transform: scale(1.03); }
 
     .logo-img {
       max-width: 100%;
@@ -97,9 +95,10 @@
       object-fit: contain;
     }
 
+    /* RIGHT PANE (LOGIN FORM) */
     .right-pane {
       flex: 1;
-      padding: 40px 48px;
+      padding: 48px 56px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -108,27 +107,28 @@
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: #ecfdf5;
-      color: #065f46;
-      padding: 4px 10px;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       width: fit-content;
+      border: 1px solid rgba(16, 185, 129, 0.3);
     }
-    .badge span { width: 6px; height: 6px; background: #059669; border-radius: 50%; }
+    .badge span { width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; }
 
     h2 {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 700;
-      color: var(--text-dark);
+      color: #ffffff;
       margin: 0 0 6px 0;
     }
 
     .subtitle {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--text-muted);
       margin: 0 0 28px 0;
       line-height: 1.5;
@@ -136,15 +136,15 @@
 
     .input-group {
       text-align: left;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .input-group label {
       display: block;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
-      color: var(--text-dark);
-      margin-bottom: 6px;
+      color: #e2e8f0;
+      margin-bottom: 8px;
     }
 
     .input-wrapper {
@@ -153,17 +153,21 @@
 
     .input-wrapper input {
       width: 100%;
-      padding: 11px 14px 11px 38px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 13px;
+      padding: 13px 14px 13px 40px;
+      border: 1px solid var(--border-glass);
+      border-radius: 12px;
+      font-size: 14px;
       outline: none;
-      background: #fff;
-      color: var(--text-dark);
-      transition: border-color 0.2s;
+      background: rgba(15, 23, 42, 0.6);
+      color: #ffffff;
+      transition: all 0.3s ease;
     }
 
-    .input-wrapper input:focus { border-color: var(--primary-green); }
+    .input-wrapper input:focus { 
+      border-color: var(--primary-green); 
+      background: rgba(15, 23, 42, 0.9);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); 
+    }
 
     .input-wrapper i.icon-prefix {
       position: absolute;
@@ -171,7 +175,7 @@
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .input-wrapper i.toggle-password {
@@ -181,89 +185,93 @@
       transform: translateY(-50%);
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 13px;
+      font-size: 14px;
+      transition: color 0.2s;
     }
+    .input-wrapper i.toggle-password:hover { color: #ffffff; }
 
     .form-options {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
+      font-size: 13px;
       margin-bottom: 24px;
     }
 
     .form-options label {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       color: var(--text-muted);
       cursor: pointer;
     }
 
-    .form-options input[type="checkbox"] { accent-color: var(--primary-green); cursor: pointer; }
+    .form-options input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary-green); cursor: pointer; }
 
     .form-options a {
-      color: var(--text-muted);
+      color: #60a5fa;
       text-decoration: none;
       font-weight: 500;
+      transition: color 0.2s;
     }
-    .form-options a:hover { color: var(--primary-green); text-decoration: underline; }
+    .form-options a:hover { color: #93c5fd; text-decoration: underline; }
 
     .btn-submit {
       width: 100%;
-      background: var(--primary-green);
+      background: linear-gradient(135deg, #10b981, #047857);
       color: white;
       border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 14px;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
-      box-shadow: 0 4px 10px rgba(13, 122, 68, 0.2);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
     }
-    .btn-submit:hover { background: var(--primary-green-hover); }
+    .btn-submit:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45);
+      filter: brightness(1.1); 
+    }
 
     .divider-auth {
       text-align: center;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-glass);
       line-height: 0.1em;
-      margin: 28px 0 20px 0;
+      margin: 32px 0 22px 0;
       font-size: 11px;
-      color: #9ca3af;
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
     }
-    .divider-auth span { background: #fff; padding: 0 10px; }
+    .divider-auth span { background: #1e293b; padding: 0 12px; border-radius: 4px; }
 
     .footer-security {
       text-align: center;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-muted);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
     .footer-security .secure-row {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 6px;
-      color: #374151;
+      gap: 8px;
+      color: #cbd5e1;
       font-weight: 500;
     }
 
     @media(max-width: 768px) {
       .portal-container { flex-direction: column; }
-      .left-pane { padding: 30px 20px; }
-      .right-pane { padding: 30px 20px; }
+      .left-pane { padding: 36px 20px; }
+      .right-pane { padding: 36px 24px; }
     }
   </style>
 </head>
 <body>
-
-  <!-- Background Watermark -->
-  <div class="bg-watermark"></div>
 
   <div class="portal-container">
     
@@ -307,7 +315,7 @@
       <div class="divider-auth"><span>Authorized Access</span></div>
 
       <div class="footer-security">
-        <div class="secure-row"><i class="fa-solid fa-shield-halved" style="color:#059669;"></i> Secure login • Your account is protected</div>
+        <div class="secure-row"><i class="fa-solid fa-shield-halved" style="color:#34d399;"></i> Secure login • Your account is protected</div>
         <div>© 2026 Kcrish • Excel to Tally Automation</div>
       </div>
     </div>
