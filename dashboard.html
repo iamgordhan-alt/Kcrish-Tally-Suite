@@ -26,12 +26,14 @@
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg);
-      margin: 0; padding: 30px 16px; color: var(--text);
+      margin: 0; padding: 20px 24px; color: var(--text);
     }
-    .app-container { max-width: 1000px; margin: 0 auto; }
+    /* FULL SCREEN WIDTH FIT */
+    .app-container { width: 100%; max-width: 100%; margin: 0 auto; }
+    
     .dashboard-header {
-      background: #1e293b; color: white; padding: 20px 24px; border-radius: var(--radius);
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
+      background: #1e293b; color: white; padding: 20px 28px; border-radius: var(--radius);
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
     }
     .dashboard-header h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px 0; }
     .dashboard-header p { margin: 0; font-size: 12px; color: #94a3b8; }
@@ -46,10 +48,12 @@
       padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;
     }
     .btn-logout:hover { background: #dc2626; color: white; }
-    .card { background: var(--card-bg); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; }
-    .tab-bar { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+    
+    .card { background: var(--card-bg); border-radius: var(--radius); border: 1px solid var(--border); padding: 28px; width: 100%; }
+    
+    .tab-bar { display: flex; gap: 6px; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
     .tab-btn {
-      padding: 10px 14px; font-size: 12px; font-weight: 600; background: transparent; border: none;
+      padding: 10px 16px; font-size: 13px; font-weight: 600; background: transparent; border: none;
       border-bottom: 2px solid transparent; cursor: pointer; color: var(--text-muted);
       display: flex; align-items: center; gap: 6px; white-space: nowrap; margin-bottom: -1px;
     }
@@ -57,47 +61,53 @@
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+    
     .step-box {
       background: #f9fafb; border: 1px solid var(--border); border-radius: 8px;
-      padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
     }
-    .step-box span { font-size: 12px; font-weight: 500; color: var(--text); }
+    .step-box span { font-size: 13px; font-weight: 500; color: var(--text); }
     .btn-template {
-      background: white; border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px;
+      background: white; border: 1px solid var(--border); padding: 7px 14px; border-radius: 6px;
       cursor: pointer; font-weight: 600; font-size: 12px; color: var(--primary); display: flex; align-items: center; gap: 6px;
     }
     .btn-template:hover { background: #f3f4f6; border-color: var(--primary); }
+    
     .dropzone {
-      border: 2px dashed var(--border); border-radius: 8px; padding: 36px 16px;
-      text-align: center; cursor: pointer; background: #fafafa; transition: all 0.2s ease;
+      border: 2px dashed var(--border); border-radius: 8px; padding: 48px 16px;
+      text-align: center; cursor: pointer; background: #fafafa; transition: all 0.2s ease; width: 100%;
     }
-    .dropzone:hover, .dropzone.dragover { border-color: var(--primary); background: #f0fdf4; }
+    .dropzone:hover { border-color: var(--success); background: #f0fdf4; }
     .dropzone input { display: none; }
-    .dropzone .icon { font-size: 32px; color: var(--primary); margin-bottom: 8px; }
-    .dropzone .msg { font-size: 13px; color: var(--text-muted); }
-    .file-name { margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--success); }
+    .dropzone .icon { font-size: 36px; color: var(--success); margin-bottom: 10px; }
+    .dropzone .msg { font-size: 14px; color: var(--text-muted); }
+    .file-name { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--success); }
+    
     .options-box {
-      margin-top: 16px; padding: 12px 16px; background: #f9fafb; border: 1px solid var(--border);
-      border-radius: 8px; display: flex; align-items: center; gap: 10px; font-size: 13px;
+      margin-top: 16px; padding: 14px 18px; background: #f9fafb; border: 1px solid var(--border);
+      border-radius: 8px; display: flex; align-items: center; gap: 10px; font-size: 13px; width: 100%;
     }
-    .options-box input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
+    .options-box input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--success); }
+    
     .btn-action {
-      width: 100%; background: var(--success); color: white; border: none; padding: 12px;
-      border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 20px;
-      display: flex; justify-content: center; align-items: center; gap: 6px;
+      width: 100%; background: var(--success); color: white; border: none; padding: 14px;
+      border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 20px;
+      display: flex; justify-content: center; align-items: center; gap: 8px;
     }
     .btn-action:hover { background: var(--success-hover); }
     .btn-action.blue { background: var(--primary); }
     .btn-action.blue:hover { background: var(--primary-hover); }
+    
     .alert { margin-top: 16px; padding: 12px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; display: none; }
     .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
     .alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    
     .preview-table-box {
       margin-top: 20px; max-height: 400px; overflow-x: auto; overflow-y: auto;
-      border: 1px solid var(--border); border-radius: 8px; display: none;
+      border: 1px solid var(--border); border-radius: 8px; display: none; width: 100%;
     }
     table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-    th, td { padding: 8px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th, td { padding: 10px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; }
     th { background: #f9fafb; position: sticky; top: 0; color: #374151; font-weight: 600; z-index: 2; }
     td { color: #374151; }
   </style>
@@ -107,7 +117,7 @@
 <div class="app-container">
   <div class="dashboard-header">
     <div>
-      <h1 id="welcomeClientTitle">Kcrish Tally Automation Suite</h1>
+      <h1 id="welcomeClientTitle">Welcome, user | Tally Suite</h1>
       <p>Personal Google Drive Cloud Sync Active</p>
     </div>
     <div class="header-actions">
@@ -131,7 +141,7 @@
         <span>Download structured purchase template with calculations:</span>
         <button class="btn-template" onclick="downloadPurchaseTemplate()"><i class="fa-solid fa-download"></i> Template</button>
       </div>
-      <div class="dropzone" id="dropzonePurch" onclick="document.getElementById('purchExcelFile').click()">
+      <div class="dropzone" onclick="document.getElementById('purchExcelFile').click()">
         <input type="file" id="purchExcelFile" accept=".xlsx, .xls" onchange="fileSelected('purchExcelFile', 'purchFileName')" />
         <div class="icon"><i class="fa-solid fa-file-excel"></i></div>
         <div class="msg">Upload Purchase Excel (Click or Drag & Drop File Here)</div>
@@ -150,7 +160,7 @@
         <span>Download standard inventory stock item master template:</span>
         <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
       </div>
-      <div class="dropzone" id="dropzoneMaster" onclick="document.getElementById('masterExcelFile').click()">
+      <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
         <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" />
         <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
         <div class="msg">Upload Stock Inventory (Click or Drag & Drop File Here)</div>
@@ -165,7 +175,7 @@
         <span>Download general ledger master template:</span>
         <button class="btn-template" onclick="downloadLedgerTemplate()"><i class="fa-solid fa-download"></i> Template</button>
       </div>
-      <div class="dropzone" id="dropzoneLedger" onclick="document.getElementById('ledgerExcelFile').click()">
+      <div class="dropzone" onclick="document.getElementById('ledgerExcelFile').click()">
         <input type="file" id="ledgerExcelFile" accept=".xlsx, .xls" onchange="fileSelected('ledgerExcelFile', 'ledgerFileName')" />
         <div class="icon"><i class="fa-solid fa-address-card"></i></div>
         <div class="msg">Upload Ledger Spreadsheet (Click or Drag & Drop File Here)</div>
@@ -179,7 +189,7 @@
       <div class="step-box" style="background:#f9fafb;">
         <span style="color:var(--text); font-weight: 500;">Transform Tally XML exports into structured Debit & Credit spreadsheets</span>
       </div>
-      <div class="dropzone" id="dropzoneXml" onclick="document.getElementById('xmlFile').click()">
+      <div class="dropzone" onclick="document.getElementById('xmlFile').click()">
         <input type="file" id="xmlFile" accept=".xml" onchange="fileSelected('xmlFile', 'xmlFileName')" />
         <div class="icon"><i class="fa-solid fa-file-code"></i></div>
         <div class="msg">Select Tally XML File (Click or Drag & Drop File Here)</div>
@@ -197,7 +207,7 @@
         <span style="color:var(--text); font-weight: 500;">Retrieve and audit synced JSON archives from personal Google Drive</span>
         <button class="btn-template" onclick="loadPersonalDriveFiles()" style="border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-rotate"></i> Refresh</button>
       </div>
-      <div id="driveJsonContainer" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fafafa; font-size: 12px; text-align: center; color: var(--text-muted);">
+      <div id="driveJsonContainer" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fafafa; font-size: 12px; text-align: center; color: var(--text-muted); width: 100%;">
         Click "Refresh" to load files from your Drive.
       </div>
     </div>
@@ -268,7 +278,7 @@ async function loadPersonalDriveFiles() {
         html += `<tr>
           <td>${file.name}</td>
           <td style='text-align:right;'>
-            <button onclick="downloadPersonalFile('${file.id}', '${file.name}')" style="background:var(--primary); color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:600;">Download JSON</button>
+            <button onclick="downloadPersonalFile('${file.id}', '${file.name}')" style="background:var(--primary); color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:600;">Download JSON</button>
           </td>
         </tr>`;
     });
