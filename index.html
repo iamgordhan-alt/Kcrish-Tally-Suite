@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kcrish Tally Automation Suite - Personal Drive Cloud</title>
+  <title>Kcrish Tally Automation Suite - Secure Client Portal</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <!-- Google Identity Services Library -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://apis.google.com/js/api.js" async defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,9 +39,9 @@
 
     #authScreen {
       max-width: 420px;
-      margin: 100px auto;
+      margin: 80px auto;
       background: var(--card-bg);
-      padding: 40px;
+      padding: 30px 40px;
       border-radius: var(--radius);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       border: 1px solid var(--border);
@@ -50,7 +49,14 @@
     }
 
     #authScreen h2 { margin: 0 0 6px 0; color: var(--text); font-size: 22px; font-weight: 600; }
-    #authScreen p { margin: 0 0 24px 0; color: var(--text-muted); font-size: 13px; }
+    #authScreen p { margin: 0 0 20px 0; color: var(--text-muted); font-size: 13px; }
+
+    .form-group { text-align: left; margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+    .form-group input {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none;
+    }
+    .form-group input:focus { border-color: var(--primary); }
 
     .dashboard-header {
       background: #1e293b;
@@ -144,22 +150,32 @@
 
 <div class="app-container">
 
-  <!-- GOOGLE SIGN-IN SCREEN -->
+  <!-- CLIENT LOGIN SCREEN -->
   <div id="authScreen">
     <h2>Kcrish Portal</h2>
-    <p>Sign in with your Google account to access your personal Drive sync</p>
-    <button class="btn-action blue" onclick="handleGoogleLogin()"><i class="fa-brands fa-google" style="margin-right:8px;"></i> Sign in with Google</button>
+    <p>Enter your client credentials & link personal Drive</p>
+    
+    <div class="form-group">
+      <label>Client Username / ID</label>
+      <input type="text" id="clientUser" placeholder="Enter your username" value="Client_01" />
+    </div>
+    <div class="form-group">
+      <label>Security Password</label>
+      <input type="password" id="clientPass" placeholder="Enter password" value="kcrish123" />
+    </div>
+
+    <button class="btn-action blue" onclick="handleCustomLogin()"><i class="fa-solid fa-lock" style="margin-right:8px;"></i> Login & Connect Drive</button>
   </div>
 
   <!-- MAIN DASHBOARD -->
   <div id="dashboardApp" style="display: none;">
     <div class="dashboard-header">
       <div>
-        <h1>Kcrish Tally Automation Suite</h1>
+        <h1 id="welcomeClientTitle">Kcrish Tally Automation Suite</h1>
         <p>Personal Google Drive Cloud Sync Active</p>
       </div>
       <div class="header-actions">
-        <div class="sync-badge"><span></span> Connected to Personal Drive</div>
+        <div class="sync-badge"><span></span> Personal Drive Connected</div>
         <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
       </div>
     </div>
@@ -273,8 +289,11 @@ let accessToken = null;
 
 window.onload = function() {
   let savedToken = localStorage.getItem("google_access_token");
-  if(savedToken) {
+  let savedUser = localStorage.getItem("client_username");
+  
+  if(savedToken && savedUser) {
     accessToken = savedToken;
+    document.getElementById("welcomeClientTitle").innerText = "Welcome, " + savedUser + " | Tally Suite";
     document.getElementById("authScreen").style.display = "none";
     document.getElementById("dashboardApp").style.display = "block";
   }
@@ -289,18 +308,33 @@ window.onload = function() {
       }
       accessToken = response.access_token;
       localStorage.setItem("google_access_token", accessToken);
+      
+      let username = document.getElementById("clientUser").value || "Client";
+      localStorage.setItem("client_username", username);
+
+      document.getElementById("welcomeClientTitle").innerText = "Welcome, " + username + " | Tally Suite";
       document.getElementById("authScreen").style.display = "none";
       document.getElementById("dashboardApp").style.display = "block";
     },
   });
 };
 
-function handleGoogleLogin() {
+function handleCustomLogin() {
+  let user = document.getElementById("clientUser").value.trim();
+  let pass = document.getElementById("clientPass").value.trim();
+
+  if(!user || !pass) {
+    alert("Please enter both username and password.");
+    return;
+  }
+
+  // Trigger Google Drive Token popup to bind this secure session to their personal Google account
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
 function handleLogout() {
   localStorage.removeItem("google_access_token");
+  localStorage.removeItem("client_username");
   accessToken = null;
   document.getElementById("dashboardApp").style.display = "none";
   document.getElementById("authScreen").style.display = "block";
