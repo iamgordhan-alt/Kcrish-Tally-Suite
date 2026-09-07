@@ -352,42 +352,6 @@ h1 {
   opacity: 0.8;
 }
 
-/* Demo Credentials Hint Bar */
-.demo-banner {
-  background: rgba(6, 182, 212, 0.09);
-  border: 1px solid rgba(6, 182, 212, 0.25);
-  border-radius: 12px;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 20px;
-  font-size: 12px;
-}
-.demo-banner-text {
-  color: #a5f3fc;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.demo-auto-btn {
-  background: rgba(6, 182, 212, 0.2);
-  border: 1px solid rgba(6, 182, 212, 0.4);
-  color: #e0f2fe;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.demo-auto-btn:hover {
-  background: rgba(6, 182, 212, 0.35);
-  border-color: #38bdf8;
-}
-
 /* Tabs */
 .tabs-container {
   display: grid;
@@ -975,15 +939,6 @@ h1 {
 
   <!-- Right Side: Advanced Glassmorphic Authentication Card -->
   <section class="login-card" aria-labelledby="authTitle">
-    <!-- One-Click Quick Demo Credentials Pill -->
-    <div class="demo-banner">
-      <div class="demo-banner-text">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-        <span>Test login: <strong>admin</strong> / <strong>Kcrish@2026</strong></span>
-      </div>
-      <button type="button" class="demo-auto-btn" id="demoAutoBtn">Auto-fill Demo</button>
-    </div>
-
     <!-- Switcher Tabs -->
     <div class="tabs-container" role="tablist">
       <button type="button" class="tab-btn active" id="loginTab" role="tab" aria-selected="true" aria-controls="form">
@@ -1129,7 +1084,7 @@ h1 {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5">
             <polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>
           </svg>
-          Tally .NET
+          Workspace Sync
         </button>
       </div>
     </form>
@@ -1242,16 +1197,6 @@ h1 {
 
   $('loginTab').addEventListener('click', () => setAuthMode(false));
   $('signupTab').addEventListener('click', () => setAuthMode(true));
-
-  // Auto-fill Demo Credentials
-  $('demoAutoBtn').addEventListener('click', () => {
-    if (isSignup) setAuthMode(false);
-    $('user').value = 'admin';
-    $('pass').value = 'Kcrish@2026';
-    $('rememberMe').checked = true;
-    clearErrors();
-    showStatus('Demo credentials loaded! Click "Sign In Securely" to continue.', 'success');
-  });
 
   // Password Visibility Toggle Logic with Animated SVG
   const setupEyeToggle = (toggleBtn, inputField) => {
@@ -1425,8 +1370,8 @@ h1 {
 
     // Save session and redirect to dashboard smoothly
     setTimeout(() => {
-      localStorage.setItem('client_username', username);
-      localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${username.replace(/\s+/g, '_')}/`);
+      localStorage.setItem('client_username', username || 'Ashok Gitiyal');
+      localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${(username || 'Ashok_Gitiyal').replace(/\s+/g, '_')}/`);
       window.location.href = 'dashboard.html';
     }, 800);
   });
@@ -1480,7 +1425,7 @@ h1 {
   });
 
   $('tallySsoBtn').addEventListener('click', () => {
-    showStatus('Connecting to local Tally .NET license daemon (Port 9000)...', 'success');
+    showStatus('Workspace synchronization bridge active.', 'success');
   });
 
 })();
