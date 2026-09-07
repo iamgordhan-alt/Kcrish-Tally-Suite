@@ -12,7 +12,6 @@
     :root {
       --primary: #5835df;
       --primary-hover: #4729c6;
-      --bg-gradient: linear-gradient(135deg, #1e1b4b, #312e81, #4c1d95);
       --card-bg: #ffffff;
       --text: #1e1b4b;
       --text-muted: #6b7280;
@@ -24,9 +23,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--bg-gradient);
-      background-size: cover;
-      background-attachment: fixed;
+      background: linear-gradient(135deg, #1e1b4b, #312e81, #4c1d95);
       margin: 0; 
       min-height: 100vh;
       display: flex; 
@@ -34,20 +31,41 @@
       align-items: center; 
       padding: 20px; 
       color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* BACKGROUND BLURRED LOGO WATERMARK */
+    .bg-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 500px;
+      background-image: url('logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: blur(40px);
+      opacity: 0.12;
+      z-index: 0;
+      pointer-events: none;
     }
 
     .auth-card {
+      position: relative;
+      z-index: 1;
       width: 100%; 
       max-width: 440px; 
       background: var(--card-bg);
       padding: 40px 36px; 
       border-radius: var(--radius);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
       border: 1px solid var(--border); 
       text-align: center;
     }
 
-    /* LOGO IMAGE STYLING */
     .brand-logo-container {
       margin-bottom: 20px;
     }
@@ -113,8 +131,10 @@
 </head>
 <body>
 
+  <!-- BACKGROUND BLURRED LOGO WATERMARK -->
+  <div class="bg-watermark"></div>
+
 <div class="auth-card">
-  <!-- LOGO IMAGE FROM GITHUB REPO -->
   <div class="brand-logo-container">
     <img src="logo.png" alt="Logo" class="brand-logo-img" onerror="this.style.display='none'" />
     <h1 class="brand-title">Kcrish Tally Suite</h1>
