@@ -72,7 +72,7 @@ header {
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
 
-/* Clean Chrome Web Store style Underline Navigation with Hover/Active Animation */
+/* Chrome Web Store style Animated Underline Navigation */
 .nav-bar {
   max-width: 1300px; width: 100%; margin: 0 auto 32px; display: flex; gap: 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -83,7 +83,6 @@ header {
 .nav-tab-link:hover { color: #fff; }
 .nav-tab-link.active { color: var(--primary-light); }
 
-/* Smooth Animated Underline Indicator */
 .nav-tab-link::after {
   content: ""; position: absolute; bottom: -1px; left: 0; width: 0; height: 3px; 
   background-color: var(--primary); border-radius: 3px 3px 0 0; transition: width 0.25s ease-in-out;
@@ -112,6 +111,34 @@ header {
 
 .stat-number { font-size: 28px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 8px; }
 
+/* Inline Content Display Area (Iframe Box) */
+.inline-view-container {
+  max-width: 1300px; width: 100%; margin: 24px auto 0; display: none;
+  background: var(--bg-card); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 20px;
+  overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.6); animation: fadeInSlide 0.3s ease-in-out;
+}
+.inline-view-container.active { display: block; }
+
+@keyframes fadeInSlide {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.inline-view-header {
+  background: rgba(3, 14, 23, 0.8); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.inline-view-title { font-size: 14px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+.inline-close-btn {
+  background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
+  width: 28px; height: 28px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px;
+}
+.inline-close-btn:hover { background: rgba(239, 68, 68, 0.3); }
+
+.inline-iframe {
+  width: 100%; height: 600px; border: none; background: #061118;
+}
+
 @media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -133,18 +160,19 @@ header {
   </div>
 </header>
 
-<!-- Clean Chrome Web Store style Animated Underline Navigation -->
+<!-- Navigation bar with Active Underline and Dynamic Inline Loading -->
 <nav class="nav-bar">
-  <a href="dashboard.html" class="nav-tab-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-  <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
-  <a href="ledger.html" class="nav-tab-link"><i class="fa-solid fa-book"></i> Ledgers</a>
-  <a href="masters.html" class="nav-tab-link"><i class="fa-solid fa-database"></i> Masters</a>
-  <a href="purchase.html" class="nav-tab-link"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
-  <a href="restore.html" class="nav-tab-link"><i class="fa-solid fa-rotate-left"></i> Restore</a>
-  <a href="about.html" class="nav-tab-link"><i class="fa-solid fa-circle-info"></i> About &amp; Info</a>
+  <a href="dashboard.html" class="nav-tab-link active" data-page="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+  <a href="converter.html" class="nav-tab-link" data-page="converter.html"><i class="fa-solid fa-file-excel"></i> Converter</a>
+  <a href="ledger.html" class="nav-tab-link" data-page="ledger.html"><i class="fa-solid fa-book"></i> Ledgers</a>
+  <a href="masters.html" class="nav-tab-link" data-page="masters.html"><i class="fa-solid fa-database"></i> Masters</a>
+  <a href="purchase.html" class="nav-tab-link" data-page="purchase.html"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
+  <a href="restore.html" class="nav-tab-link" data-page="restore.html"><i class="fa-solid fa-rotate-left"></i> Restore</a>
+  <a href="about.html" class="nav-tab-link" data-page="about.html"><i class="fa-solid fa-circle-info"></i> About &amp; Info</a>
 </nav>
 
-<main class="container">
+<!-- Main Dashboard Grid Content -->
+<main class="container" id="mainDashboardContent">
   <!-- Card 1: System Overview -->
   <section class="card">
     <div>
@@ -162,8 +190,8 @@ header {
       <p>Jump straight into your most frequently used modules to manage data instantly.</p>
     </div>
     <div style="display: flex; gap: 10px; flex-direction: column;">
-      <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
-      <a href="converter.html" class="btn-action" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
+      <a href="about.html" class="btn-action" data-page="about.html"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
+      <a href="converter.html" class="btn-action" data-page="converter.html" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
     </div>
   </section>
 
@@ -178,6 +206,15 @@ header {
   </section>
 </main>
 
+<!-- Inline Embedded Page Viewer (Loads right below when clicked) -->
+<div class="inline-view-container" id="inlineViewContainer">
+  <div class="inline-view-header">
+    <div class="inline-view-title" id="inlineViewTitle"><i class="fa-solid fa-window-maximize"></i> Workspace Module</div>
+    <button class="inline-close-btn" id="inlineCloseBtn" title="Close Panel"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <iframe id="inlineIframe" class="inline-iframe"></iframe>
+</div>
+
 <script>
   const username = localStorage.getItem('client_username');
   if (!username) {
@@ -186,6 +223,51 @@ header {
     document.getElementById('headerUsernameText').textContent = username;
   }
 
+  // Dynamic Inline Loading for Navigation & Action Buttons
+  const navLinks = document.querySelectorAll('.nav-tab-link, .btn-action');
+  const inlineContainer = document.getElementById('inlineViewContainer');
+  const inlineIframe = document.getElementById('inlineIframe');
+  const inlineTitle = document.getElementById('inlineViewTitle');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const page = link.getAttribute('data-page');
+      
+      // If Dashboard link, let it behave normally
+      if (page === 'dashboard') {
+        return;
+      }
+
+      e.preventDefault();
+
+      // Update active underline tab styling
+      document.querySelectorAll('.nav-tab-link').forEach(t => t.classList.remove('active'));
+      if(link.classList.contains('nav-tab-link')) {
+        link.classList.add('active');
+      }
+
+      // Set iframe source and title
+      inlineIframe.src = page;
+      inlineTitle.innerHTML = `<i class="fa-solid fa-folder-open" style="color:var(--primary)"></i> ${link.textContent.trim()} Panel`;
+      
+      // Show container smoothly
+      inlineContainer.classList.add('active');
+      
+      // Scroll down smoothly to show the loaded panel
+      inlineContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  });
+
+  // Close inline panel
+  document.getElementById('inlineCloseBtn').addEventListener('click', () => {
+    inlineContainer.classList.remove('active');
+    inlineIframe.src = '';
+    // Reset active tab to dashboard
+    document.querySelectorAll('.nav-tab-link').forEach(t => t.classList.remove('active'));
+    document.querySelector('.nav-tab-link[data-page="dashboard"]').classList.add('active');
+  });
+
+  // Logout Handler
   document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('client_username');
     localStorage.removeItem('active_user_folder');
