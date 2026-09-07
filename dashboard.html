@@ -28,7 +28,6 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Smooth Page Transitions (No sudden jumps) */
 body {
   font-family: var(--font-main);
   background-color: var(--bg-dark);
@@ -72,9 +71,18 @@ header {
   width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #06b6d4);
   display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22;
 }
+
+/* Header User Details / Profile Button (Replaced Folder Path) */
+.user-profile-btn {
+  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 8px 16px; border-radius: 12px; font-size: 13px; color: #6ee7b7; display: flex; align-items: center; gap: 10px;
+  cursor: pointer; transition: all 0.2s; font-family: inherit; font-weight: 600;
+}
+.user-profile-btn:hover { background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.5); color: #fff; }
+
 .logout-btn {
   background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
-  padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
+  padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 600;
   display: flex; align-items: center; gap: 6px; transition: background 0.2s;
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
@@ -111,15 +119,27 @@ header {
 
 .stat-number { font-size: 28px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 8px; }
 
-/* Profile Settings Form Styles */
-.form-group { margin-bottom: 12px; }
-.form-label { display: block; font-size: 11px; font-weight: 600; color: #cbd5e1; margin-bottom: 5px; }
-.form-input {
-  width: 100%; height: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(3,14,23,0.5); color: #fff; padding: 0 12px; font-size: 13px; outline: none; transition: border-color 0.2s;
+/* Modal Overlay for Profile / Password Settings */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
 }
-.form-input:focus { border-color: var(--primary); }
-.form-input:disabled { color: var(--text-dim); background: rgba(3,14,23,0.2); }
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #091722; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
+  width: 100%; max-width: 400px; padding: 28px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); position: relative;
+}
+.modal-close-btn {
+  position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.06); border: none; color: #94a3b8;
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+.form-input {
+  width: 100%; height: 42px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(3,14,23,0.6); color: #fff; padding: 0 12px; font-size: 13px; outline: none;
+}
+.form-input:disabled { color: var(--text-dim); background: rgba(3,14,23,0.3); }
 
 @media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
 </style>
@@ -134,7 +154,11 @@ header {
       <span style="font-size:11px; color:var(--text-muted);">Enterprise Workspace Dashboard</span>
     </div>
   </div>
-  <div style="display:flex; align-items:center; gap:16px;">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <!-- Header Profile Button showing Username -->
+    <button class="user-profile-btn" id="openProfileModal">
+      <i class="fa-solid fa-user-gear"></i> <span id="headerUsernameText">Account</span>
+    </button>
     <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
   </div>
 </header>
@@ -160,24 +184,15 @@ header {
     </div>
   </section>
 
-  <!-- Card 2: Account & Password Settings (Replaced Folder Path) -->
+  <!-- Card 2: Quick Actions -->
   <section class="card">
     <div>
-      <h3><i class="fa-solid fa-user-gear" style="color:var(--cyan)"></i> Account Settings</h3>
-      <p>Update your credentials or modify your profile security settings securely.</p>
-      
-      <form id="profileUpdateForm" style="margin-top: 10px;">
-        <div class="form-group">
-          <label class="form-label">USERNAME</label>
-          <input type="text" id="profileUsername" disabled class="form-input" />
-        </div>
-        <div class="form-group" style="margin-bottom: 10px;">
-          <label class="form-label">NEW PASSWORD</label>
-          <input type="password" id="newPasswordInput" placeholder="Min 8 characters" class="form-input" />
-        </div>
-        <button type="submit" class="btn-action" style="width: 100%; height: 38px; font-size: 12px;">Update Password</button>
-        <div id="profileStatus" style="font-size: 11px; text-align: center; margin-top: 6px; min-height: 16px;"></div>
-      </form>
+      <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
+      <p>Jump straight into your most frequently used modules to manage data instantly.</p>
+    </div>
+    <div style="display: flex; gap: 10px; flex-direction: column;">
+      <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
+      <a href="converter.html" class="btn-action" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
     </div>
   </section>
 
@@ -191,6 +206,28 @@ header {
     </div>
   </section>
 </main>
+
+<!-- Profile & Password Settings Modal -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-box">
+    <button type="button" class="modal-close-btn" id="closeProfileModal">✕</button>
+    <h3 style="font-size:18px; color:#fff; margin-bottom:6px;">Profile Settings</h3>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Manage your profile credentials securely.</p>
+    
+    <form id="profileUpdateForm">
+      <div class="form-group">
+        <label class="form-label">USERNAME</label>
+        <input type="text" id="modalUsername" disabled class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">NEW PASSWORD</label>
+        <input type="password" id="modalNewPassword" placeholder="Minimum 8 characters" class="form-input" />
+      </div>
+      <button type="submit" class="btn-action" style="width: 100%; height: 44px; margin-top: 6px;">Save Changes</button>
+      <div id="modalStatus" style="font-size: 12px; text-align: center; margin-top: 10px; min-height: 18px;"></div>
+    </form>
+  </div>
+</div>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
@@ -215,22 +252,27 @@ header {
       });
     });
 
-    // Session & User Management
+    // Session Management
     const username = localStorage.getItem('client_username');
     if (!username) {
       window.location.href = 'index.html';
       return;
     }
 
-    if (document.getElementById('profileUsername')) {
-      document.getElementById('profileUsername').value = username;
-    }
+    document.getElementById('headerUsernameText').textContent = username;
+    document.getElementById('modalUsername').value = username;
 
-    // Password Update Handler
+    // Modal Handlers
+    const modal = document.getElementById('profileModal');
+    document.getElementById('openProfileModal').addEventListener('click', () => modal.classList.add('open'));
+    document.getElementById('closeProfileModal').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+
+    // Profile Update Handler
     document.getElementById('profileUpdateForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      const newPass = document.getElementById('newPasswordInput').value.trim();
-      const statusBox = document.getElementById('profileStatus');
+      const newPass = document.getElementById('modalNewPassword').value.trim();
+      const statusBox = document.getElementById('modalStatus');
 
       if (newPass && newPass.length < 8) {
         statusBox.style.color = '#f87171';
@@ -239,9 +281,12 @@ header {
       }
 
       statusBox.style.color = '#34d399';
-      statusBox.textContent = 'Password updated successfully!';
-      document.getElementById('newPasswordInput').value = '';
-      setTimeout(() => { statusBox.textContent = ''; }, 3000);
+      statusBox.textContent = 'Profile updated successfully!';
+      document.getElementById('modalNewPassword').value = '';
+      setTimeout(() => { 
+        statusBox.textContent = ''; 
+        modal.classList.remove('open');
+      }, 1500);
     });
 
     // Logout Handler
@@ -251,6 +296,7 @@ header {
       setTimeout(() => {
         localStorage.removeItem('client_username');
         localStorage.removeItem('active_user_folder');
+        localStorage.removeItem('google_access_token');
         window.location.href = 'index.html';
       }, 350);
     });
