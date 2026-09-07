@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kcrish Tally Automation Suite - Enterprise Dashboard</title>
+  <title>Kcrish Tally Automation Suite - Personal Drive Cloud</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- Google Identity Services Library -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://apis.google.com/js/api.js" async defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -36,30 +39,18 @@
     .app-container { max-width: 1000px; margin: 0 auto; }
 
     #authScreen {
-      max-width: 400px;
-      margin: 80px auto;
+      max-width: 420px;
+      margin: 100px auto;
       background: var(--card-bg);
-      padding: 32px;
+      padding: 40px;
       border-radius: var(--radius);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       border: 1px solid var(--border);
+      text-align: center;
     }
 
-    #authScreen h2 { margin: 0 0 6px 0; color: var(--text); font-size: 20px; font-weight: 600; }
-    #authScreen p { margin: 0 0 20px 0; color: var(--text-muted); font-size: 13px; }
-
-    .auth-input {
-      width: 100%; padding: 10px 12px; margin-bottom: 14px;
-      border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none;
-    }
-    .auth-input:focus { border-color: var(--primary); }
-
-    .auth-tab-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; gap: 12px; }
-    .auth-tab {
-      padding: 8px 4px; background: none; border: none; font-weight: 600; font-size: 12px;
-      cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px;
-    }
-    .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    #authScreen h2 { margin: 0 0 6px 0; color: var(--text); font-size: 22px; font-weight: 600; }
+    #authScreen p { margin: 0 0 24px 0; color: var(--text-muted); font-size: 13px; }
 
     .dashboard-header {
       background: #1e293b;
@@ -153,27 +144,11 @@
 
 <div class="app-container">
 
-  <!-- AUTHENTICATION SCREEN -->
+  <!-- GOOGLE SIGN-IN SCREEN -->
   <div id="authScreen">
     <h2>Kcrish Portal</h2>
-    <p>Secure Enterprise Cloud & Tally Login</p>
-    
-    <div class="auth-tab-bar">
-      <button class="auth-tab active" id="tabLoginBtn" onclick="switchAuthMode('login')">Sign In</button>
-      <button class="auth-tab" id="tabSignupBtn" onclick="switchAuthMode('signup')">Register (OTP Verify)</button>
-    </div>
-
-    <div id="authAlert" class="alert" style="margin-bottom:12px;"></div>
-
-    <input type="email" id="authEmail" class="auth-input" placeholder="Corporate Email Address" />
-    <input type="password" id="authPassword" class="auth-input" placeholder="Password" />
-    
-    <!-- OTP Input Group (Only for Signup / Verification) -->
-    <div id="otpGroup" style="display: none;">
-      <input type="text" id="authOtp" class="auth-input" placeholder="Enter 6-Digit Email OTP" maxlength="6" />
-    </div>
-    
-    <button id="authSubmitBtn" class="btn-action blue" style="margin-top:4px;" onclick="handleAuthAction()">Sign In</button>
+    <p>Sign in with your Google account to access your personal Drive sync</p>
+    <button class="btn-action blue" onclick="handleGoogleLogin()"><i class="fa-brands fa-google" style="margin-right:8px;"></i> Sign in with Google</button>
   </div>
 
   <!-- MAIN DASHBOARD -->
@@ -181,10 +156,10 @@
     <div class="dashboard-header">
       <div>
         <h1>Kcrish Tally Automation Suite</h1>
-        <p>Enterprise Liquor Accounting & Cloud Sync</p>
+        <p>Personal Google Drive Cloud Sync Active</p>
       </div>
       <div class="header-actions">
-        <div class="sync-badge"><span></span> Connected</div>
+        <div class="sync-badge"><span></span> Connected to Personal Drive</div>
         <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
       </div>
     </div>
@@ -216,7 +191,7 @@
           <label for="partyWiseCheck" style="cursor: pointer;">Generate party-wise separate XML packages (ZIP archive)</label>
         </div>
 
-        <button class="btn-action" onclick="generatePurchaseXML()"><i class="fa-solid fa-bolt"></i> Process & Sync Purchase Data</button>
+        <button class="btn-action" onclick="generatePurchaseXML()"><i class="fa-solid fa-bolt"></i> Process & Sync to Personal Drive</button>
       </div>
 
       <!-- TAB 2: ITEM MASTER -->
@@ -269,11 +244,11 @@
       <!-- TAB 5: DRIVE RESTORE -->
       <div id="tab-restore" class="tab-content">
         <div class="step-box" style="background:#f8fafc;">
-          <span style="color:var(--text); font-weight: 500;">Retrieve and audit synced JSON archives from cloud storage</span>
-          <button class="btn-template" onclick="loadDriveJSONFiles()" style="border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          <span style="color:var(--text); font-weight: 500;">Retrieve and audit synced JSON archives from personal Google Drive</span>
+          <button class="btn-template" onclick="loadPersonalDriveFiles()" style="border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-rotate"></i> Refresh</button>
         </div>
         <div id="driveJsonContainer" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; padding: 16px; background: #fafafa; font-size: 12px; text-align: center; color: var(--text-muted);">
-          Click "Refresh" to load cloud records.
+          Click "Refresh" to load files from your Drive.
         </div>
         
         <div id="restorePreviewContainer" class="preview-table-box" style="margin-top: 20px;">
@@ -290,164 +265,113 @@
 
 <script>
 const FIXED_COMPANY_NAME = "Experiments";
-const GDRIVE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby0mLg3aqdTUYyhvgBkiDFiJKUxX7spLCGrOtnvfw5v0Yniq27H7A2YFGdHkEwPXAbvAQ/exec";
+const CLIENT_ID = "306902298167-6o9o8o84955pu92k5k07u5al7djhp6op.apps.googleusercontent.com";
+const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
-let authMode = 'login';
-let otpStep = 1; // For signup flow
+let tokenClient;
+let accessToken = null;
 
 window.onload = function() {
-  let loggedUser = localStorage.getItem("kcrish_logged_user");
-  if(loggedUser) {
+  let savedToken = localStorage.getItem("google_access_token");
+  if(savedToken) {
+    accessToken = savedToken;
     document.getElementById("authScreen").style.display = "none";
     document.getElementById("dashboardApp").style.display = "block";
   }
+
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (response) => {
+      if (response.error !== undefined) {
+        alert("Google Authentication failed!");
+        return;
+      }
+      accessToken = response.access_token;
+      localStorage.setItem("google_access_token", accessToken);
+      document.getElementById("authScreen").style.display = "none";
+      document.getElementById("dashboardApp").style.display = "block";
+    },
+  });
 };
 
-function switchAuthMode(mode) {
-  authMode = mode;
-  otpStep = 1;
-  document.getElementById("tabLoginBtn").className = (mode === 'login') ? "auth-tab active" : "auth-tab";
-  document.getElementById("tabSignupBtn").className = (mode === 'signup') ? "auth-tab active" : "auth-tab";
-  
-  if(mode === 'login') {
-    document.getElementById("authSubmitBtn").innerText = "Sign In";
-    document.getElementById("otpGroup").style.display = "none";
-  } else {
-    document.getElementById("authSubmitBtn").innerText = "Send Registration OTP";
-    document.getElementById("otpGroup").style.display = "none";
-  }
-  hideAuthAlert();
-}
-
-async function fetchUsersFromDrive() {
-  try {
-    let res = await fetch(`${GDRIVE_WEB_APP_URL}?auth=true`);
-    let files = await res.json();
-    let userFile = files.find(f => f.name === "users_database.json");
-    if(userFile) {
-      let contentRes = await fetch(`${GDRIVE_WEB_APP_URL}?auth=true&action=getContent&id=${userFile.id}`);
-      let usersData = await contentRes.json();
-      return usersData || {};
-    }
-  } catch(err) {
-    console.log("Drive sync error:", err);
-  }
-  return {};
-}
-
-async function uploadUsersToDrive(usersData) {
-  try {
-    let jsonString = JSON.stringify(usersData, null, 2);
-    let blob = new Blob([jsonString], { type: "application/json" });
-    let reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onloadend = async function() {
-      let base64data = reader.result.split(',')[1];
-      let payload = {
-        isAuth: true,
-        fileName: "users_database.json",
-        mimeType: "application/json",
-        fileData: base64data
-      };
-      await fetch(GDRIVE_WEB_APP_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
-    };
-  } catch(err) {
-    console.error("Users Sync Error:", err);
-  }
-}
-
-async function handleAuthAction() {
-  let email = document.getElementById("authEmail").value.trim();
-  let password = document.getElementById("authPassword").value.trim();
-
-  if(!email || !password) return showAuthAlert("Kripya email aur password bharein.", "error");
-
-  if(authMode === 'login') {
-    // Direct Password Login (No OTP required every time)
-    showAuthAlert("Cloud database se verify ho raha hai...", "success");
-    let users = await fetchUsersFromDrive();
-    
-    if(!users[email] || users[email] !== password) {
-      return showAuthAlert("Invalid email or password.", "error");
-    }
-
-    localStorage.setItem("kcrish_logged_user", email);
-    document.getElementById("authScreen").style.display = "none";
-    document.getElementById("dashboardApp").style.display = "block";
-
-  } else {
-    // Signup Flow with OTP
-    if(otpStep === 1) {
-      showAuthAlert("Registration OTP bheja ja raha hai...", "success");
-      try {
-        let res = await fetch(GDRIVE_WEB_APP_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "sendOtp", email: email })
-        });
-        let json = await res.json();
-        if(json.status === "success") {
-          otpStep = 2;
-          document.getElementById("otpGroup").style.display = "block";
-          document.getElementById("authSubmitBtn").innerText = "Verify OTP & Register";
-          showAuthAlert("OTP aapki email par bhej diya gaya hai!", "success");
-        } else {
-          showAuthAlert("OTP send karne me error aayi.", "error");
-        }
-      } catch(err) {
-        showAuthAlert("Network connection error.", "error");
-      }
-    } else {
-      let otp = document.getElementById("authOtp").value.trim();
-      if(!otp || otp.length !== 6) return showAuthAlert("Valid 6-digit OTP darj karein.", "error");
-
-      showAuthAlert("OTP verify ho raha hai...", "success");
-      try {
-        let res = await fetch(GDRIVE_WEB_APP_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "verifyAndAuth",
-            email: email,
-            password: password,
-            otp: otp,
-            isSignup: true
-          })
-        });
-        let json = await res.json();
-        if(json.status === "success") {
-          showAuthAlert("Registration safal rahi! Ab Sign In karein.", "success");
-          setTimeout(() => switchAuthMode('login'), 2000);
-        } else {
-          showAuthAlert(json.message || "Registration failed.", "error");
-        }
-      } catch(err) {
-        showAuthAlert("Server connection error.", "error");
-      }
-    }
-  }
+function handleGoogleLogin() {
+  tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
 function handleLogout() {
-  localStorage.removeItem("kcrish_logged_user");
+  localStorage.removeItem("google_access_token");
+  accessToken = null;
   document.getElementById("dashboardApp").style.display = "none";
   document.getElementById("authScreen").style.display = "block";
-  document.getElementById("authEmail").value = "";
-  document.getElementById("authPassword").value = "";
-  document.getElementById("authOtp").value = "";
-  switchAuthMode('login');
 }
 
-function showAuthAlert(msg, type) {
-  let box = document.getElementById("authAlert");
-  box.className = type === 'success' ? 'alert alert-success' : 'alert alert-error';
-  box.innerText = msg;
-  box.style.display = 'block';
+async function uploadJsonToPersonalDrive(jsonData, fileName) {
+  if (!accessToken) return alert("Google Session Expired. Please sign in again.");
+  try {
+    let metadata = { name: fileName + ".json", mimeType: "application/json" };
+    let fileContent = JSON.stringify(jsonData, null, 2);
+    let form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    form.append('file', new Blob([fileContent], { type: 'application/json' }));
+
+    await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST',
+      headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+      body: form
+    });
+  } catch(err) {
+    console.error("Personal Drive Sync Error:", err);
+  }
 }
-function hideAuthAlert() { document.getElementById("authAlert").style.display = 'none'; }
+
+async function loadPersonalDriveFiles() {
+  const container = document.getElementById('driveJsonContainer');
+  container.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Loading from your Google Drive...";
+  try {
+    let res = await fetch('https://www.googleapis.com/drive/v3/files?q=mimeType=\'application/json\'', {
+      headers: new Headers({ 'Authorization': 'Bearer ' + accessToken })
+    });
+    let data = await res.json();
+    let files = data.files || [];
+    
+    if(files.length === 0) {
+        container.innerHTML = "No JSON files found in your Google Drive.";
+        return;
+    }
+    let html = "<table style='width:100%; border-collapse:collapse;'><thead><tr><th>File Name</th><th style='text-align:right;'>Action</th></tr></thead><tbody>";
+    files.forEach(file => {
+        html += `<tr>
+          <td>${file.name}</td>
+          <td style='text-align:right;'>
+            <button onclick="downloadPersonalFile('${file.id}', '${file.name}')" style="background:var(--primary); color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:600;">Download JSON</button>
+          </td>
+        </tr>`;
+    });
+    html += "</tbody></table>";
+    container.innerHTML = html;
+  } catch(err) {
+    container.innerHTML = "Failed to load files from Drive.";
+  }
+}
+
+async function downloadPersonalFile(fileId, fileName) {
+  try {
+    let res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+      headers: new Headers({ 'Authorization': 'Bearer ' + accessToken })
+    });
+    let jsonData = await res.json();
+    let blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
+    let dl = document.createElement("a");
+    dl.href = URL.createObjectURL(blob);
+    dl.download = fileName;
+    document.body.appendChild(dl);
+    dl.click();
+    document.body.removeChild(dl);
+  } catch(err) {
+    showAlert("Download failed.", "error");
+  }
+}
 
 function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -463,7 +387,7 @@ function switchTab(tabId) {
   document.getElementById(tabId).classList.add('active');
 
   if(tabId === 'tab-restore') {
-    loadDriveJSONFiles();
+    loadPersonalDriveFiles();
   }
 }
 
@@ -499,147 +423,6 @@ function handleDrop(e, inputId, displayId, dropzoneId) {
 function xmlEscape(str) {
   if (!str) return "";
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
-}
-
-async function uploadJsonToGoogleDrive(jsonData, fileName) {
-  try {
-    let jsonString = JSON.stringify(jsonData, null, 2);
-    let blob = new Blob([jsonString], { type: "application/json" });
-    let reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onloadend = async function() {
-      let base64data = reader.result.split(',')[1];
-      let payload = {
-        isAuth: false,
-        fileName: fileName + ".json",
-        mimeType: "application/json",
-        fileData: base64data
-      };
-
-      await fetch(GDRIVE_WEB_APP_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
-    };
-  } catch(err) {
-    console.error("Sync Error:", err);
-  }
-}
-
-async function loadDriveJSONFiles() {
-  const container = document.getElementById('driveJsonContainer');
-  container.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Loading cloud records...";
-  try {
-    let response = await fetch(GDRIVE_WEB_APP_URL);
-    let files = await response.json();
-    let jsonFiles = files.filter(f => f.name.endsWith('.json') && f.name !== 'users_database.json' && f.name !== 'otp_cache.json' && f.name !== 'admin_config.json');
-    
-    if(!jsonFiles || jsonFiles.length === 0) {
-        container.innerHTML = "No archived JSON records found.";
-        return;
-    }
-    let html = "<table style='width:100%; border-collapse:collapse;'><thead><tr><th>File Name</th><th>Modified</th><th style='text-align:right;'>Action</th></tr></thead><tbody>";
-    jsonFiles.forEach(file => {
-        html += `<tr>
-          <td>${file.name}</td>
-          <td>${file.date}</td>
-          <td style='text-align:right;'>
-            <button onclick="restoreAndConvertXml('${file.id}', '${file.name}')" style="background:var(--success); color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:600; margin-right:4px;">Restore</button>
-            <button onclick="downloadJsonFile('${file.id}', '${file.name}')" style="background:var(--primary); color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:600;">JSON</button>
-          </td>
-        </tr>`;
-    });
-    html += "</tbody></table>";
-    container.innerHTML = html;
-  } catch(err) {
-    container.innerHTML = "Failed to load cloud files.";
-  }
-}
-
-async function downloadJsonFile(fileId, fileName) {
-  try {
-    let response = await fetch(`${GDRIVE_WEB_APP_URL}?action=getContent&id=${fileId}`);
-    let jsonData = await response.json();
-    let jsonString = JSON.stringify(jsonData, null, 2);
-    let blob = new Blob([jsonString], { type: "application/json" });
-    let dl = document.createElement("a");
-    dl.href = URL.createObjectURL(blob);
-    dl.download = fileName;
-    document.body.appendChild(dl);
-    dl.click();
-    document.body.removeChild(dl);
-  } catch(err) {
-    showAlert("Download failed.", "error");
-  }
-}
-
-async function restoreAndConvertXml(fileId, fileName) {
-  try {
-    showAlert("Fetching cloud archive...", "success");
-    let response = await fetch(`${GDRIVE_WEB_APP_URL}?action=getContent&id=${fileId}`);
-    let jsonData = await response.json();
-    
-    renderRestorePreview(jsonData, fileName);
-
-    let xmlContent = "";
-    if(fileName.includes("Purchase")) xmlContent = buildPurchaseXMLString(jsonData);
-    else if(fileName.includes("Masters")) xmlContent = buildMasterXMLString(jsonData);
-    else if(fileName.includes("Ledgers")) xmlContent = buildLedgerXMLString(jsonData);
-    
-    let blob = new Blob([xmlContent], { type: "application/xml" });
-    let dl = document.createElement("a");
-    dl.href = URL.createObjectURL(blob);
-    dl.download = fileName.replace(".json", "") + "_Restored.xml";
-    document.body.appendChild(dl);
-    dl.click();
-    document.body.removeChild(dl);
-    showAlert("XML successfully restored and downloaded.", "success");
-  } catch(err) {
-    showAlert("Restoration error.", "error");
-  }
-}
-
-function renderRestorePreview(jsonData, fileName) {
-  const table = document.getElementById('restorePreviewTable');
-  const thead = table.querySelector('thead');
-  const tbody = table.querySelector('tbody');
-  thead.innerHTML = ""; tbody.innerHTML = "";
-  
-  let rows = [];
-  if(fileName.includes("Purchase")) {
-    for(let k in jsonData) {
-      let inv = jsonData[k];
-      if(inv.items) {
-        inv.items.forEach(it => {
-          rows.push({
-            "Invoice No": inv.invNo, "Date": inv.date, "Party": inv.party,
-            "Item": it.name, "Godown": it.godown, "Qty": it.qtyStr, "Rate": it.rateStr,
-            "Amount": it.amount.toFixed(2), "Total Bill": inv.totalBill ? inv.totalBill.toFixed(2) : "0.00"
-          });
-        });
-      }
-    }
-  } else if(Array.isArray(jsonData)) {
-    rows = jsonData;
-  } else {
-    rows = [jsonData];
-  }
-
-  if(rows.length === 0) return;
-  const cols = Object.keys(rows[0]);
-  let trHead = document.createElement('tr');
-  cols.forEach(c => { let th = document.createElement('th'); th.innerText = c; trHead.appendChild(th); });
-  thead.appendChild(trHead);
-
-  rows.forEach(r => {
-    let tr = document.createElement('tr');
-    cols.forEach(c => { let td = document.createElement('td'); td.innerText = r[c] !== undefined ? r[c] : ""; tr.appendChild(td); });
-    tbody.appendChild(tr);
-  });
-
-  document.getElementById('restorePreviewContainer').style.display = "block";
 }
 
 function parseToTallyDate(dateVal) {
@@ -857,7 +640,7 @@ async function generatePurchaseXML() {
         if (bt > 0 && inv.totalBill === 0) inv.totalBill = bt;
       });
 
-      uploadJsonToGoogleDrive(invoices, "Purchase_Voucher_Data");
+      uploadJsonToPersonalDrive(invoices, "Purchase_Voucher_Data");
 
       if (isPartyWise) {
         const partyGroups = {};
@@ -887,7 +670,7 @@ async function generatePurchaseXML() {
         document.body.appendChild(dl);
         dl.click();
         document.body.removeChild(dl);
-        showAlert("Party-wise ZIP downloaded successfully.", "success");
+        showAlert("Party-wise ZIP downloaded and synced to your Drive.", "success");
 
       } else {
         let xml = buildPurchaseXMLString(invoices);
@@ -898,7 +681,7 @@ async function generatePurchaseXML() {
         document.body.appendChild(dl);
         dl.click();
         document.body.removeChild(dl);
-        showAlert("Purchase XML generated and synced.", "success");
+        showAlert("Purchase XML generated and synced to your Drive.", "success");
       }
 
     } catch (err) { showAlert("Error: " + err.message, "error"); }
@@ -953,7 +736,7 @@ function generateMasterXML() {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: 'array' });
       const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-      uploadJsonToGoogleDrive(json, "Item_Masters_Data");
+      uploadJsonToPersonalDrive(json, "Item_Masters_Data");
       let xml = buildMasterXMLString(json);
       const blob = new Blob([xml], { type: "application/xml" });
       const dl = document.createElement("a");
@@ -962,7 +745,7 @@ function generateMasterXML() {
       document.body.appendChild(dl);
       dl.click();
       document.body.removeChild(dl);
-      showAlert("Master XML generated and synced.", "success");
+      showAlert("Master XML generated and synced to your Drive.", "success");
     } catch (err) { showAlert("Error: " + err.message, "error"); }
   };
   reader.readAsArrayBuffer(fileInput.files[0]);
@@ -1043,7 +826,7 @@ function generateLedgerXML() {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: 'array' });
       const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-      uploadJsonToGoogleDrive(json, "General_Ledgers_Data");
+      uploadJsonToPersonalDrive(json, "General_Ledgers_Data");
       let xml = buildLedgerXMLString(json);
       const blob = new Blob([xml], { type: "application/xml" });
       const dl = document.createElement("a");
@@ -1052,7 +835,7 @@ function generateLedgerXML() {
       document.body.appendChild(dl);
       dl.click();
       document.body.removeChild(dl);
-      showAlert("Ledger XML generated and synced.", "success");
+      showAlert("Ledger XML generated and synced to your Drive.", "success");
     } catch (err) { showAlert("Error: " + err.message, "error"); }
   };
   reader.readAsArrayBuffer(fileInput.files[0]);
