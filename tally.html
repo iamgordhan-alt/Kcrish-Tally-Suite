@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kcrish Automation Workspace - Tally Bridge & XML Sync Engine">
+<meta name="theme-color" content="#061219">
+<title>Kcrish Workspace • Tally Sync Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- SheetJS library for parsing Excel files locally -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root {
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --primary-light: #34d399;
+  --primary-glow: rgba(16, 185, 129, 0.35);
+  --cyan: #06b6d4;
+  --bg-dark: #061118;
+  --bg-card: rgba(12, 26, 36, 0.75);
+  --border-card: rgba(255, 255, 255, 0.12);
+  --border-input: rgba(255, 255, 255, 0.14);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+    linear-gradient(180deg, #050e14 0%, #081620 100%);
+  background-attachment: fixed;
+  padding: 24px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.brand-box { display: flex; align-items: center; gap: 12px; }
+.brand-logo {
+  width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #06b6d4);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22;
+}
+.user-badge {
+  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 8px 16px; border-radius: 12px; font-size: 13px; color: #6ee7b7; display: flex; align-items: center; gap: 10px;
+}
+.logout-btn {
+  background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
+  padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
+}
+.logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
+
+/* Navigation Sub-Bar with Tally button added */
+.nav-bar {
+  max-width: 1300px; width: 100%; margin: 0 auto 24px; display: flex; gap: 10px; flex-wrap: wrap;
+}
+.nav-tab-link {
+  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
+}
+.nav-tab-link:hover, .nav-tab-link.active {
+  background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #fff;
+}
+
+.container {
+  max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+}
+
+.card {
+  background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 24px;
+  backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+.card h3 { font-size: 18px; margin-bottom: 16px; color: #fff; display: flex; align-items: center; gap: 8px; }
+
+.upload-zone {
+  border: 2px dashed rgba(16, 185, 129, 0.4); border-radius: 14px; padding: 30px 20px; text-align: center;
+  background: rgba(3, 14, 23, 0.4); cursor: pointer; transition: all 0.2s;
+}
+.upload-zone:hover { border-color: var(--primary); background: rgba(16, 185, 129, 0.05); }
+.upload-zone i { font-size: 32px; color: var(--primary); margin-bottom: 10px; }
+
+.btn-action {
+  width: 100%; height: 46px; border-radius: 12px; border: none; background: linear-gradient(135deg, #34d399, #10b981);
+  color: #022c22; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s;
+}
+.btn-action:hover:not(:disabled) { transform: translateY(-2px); }
+.btn-action:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.table-container {
+  overflow-x: auto; max-height: 400px; margin-top: 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08);
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+th, td { padding: 10px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+th { background: rgba(3, 14, 23, 0.8); color: var(--text-muted); position: sticky; top: 0; }
+tr:hover { background: rgba(255, 255, 255, 0.02); }
+
+.status-log {
+  margin-top: 16px; padding: 12px; border-radius: 10px; font-size: 13px; background: rgba(3, 14, 23, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08); font-family: var(--font-mono); min-height: 60px; max-height: 120px; overflow-y: auto; color: #cbd5e1;
+}
+
+@media(max-width: 900px) { .container { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-box">
+    <div class="brand-logo">KA</div>
+    <div>
+      <h2 style="font-size:18px; color:#fff;">Kcrish Automation Suite</h2>
+      <span style="font-size:11px; color:var(--text-muted);">TallyPrime &amp; ERP 9 Bridge (Port 9000)</span>
+    </div>
+  </div>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <div class="user-badge" id="userInfoDisplay">
+      <i class="fa-solid fa-folder-open"></i> <span id="userPathText">/Kcrish_Data/Users/Default/</span>
+    </div>
+    <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+  </div>
+</header>
+
+<!-- Navigation Bar with new Tally Sync button included -->
+<nav class="nav-bar">
+  <a href="dashboard.html" class="nav-tab-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+  <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
+  <a href="ledger.html" class="nav-tab-link"><i class="fa-solid fa-book"></i> Ledgers</a>
+  <a href="masters.html" class="nav-tab-link"><i class="fa-solid fa-database"></i> Masters</a>
+  <a href="purchase.html" class="nav-tab-link"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
+  <a href="restore.html" class="nav-tab-link"><i class="fa-solid fa-rotate-left"></i> Restore</a>
+  <a href="tally.html" class="nav-tab-link active"><i class="fa-solid fa-server"></i> Tally Sync</a>
+</nav>
+
+<main class="container">
+  <!-- Left Panel: File Upload & Controls -->
+  <section class="card">
+    <h3><i class="fa-solid fa-file-excel" style="color:var(--primary)"></i> Upload Excel Source</h3>
+    <div class="upload-zone" id="dropZone" onclick="document.getElementById('excelFileInput').click()">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <p style="font-weight:600; color:#fff; font-size:14px;">Click to upload or drag Excel file</p>
+      <span style="font-size:11px; color:var(--text-dim);">Supports .xlsx, .xls, .csv</span>
+      <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
+    </div>
+
+    <div style="margin-top:20px;">
+      <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:6px;">Target Tally Company</label>
+      <input type="text" id="targetCompanyInput" class="form-input" value="Default Company" style="width:100%; height:42px; border-radius:10px; border:1px solid var(--border-input); background:rgba(3,14,23,0.5); color:#fff; padding:0 12px; font-family:inherit;">
+    </div>
+
+    <button class="btn-action" id="pushToTallyBtn" disabled>
+      <i class="fa-solid fa-paper-plane"></i> Push Vouchers to Tally (Port 9000)
+    </button>
+  </section>
+
+  <!-- Right Panel: Data Preview Table & Logs -->
+  <section class="card">
+    <h3><i class="fa-solid fa-table" style="color:var(--cyan)"></i> Parsed Data Preview</h3>
+    <div class="table-container">
+      <table id="previewTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Voucher Type</th>
+            <th>Voucher No</th>
+            <th>Party Name</th>
+            <th>Amount (₹)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="5" style="text-align:center; color:var(--text-dim); padding:30px;">No Excel file loaded yet. Upload a file to preview.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;">
+      <span style="font-size:12px; font-weight:700; color:var(--text-muted);">Execution Logs:</span>
+      <div class="status-log" id="statusLog">Ready. Waiting for Excel input...</div>
+    </div>
+  </section>
+</main>
+
+<!-- Include app.js containing sync logic -->
+<script src="app.js"></script>
+<script>
+(() => {
+  const username = localStorage.getItem('client_username');
+  const userFolder = localStorage.getItem('active_user_folder');
+
+  if (!username) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  document.getElementById('userPathText').textContent = userFolder || '/Kcrish_Data/Users/Default/';
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('client_username');
+    localStorage.removeItem('active_user_folder');
+    window.location.href = 'index.html';
+  });
+
+  let parsedVouchers = [];
+
+  const fileInput = document.getElementById('excelFileInput');
+  const statusLog = document.getElementById('statusLog');
+  const pushBtn = document.getElementById('pushToTallyBtn');
+  const previewTableBody = document.querySelector('#previewTable tbody');
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    statusLog.innerHTML += `<br>[Parser] Reading file: ${file.name}...`;
+    const reader = new FileReader();
+
+    reader.onload = function(evt) {
+      try {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        
+        const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+        
+        if (jsonRows.length === 0) {
+          alert('Excel sheet is empty!');
+          return;
+        }
+
+        parsedVouchers = jsonRows.map(row => ({
+          date: row.Date || row.DATE || new Date().toISOString().split('T')[0],
+          voucherType: row.VoucherType || row.VOUCHERTYPE || 'Sales',
+          voucherNumber: row.VoucherNo || row.VOUCHERNO || Math.floor(Math.random() * 1000),
+          partyName: row.PartyName || row.PARTYNAME || row.Name || 'Cash',
+          amount: row.Amount || row.AMOUNT || 0,
+          companyName: document.getElementById('targetCompanyInput').value.trim()
+        }));
+
+        previewTableBody.innerHTML = '';
+        parsedVouchers.forEach(v => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${v.date}</td><td>${v.voucherType}</td><td>${v.voucherNumber}</td><td>${v.partyName}</td><td>₹${v.amount}</td>`;
+          previewTableBody.appendChild(tr);
+        });
+
+        statusLog.innerHTML += `<br>[Parser] Successfully parsed ${parsedVouchers.length} rows. Ready to sync.`;
+        pushBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        statusLog.innerHTML += `<br>[Error] Failed to parse Excel file.`;
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
+  });
+
+  pushBtn.addEventListener('click', async () => {
+    if (parsedVouchers.length === 0) return;
+
+    pushBtn.disabled = true;
+    statusLog.innerHTML += `<br>[Sync Engine] Connecting to Tally on Port 9000...`;
+
+    if (typeof pushVouchersToTally === 'function') {
+      const result = await pushVouchersToTally(parsedVouchers);
+      statusLog.innerHTML += `<br>[Sync Complete] Total: ${result.total} | Success: ${result.success} | Failed: ${result.failed}`;
+      saveLocalBackup(parsedVouchers, 'Uploaded_Vouchers.xlsx');
+    } else {
+      statusLog.innerHTML += `<br>[Error] pushVouchersToTally function missing from app.js!`;
+    }
+
+    pushBtn.disabled = false;
+  });
+})();
+</script>
+</body>
+</html>
