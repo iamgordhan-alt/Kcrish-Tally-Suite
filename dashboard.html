@@ -85,15 +85,28 @@ header {
 }
 
 .container {
-  max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 24px;
+  max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
 }
 
 .card {
-  background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 28px;
+  background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 24px;
   backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
-.card h3 { font-size: 20px; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 10px; }
-.card p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+.card h3 { font-size: 18px; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 10px; }
+.card p { color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
+
+.stat-number {
+  font-size: 28px; font-weight: 800; color: var(--primary-light); font-family: var(--font-mono);
+}
+
+.quick-action-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px;
+  background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #6ee7b7;
+  font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s;
+}
+.quick-action-btn:hover { background: rgba(16, 185, 129, 0.25); color: #fff; }
+
+@media(max-width: 900px) { .container { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -125,9 +138,30 @@ header {
 </nav>
 
 <main class="container">
+  <!-- Card 1: Overview -->
   <section class="card">
-    <h3><i class="fa-solid fa-house" style="color:var(--primary)"></i> Welcome to your Workspace</h3>
-    <p>You have successfully logged into your isolated directory mapping zone. Select any module from the navigation bar above (Converter, Ledgers, Masters, Purchase, Restore, or Tally Sync) to proceed with your operations.</p>
+    <h3><i class="fa-solid fa-chart-pie" style="color:var(--primary)"></i> System Overview</h3>
+    <p>Your workspace is active and securely connected to your isolated directory path.</p>
+    <div class="stat-number">0 Active</div>
+    <span style="font-size:11px; color:var(--text-dim);">Vouchers queued for processing</span>
+  </section>
+
+  <!-- Card 2: Quick Navigation -->
+  <section class="card">
+    <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
+    <p>Jump straight into your most frequently used modules to manage data instantly.</p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+      <a href="tally.html" class="quick-action-btn"><i class="fa-solid fa-server"></i> Open Tally Sync</a>
+      <a href="converter.html" class="quick-action-btn"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
+    </div>
+  </section>
+
+  <!-- Card 3: Storage Status -->
+  <section class="card">
+    <h3><i class="fa-solid fa-hard-drive" style="color:#f59e0b"></i> Local Storage</h3>
+    <p>Encrypted local directory tracking enabled for seamless record keeping.</p>
+    <div class="stat-number" style="color:#38bdf8;">256-Bit</div>
+    <span style="font-size:11px; color:var(--text-dim);">Client-side security active</span>
   </section>
 </main>
 
