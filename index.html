@@ -84,7 +84,13 @@
     }
     .logo-box:hover { transform: scale(1.05); }
 
-    .logo-img {
+    .logo-img.logo-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 260px;
+  object-fit: contain;
+  mix-blend-mode: multiply; /* Yeh white background ko transparent kar dega */
+} {
       max-width: 100%;
       height: auto;
       max-height: 260px;
