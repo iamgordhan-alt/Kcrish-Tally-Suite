@@ -1,21 +1,39 @@
-// Auto-trigger smooth page entrance and fast transition handlers
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    document.body.classList.add("page-loaded");
-  }, 40);
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drive Restore - Tally Suite</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body onload="loadPersonalDriveFiles()">
 
-  document.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", function(e) {
-      const target = this.getAttribute("href");
-      if (!target || target.startsWith("#") || target.startsWith("javascript:") || (target.startsWith("http") && !target.includes(window.location.hostname))) {
-        return;
-      }
-      e.preventDefault();
-      document.body.classList.remove("page-loaded");
-      document.body.classList.add("page-exiting");
-      setTimeout(() => {
-        window.location.href = target;
-      }, 300);
-    });
-  });
-});
+<div class="app-container">
+  <div class="dashboard-header">
+    <div>
+      <h1>Google Drive Restore</h1>
+      <p>Audit and retrieve synced JSON archives from Drive</p>
+    </div>
+    <div class="header-actions">
+      <a href="dashboard.html" class="btn-template" style="color:var(--text); text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="step-box" style="background:#f9fafb;">
+      <span style="color:var(--text); font-weight: 500;">Retrieve and audit synced JSON archives from personal Google Drive</span>
+      <button class="btn-template" onclick="loadPersonalDriveFiles()" style="border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-rotate"></i> Refresh</button>
+    </div>
+    <div id="driveJsonContainer" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fafafa; font-size: 12px; text-align: center; color: var(--text-muted); width: 100%;">
+      Loading files from your Drive...
+    </div>
+    <div id="alertBox" class="alert"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
