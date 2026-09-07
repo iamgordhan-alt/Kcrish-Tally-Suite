@@ -12,41 +12,88 @@
     :root {
       --primary: #5835df;
       --primary-hover: #4729c6;
-      --bg: #f4f5f9;
+      --bg-gradient: linear-gradient(135deg, #1e1b4b, #312e81, #4c1d95);
       --card-bg: #ffffff;
       --text: #1e1b4b;
       --text-muted: #6b7280;
       --border: #e5e7eb;
       --radius: 16px;
     }
+
     * { box-sizing: border-box; }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      margin: 0; min-height: 100vh;
-      display: flex; justify-content: center; align-items: center; padding: 20px; color: var(--text);
+      background: var(--bg-gradient);
+      background-size: cover;
+      background-attachment: fixed;
+      margin: 0; 
+      min-height: 100vh;
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 20px; 
+      color: var(--text);
     }
+
     .auth-card {
-      width: 100%; max-width: 440px; background: var(--card-bg);
-      padding: 40px 36px; border-radius: var(--radius);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--border); text-align: center;
+      width: 100%; 
+      max-width: 440px; 
+      background: var(--card-bg);
+      padding: 40px 36px; 
+      border-radius: var(--radius);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border); 
+      text-align: center;
     }
-    h2 { margin: 0 0 28px 0; font-size: 28px; font-weight: 700; color: var(--text); }
-    .social-btns { display: flex; gap: 12px; margin-bottom: 24px; }
+
+    /* BRANDING LOGO STYLING */
+    .brand-logo-container {
+      margin-bottom: 20px;
+    }
+    .brand-logo {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #5835df, #7c3aed);
+      color: white;
+      font-size: 28px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(88, 53, 223, 0.3);
+      margin-bottom: 8px;
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 4px 0;
+    }
+    .brand-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0 0 24px 0;
+    }
+
+    .social-btns { display: flex; gap: 12px; margin-bottom: 20px; }
     .btn-social {
       flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 12px;
       background: white; cursor: pointer; font-size: 16px; display: flex; justify-content: center; align-items: center;
+      transition: background 0.2s;
     }
     .btn-social:hover { background: #f9fafb; border-color: #d1d5db; }
     .btn-social.google { color: #ea4335; }
     .btn-social.facebook { background: #1877f2; color: white; border-color: #1877f2; }
+
     .divider {
-      display: flex; align-items: center; text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 24px;
+      display: flex; align-items: center; text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 20px;
     }
     .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
     .divider::before { margin-right: 12px; } .divider::after { margin-left: 12px; }
-    .input-field-group { text-align: left; margin-bottom: 18px; }
+
+    .input-field-group { text-align: left; margin-bottom: 16px; }
     .input-field-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
     .input-wrapper { position: relative; }
     .input-wrapper input {
@@ -54,27 +101,39 @@
     }
     .input-wrapper input:focus { border-color: var(--primary); }
     .toggle-password { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); cursor: pointer; }
-    .forgot-link-box { text-align: left; margin-bottom: 24px; }
+
+    .forgot-link-box { text-align: left; margin-bottom: 20px; }
     .forgot-link-box a { color: var(--primary); text-decoration: none; font-size: 13px; font-weight: 600; }
+    .forgot-link-box a:hover { text-decoration: underline; }
+
     .btn-main {
       width: 100%; background: var(--primary); color: white; border: none; padding: 13px;
       border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 20px;
+      transition: background 0.2s;
     }
     .btn-main:hover { background: var(--primary-hover); }
-    .auth-footer-links { font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 10px; }
+
+    .auth-footer-links { font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px; }
     .auth-footer-links a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .auth-footer-links a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
 <div class="auth-card">
-  <h2>Log in</h2>
-  <div class="social-btns">
-    <button class="btn-social google" onclick="handleGoogleLogin()"><i class="fa-brands fa-google"></i></button>
-    <button class="btn-social facebook" onclick="alert('Facebook login feature.')"><i class="fa-brands fa-facebook-f"></i></button>
+  <!-- LOGO & BRANDING -->
+  <div class="brand-logo-container">
+    <div class="brand-logo"><i class="fa-solid fa-bolt"></i></div>
+    <h1 class="brand-title">Kcrish Tally Suite</h1>
+    <p class="brand-subtitle">Sign in to your automation portal</p>
   </div>
 
-  <div class="divider">or</div>
+  <div class="social-btns">
+    <button class="btn-social google" onclick="handleGoogleLogin()" title="Sign in with Google"><i class="fa-brands fa-google"></i></button>
+    <button class="btn-social facebook" onclick="alert('Facebook login feature.')" title="Sign in with Facebook"><i class="fa-brands fa-facebook-f"></i></button>
+  </div>
+
+  <div class="divider">or sign in with email</div>
 
   <div class="input-field-group">
     <label>Email address</label>
