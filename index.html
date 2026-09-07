@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kcrish Automation Suite - Enterprise Workspace Dashboard">
+<meta name="description" content="Kcrish Automation Suite - Secure Client Login">
 <meta name="theme-color" content="#061219">
-<title>Kcrish Workspace • Enterprise Dashboard</title>
+<title>Kcrish Workspace • Secure Login</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
   --primary-light: #34d399;
   --cyan: #06b6d4;
   --bg-dark: #061118;
-  --bg-card: rgba(12, 26, 36, 0.75);
+  --bg-card: rgba(12, 26, 36, 0.85);
   --border-card: rgba(255, 255, 255, 0.12);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
@@ -33,152 +33,132 @@ body {
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
-    linear-gradient(180deg, #050e14 0%, #081620 100%);
-  background-attachment: fixed;
-  padding: 24px;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  max-width: 1300px;
+  justify-content: center;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
+    linear-gradient(135deg, #040d12 0%, #081620 100%);
+  background-attachment: fixed;
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 24px;
+  padding: 40px;
   width: 100%;
-  margin: 0 auto 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  max-width: 440px;
+  backdrop-filter: blur(25px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+  text-align: center;
 }
-.brand-box { display: flex; align-items: center; gap: 12px; }
-.brand-logo {
-  width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #06b6d4);
-  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22;
+
+.brand-logo-large {
+  width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, #10b981, #06b6d4);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; color: #022c22;
+  margin: 0 auto 16px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
 }
-.user-badge {
-  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 8px 16px; border-radius: 12px; font-size: 13px; color: #6ee7b7; display: flex; align-items: center; gap: 10px;
+
+.login-card h2 {
+  font-size: 22px; color: #fff; margin-bottom: 6px; font-weight: 700;
 }
-.logout-btn {
+.login-card p {
+  font-size: 13px; color: var(--text-muted); margin-bottom: 28px;
+}
+
+.input-group {
+  text-align: left; margin-bottom: 18px;
+}
+.input-group label {
+  display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;
+}
+.input-field {
+  width: 100%; height: 48px; background: rgba(3, 14, 23, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px; padding: 0 16px; color: #fff; font-size: 14px; font-family: var(--font-main);
+  transition: all 0.2s;
+}
+.input-field:focus {
+  outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.btn-login {
+  width: 100%; height: 48px; border-radius: 12px; border: none; background: linear-gradient(135deg, #34d399, #10b981);
+  color: #022c22; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.25);
+}
+.btn-login:hover {
+  transform: translateY(-2px); box-shadow: 0 15px 25px rgba(16, 185, 129, 0.35);
+}
+
+.error-msg {
   background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
-  padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
-  display: flex; align-items: center; gap: 6px; transition: background 0.2s;
-}
-.logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
-
-.nav-bar {
-  max-width: 1300px; width: 100%; margin: 0 auto 24px; display: flex; gap: 10px; flex-wrap: wrap;
-}
-.nav-tab-link {
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-muted); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
-  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
-}
-.nav-tab-link:hover, .nav-tab-link.active {
-  background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #fff;
+  padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 16px; display: none; text-align: left;
 }
 
-.container {
-  max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+.login-footer {
+  margin-top: 24px; font-size: 12px; color: var(--text-dim); display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 16px;
 }
-
-.card {
-  background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 24px;
-  backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; justify-content: space-between;
+.login-footer a {
+  color: var(--cyan); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: color 0.2s;
 }
-.card h3 { font-size: 18px; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 10px; }
-.card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
-
-.btn-action {
-  background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399;
-  padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; text-decoration: none;
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;
+.login-footer a:hover {
+  color: #38bdf8; text-decoration: underline;
 }
-.btn-action:hover { background: rgba(16, 185, 129, 0.25); color: #fff; }
-
-.stat-number { font-size: 26px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 6px; }
-
-@media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand-box">
-    <div class="brand-logo">KA</div>
-    <div>
-      <h2 style="font-size:18px; color:#fff;">Kcrish Automation Suite</h2>
-      <span style="font-size:11px; color:var(--text-muted);">Enterprise Workspace Dashboard</span>
+<div class="login-card">
+  <div class="brand-logo-large">KA</div>
+  <h2>Kcrish Automation Suite</h2>
+  <p>Secure Enterprise Workspace Login</p>
+
+  <div class="error-msg" id="errorBox">Please enter a valid username.</div>
+
+  <form id="loginForm">
+    <div class="input-group">
+      <label for="usernameInput">Client Username / ID</label>
+      <input type="text" id="usernameInput" class="input-field" placeholder="Enter your username..." required autocomplete="off">
     </div>
+
+    <button type="submit" class="btn-login">
+      <i class="fa-solid fa-right-to-bracket"></i> Launch Workspace
+    </button>
+  </form>
+
+  <div class="login-footer">
+    <span>© Kcrish Systems</span>
+    <a href="about.html"><i class="fa-solid fa-circle-info"></i> About</a>
   </div>
-  <div style="display:flex; align-items:center; gap:16px;">
-    <div class="user-badge" id="userInfoDisplay">
-      <i class="fa-solid fa-folder-open"></i> <span id="userPathText">/Kcrish_Data/Users/Default/</span>
-    </div>
-    <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
-  </div>
-</header>
-
-<nav class="nav-bar">
-  <a href="dashboard.html" class="nav-tab-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-  <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
-  <a href="ledger.html" class="nav-tab-link"><i class="fa-solid fa-book"></i> Ledgers</a>
-  <a href="masters.html" class="nav-tab-link"><i class="fa-solid fa-database"></i> Masters</a>
-  <a href="purchase.html" class="nav-tab-link"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
-  <a href="restore.html" class="nav-tab-link"><i class="fa-solid fa-rotate-left"></i> Restore</a>
-  <a href="about.html" class="nav-tab-link"><i class="fa-solid fa-circle-info"></i> About</a>
-</nav>
-
-<main class="container">
-  <!-- Card 1: System Overview -->
-  <section class="card">
-    <div>
-      <h3><i class="fa-solid fa-chart-pie" style="color:var(--primary)"></i> System Overview</h3>
-      <p>Your workspace is active and securely connected to your isolated directory path.</p>
-      <div class="stat-number">0 Active</div>
-      <span style="font-size: 11px; color: var(--text-dim);">Vouchers queued for processing</span>
-    </div>
-  </section>
-
-  <!-- Card 2: Quick Actions -->
-  <section class="card">
-    <div>
-      <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
-      <p>Jump straight into your most frequently used modules to manage data instantly.</p>
-    </div>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-      <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> About</a>
-      <a href="converter.html" class="btn-action" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
-    </div>
-  </section>
-
-  <!-- Card 3: Local Storage -->
-  <section class="card">
-    <div>
-      <h3><i class="fa-solid fa-database" style="color:var(--warning)"></i> Local Storage</h3>
-      <p>Encrypted local directory tracking enabled for seamless record keeping.</p>
-      <div class="stat-number" style="color: var(--cyan);">256-Bit</div>
-      <span style="font-size: 11px; color: var(--text-dim);">Client-side security active</span>
-    </div>
-  </section>
-</main>
+</div>
 
 <script>
-  const username = localStorage.getItem('client_username');
-  const userFolder = localStorage.getItem('active_user_folder');
-
-  if (!username) {
-    window.location.href = 'index.html';
+  // Redirect if already logged in
+  if (localStorage.getItem('client_username')) {
+    window.location.href = 'dashboard.html';
   }
 
-  document.getElementById('userPathText').textContent = userFolder || '/Kcrish_Data/Users/Default/';
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('usernameInput').value.trim();
+    const errorBox = document.getElementById('errorBox');
 
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('client_username');
-    localStorage.removeItem('active_user_folder');
-    window.location.href = 'index.html';
+    if (!username || username.length < 2) {
+      errorBox.textContent = 'Please enter a valid username (at least 2 characters).';
+      errorBox.style.display = 'block';
+      return;
+    }
+
+    // Save session data
+    localStorage.setItem('client_username', username);
+    localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${username.replace(/\s+/g, '_')}/`);
+    
+    // Redirect to dashboard
+    window.location.href = 'dashboard.html';
   });
 </script>
 </body>
