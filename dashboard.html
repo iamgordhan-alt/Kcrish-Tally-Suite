@@ -41,19 +41,6 @@ body {
     linear-gradient(180deg, #050e14 0%, #081620 100%);
   background-attachment: fixed;
   padding: 24px;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
-}
-
-body.page-loaded {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-body.page-exiting {
-  opacity: 0;
-  transform: translateY(-8px);
 }
 
 header {
@@ -62,8 +49,8 @@ header {
   align-items: center;
   max-width: 1300px;
   width: 100%;
-  margin: 0 auto 20px;
-  padding-bottom: 20px;
+  margin: 0 auto 16px;
+  padding-bottom: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .brand-box { display: flex; align-items: center; gap: 12px; }
@@ -72,31 +59,31 @@ header {
   display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22;
 }
 
-/* Header User Details / Profile Button (Replaced Folder Path) */
-.user-profile-btn {
+.user-badge {
   background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 8px 16px; border-radius: 12px; font-size: 13px; color: #6ee7b7; display: flex; align-items: center; gap: 10px;
-  cursor: pointer; transition: all 0.2s; font-family: inherit; font-weight: 600;
+  padding: 6px 14px; border-radius: 10px; font-size: 13px; color: #6ee7b7; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
 }
-.user-profile-btn:hover { background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.5); color: #fff; }
 
 .logout-btn {
   background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
-  padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 600;
+  padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
   display: flex; align-items: center; gap: 6px; transition: background 0.2s;
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
 
+/* Chrome Web Store style clean underline tabs */
 .nav-bar {
-  max-width: 1300px; width: 100%; margin: 0 auto 24px; display: flex; gap: 10px; flex-wrap: wrap;
+  max-width: 1300px; width: 100%; margin: 0 auto 28px; display: flex; gap: 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .nav-tab-link {
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-muted); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
-  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
+  background: none; border: none; color: var(--text-muted); padding: 10px 0; font-size: 15px; font-weight: 600;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; position: relative; cursor: pointer; transition: color 0.2s;
 }
-.nav-tab-link:hover, .nav-tab-link.active {
-  background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #fff;
+.nav-tab-link:hover { color: #fff; }
+.nav-tab-link.active { color: var(--primary-light); }
+.nav-tab-link.active::after {
+  content: ""; position: absolute; bottom: -1px; left: 0; right: 0; height: 3px; background-color: var(--primary); border-radius: 3px 3px 0 0;
 }
 
 .container {
@@ -119,28 +106,6 @@ header {
 
 .stat-number { font-size: 28px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 8px; }
 
-/* Modal Overlay for Profile / Password Settings */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
-  display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
-}
-.modal-overlay.open { display: flex; }
-.modal-box {
-  background: #091722; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
-  width: 100%; max-width: 400px; padding: 28px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); position: relative;
-}
-.modal-close-btn {
-  position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.06); border: none; color: #94a3b8;
-  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.form-group { margin-bottom: 14px; }
-.form-label { display: block; font-size: 11px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
-.form-input {
-  width: 100%; height: 42px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(3,14,23,0.6); color: #fff; padding: 0 12px; font-size: 13px; outline: none;
-}
-.form-input:disabled { color: var(--text-dim); background: rgba(3,14,23,0.3); }
-
 @media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -154,15 +119,15 @@ header {
       <span style="font-size:11px; color:var(--text-muted);">Enterprise Workspace Dashboard</span>
     </div>
   </div>
-  <div style="display:flex; align-items:center; gap:12px;">
-    <!-- Header Profile Button showing Username -->
-    <button class="user-profile-btn" id="openProfileModal">
-      <i class="fa-solid fa-user-gear"></i> <span id="headerUsernameText">Account</span>
-    </button>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <div class="user-badge">
+      <i class="fa-solid fa-user-circle"></i> <span id="headerUsernameText">User</span>
+    </div>
     <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
   </div>
 </header>
 
+<!-- Chrome Web Store style underline tab navigation -->
 <nav class="nav-bar">
   <a href="dashboard.html" class="nav-tab-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
   <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
@@ -207,99 +172,19 @@ header {
   </section>
 </main>
 
-<!-- Profile & Password Settings Modal -->
-<div class="modal-overlay" id="profileModal">
-  <div class="modal-box">
-    <button type="button" class="modal-close-btn" id="closeProfileModal">✕</button>
-    <h3 style="font-size:18px; color:#fff; margin-bottom:6px;">Profile Settings</h3>
-    <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Manage your profile credentials securely.</p>
-    
-    <form id="profileUpdateForm">
-      <div class="form-group">
-        <label class="form-label">USERNAME</label>
-        <input type="text" id="modalUsername" disabled class="form-input" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">NEW PASSWORD</label>
-        <input type="password" id="modalNewPassword" placeholder="Minimum 8 characters" class="form-input" />
-      </div>
-      <button type="submit" class="btn-action" style="width: 100%; height: 44px; margin-top: 6px;">Save Changes</button>
-      <div id="modalStatus" style="font-size: 12px; text-align: center; margin-top: 10px; min-height: 18px;"></div>
-    </form>
-  </div>
-</div>
-
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // Smooth Page Entry Fade-In
-    setTimeout(() => {
-      document.body.classList.add("page-loaded");
-    }, 40);
-
-    // Smooth Page Exit Animation on internal navigation links
-    document.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", function(e) {
-        const targetUrl = this.getAttribute("href");
-        if (!targetUrl || targetUrl.startsWith("#") || (targetUrl.startsWith("http") && !targetUrl.includes(window.location.hostname))) {
-          return;
-        }
-        e.preventDefault();
-        document.body.classList.remove("page-loaded");
-        document.body.classList.add("page-exiting");
-        setTimeout(() => {
-          window.location.href = targetUrl;
-        }, 350);
-      });
-    });
-
-    // Session Management
-    const username = localStorage.getItem('client_username');
-    if (!username) {
-      window.location.href = 'index.html';
-      return;
-    }
-
+  const username = localStorage.getItem('client_username');
+  if (!username) {
+    window.location.href = 'index.html';
+  } else {
     document.getElementById('headerUsernameText').textContent = username;
-    document.getElementById('modalUsername').value = username;
+  }
 
-    // Modal Handlers
-    const modal = document.getElementById('profileModal');
-    document.getElementById('openProfileModal').addEventListener('click', () => modal.classList.add('open'));
-    document.getElementById('closeProfileModal').addEventListener('click', () => modal.classList.remove('open'));
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
-
-    // Profile Update Handler
-    document.getElementById('profileUpdateForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const newPass = document.getElementById('modalNewPassword').value.trim();
-      const statusBox = document.getElementById('modalStatus');
-
-      if (newPass && newPass.length < 8) {
-        statusBox.style.color = '#f87171';
-        statusBox.textContent = 'Password must be at least 8 characters.';
-        return;
-      }
-
-      statusBox.style.color = '#34d399';
-      statusBox.textContent = 'Profile updated successfully!';
-      document.getElementById('modalNewPassword').value = '';
-      setTimeout(() => { 
-        statusBox.textContent = ''; 
-        modal.classList.remove('open');
-      }, 1500);
-    });
-
-    // Logout Handler
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      document.body.classList.remove("page-loaded");
-      document.body.classList.add("page-exiting");
-      setTimeout(() => {
-        localStorage.removeItem('client_username');
-        localStorage.removeItem('active_user_folder');
-        localStorage.removeItem('google_access_token');
-        window.location.href = 'index.html';
-      }, 350);
-    });
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('client_username');
+    localStorage.removeItem('active_user_folder');
+    localStorage.removeItem('google_access_token');
+    window.location.href = 'index.html';
   });
 </script>
 </body>
