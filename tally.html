@@ -74,7 +74,6 @@ header {
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
 
-/* Navigation Sub-Bar with Tally button added */
 .nav-bar {
   max-width: 1300px; width: 100%; margin: 0 auto 24px; display: flex; gap: 10px; flex-wrap: wrap;
 }
@@ -146,7 +145,6 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
   </div>
 </header>
 
-<!-- Navigation Bar with new Tally Sync button included -->
 <nav class="nav-bar">
   <a href="dashboard.html" class="nav-tab-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
   <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
@@ -158,13 +156,12 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 </nav>
 
 <main class="container">
-  <!-- Left Panel: File Upload & Controls -->
   <section class="card">
     <h3><i class="fa-solid fa-file-excel" style="color:var(--primary)"></i> Upload Excel Source</h3>
     <div class="upload-zone" id="dropZone" onclick="document.getElementById('excelFileInput').click()">
       <i class="fa-solid fa-cloud-arrow-up"></i>
       <p style="font-weight:600; color:#fff; font-size:14px;">Click to upload or drag Excel file</p>
-      <span style="font-size:11px; color:var(--text-dim);">Supports .xlsx, .xls, .csv</span>
+      <span style="font-size:11px; color:var(--text-dim);">Supports any format (.xlsx, .xls, .csv)</span>
       <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
     </div>
 
@@ -178,9 +175,8 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     </button>
   </section>
 
-  <!-- Right Panel: Data Preview Table & Logs -->
   <section class="card">
-    <h3><i class="fa-solid fa-table" style="color:var(--cyan)"></i> Parsed Data Preview</h3>
+    <h3><i class="fa-solid fa-table" style="color:var(--cyan)"></i> Smart Parsed Data Preview</h3>
     <div class="table-container">
       <table id="previewTable">
         <thead>
@@ -202,12 +198,11 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 
     <div style="margin-top:16px;">
       <span style="font-size:12px; font-weight:700; color:var(--text-muted);">Execution Logs:</span>
-      <div class="status-log" id="statusLog">Ready. Waiting for Excel input...</div>
+      <div class="status-log" id="statusLog">Ready. Drop any Excel file to auto-detect mapping...</div>
     </div>
   </section>
 </main>
 
-<!-- Include app.js containing sync logic -->
 <script src="app.js"></script>
 <script>
 (() => {
@@ -234,6 +229,82 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
   const pushBtn = document.getElementById('pushToTallyBtn');
   const previewTableBody = document.querySelector('#previewTable tbody');
 
+  // Smart Column Auto-Mapper Logic
+  function smartParseRow(row) {
+    const normalizedRow = {};
+    Object.keys(row).forEach(key => {
+      const cleanKey = key.toLowerCase().replace(/[\s_-]/g, '');
+      normalizedRow[cleanKey] = row[key];
+    });
+
+    // 1. Date Finder
+    let rawDate = null;
+    for (let k of Object.keys(normalizedRow)) {
+      if (k.includes('date') || k.includes('dt')) {
+        rawDate = normalizedRow[k];
+        break;
+      }
+    }
+    let formattedDate = new Date().toISOString().split('T')[0];
+    if (rawDate) {
+      if (typeof rawDate === 'number') {
+        const excelEpoch = new Date(1899, 11, 30);
+        const converted = new Date(excelEpoch.getTime() + rawDate * 86400000);
+        formattedDate = converted.toISOString().split('T')[0];
+      } else {
+        formattedDate = String(rawDate).trim();
+      }
+    }
+
+    // 2. Voucher Type Finder
+    let vchType = 'Sales';
+    for (let k of Object.keys(normalizedRow)) {
+      if (k.includes('vouchertype') || k.includes('type') || k.includes('category')) {
+        vchType = normalizedRow[k] || 'Sales';
+        break;
+      }
+    }
+
+    // 3. Voucher Number Finder
+    let vchNo = Math.floor(Math.random() * 1000);
+    for (let k of Object.keys(normalizedRow)) {
+      if (k.includes('no') || k.includes('number') || k.includes('inv') || k.includes('bill')) {
+        vchNo = normalizedRow[k];
+        break;
+      }
+    }
+
+    // 4. Party Name Finder
+    let party = 'Cash';
+    for (let k of Object.keys(normalizedRow)) {
+      if (k.includes('party') || k.includes('customer') || k.includes('client') || k.includes('name')) {
+        party = normalizedRow[k];
+        break;
+      }
+    }
+
+    // 5. Amount Finder
+    let amt = 0;
+    for (let k of Object.keys(normalizedRow)) {
+      if (k.includes('amount') || k.includes('total') || k.includes('net') || k.includes('value') || k.includes('sum') || k.includes('amt')) {
+        const val = parseFloat(normalizedRow[k]);
+        if (!isNaN(val)) {
+          amt = val;
+          break;
+        }
+      }
+    }
+
+    return {
+      date: formattedDate,
+      voucherType: String(vchType).trim(),
+      voucherNumber: String(vchNo).trim(),
+      partyName: String(party).trim(),
+      amount: amt,
+      companyName: document.getElementById('targetCompanyInput').value.trim()
+    };
+  }
+
   fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -255,14 +326,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
           return;
         }
 
-        parsedVouchers = jsonRows.map(row => ({
-          date: row.Date || row.DATE || new Date().toISOString().split('T')[0],
-          voucherType: row.VoucherType || row.VOUCHERTYPE || 'Sales',
-          voucherNumber: row.VoucherNo || row.VOUCHERNO || Math.floor(Math.random() * 1000),
-          partyName: row.PartyName || row.PARTYNAME || row.Name || 'Cash',
-          amount: row.Amount || row.AMOUNT || 0,
-          companyName: document.getElementById('targetCompanyInput').value.trim()
-        }));
+        parsedVouchers = jsonRows.map(row => smartParseRow(row));
 
         previewTableBody.innerHTML = '';
         parsedVouchers.forEach(v => {
@@ -271,7 +335,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
           previewTableBody.appendChild(tr);
         });
 
-        statusLog.innerHTML += `<br>[Parser] Successfully parsed ${parsedVouchers.length} rows. Ready to sync.`;
+        statusLog.innerHTML += `<br>[Smart Mapper] Successfully mapped ${parsedVouchers.length} rows automatically. Ready to sync.`;
         pushBtn.disabled = false;
       } catch (err) {
         console.error(err);
