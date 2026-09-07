@@ -180,7 +180,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
       <i class="fa-solid fa-download"></i> Download Tally-Ready CSV File
     </button>
 
-    <h3 style="margin-top:24px;"><i class="fa-solid code" style="color:var(--cyan)"></i> 2. Tally TDL Integration Bridge</h3>
+    <h3 style="margin-top:24px;"><i class="fa-solid fa-file-code" style="color:var(--cyan)"></i> 2. Tally TDL Integration Bridge</h3>
     <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Download the official TDL file to enable instant menu integration inside TallyPrime.</p>
     <button class="btn-action btn-tdl" id="downloadTdlBtn">
       <i class="fa-solid fa-file-code"></i> Download TDL File (kcrish_bridge.tdl)
@@ -393,7 +393,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     statusLog.innerHTML += `<br>[Export] Tally-ready CSV downloaded successfully!`;
   });
 
-  // Download TDL File Event
+  // Download TDL File Event (Fixed syntax to prevent duplicate definition error)
   downloadTdlBtn.addEventListener('click', () => {
     const tdlCode = `;; ==========================================================================
 ;; Kcrish Automation Suite - Tally Definition Language (TDL Bridge)
@@ -446,7 +446,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     link.click();
     document.body.removeChild(link);
 
-    statusLog.innerHTML += `<br>[TDL Bridge] 'kcrish_bridge.tdl' downloaded successfully!`;
+    statusLog.innerHTML += `<br>[TDL Bridge] Clean 'kcrish_bridge.tdl' downloaded successfully!`;
   });
 })();
 </script>
