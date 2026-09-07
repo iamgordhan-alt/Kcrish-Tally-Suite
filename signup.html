@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kcrish Tally Suite - Sign Up</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #5835df;
+      --primary-hover: #4729c6;
+      --bg: #f4f5f9;
+      --card-bg: #ffffff;
+      --text: #1e1b4b;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      margin: 0; min-height: 100vh;
+      display: flex; justify-content: center; align-items: center; padding: 20px; color: var(--text);
+    }
+    .auth-card {
+      width: 100%; max-width: 440px; background: var(--card-bg);
+      padding: 40px 36px; border-radius: var(--radius);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border); text-align: center;
+    }
+    h2 { margin: 0 0 28px 0; font-size: 28px; font-weight: 700; color: var(--text); }
+    .input-field-group { text-align: left; margin-bottom: 18px; }
+    .input-field-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+    .input-wrapper input {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; background: #fff;
+    }
+    .input-wrapper input:focus { border-color: var(--primary); }
+    .btn-main {
+      width: 100%; background: var(--primary); color: white; border: none; padding: 13px;
+      border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; margin-bottom: 20px;
+    }
+    .btn-main:hover { background: var(--primary-hover); }
+    .auth-footer-links { font-size: 13px; color: var(--text-muted); }
+    .auth-footer-links a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="auth-card">
+  <h2>Create Account</h2>
+
+  <div class="input-field-group">
+    <label>Full Name</label>
+    <div class="input-wrapper">
+      <input type="text" id="regName" placeholder="Ashok Gitiyal" />
+    </div>
+  </div>
+
+  <div class="input-field-group">
+    <label>Email address</label>
+    <div class="input-wrapper">
+      <input type="email" id="regEmail" placeholder="name@example.com" />
+    </div>
+  </div>
+
+  <div class="input-field-group">
+    <label>Create Password</label>
+    <div class="input-wrapper">
+      <input type="password" id="regPassword" placeholder="••••••••" />
+    </div>
+  </div>
+
+  <button class="btn-main" onclick="handleGoogleSignup()">Sign Up & Link Drive</button>
+
+  <div class="auth-footer-links">
+    Already have an account? <a href="index.html">Log in</a>
+  </div>
+</div>
+
+<script>
+const CLIENT_ID = "306902298167-6o9o8o84955pu92k5k07u5al7djhp6op.apps.googleusercontent.com";
+const SCOPES = "https://www.googleapis.com/auth/drive.file";
+
+let tokenClient;
+
+window.onload = function() {
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (response) => {
+      if (response.error !== undefined) {
+        alert("Google Authentication failed!");
+        return;
+      }
+      localStorage.setItem("google_access_token", response.access_token);
+      let nameVal = document.getElementById("regName").value || document.getElementById("regEmail").value || "New User";
+      localStorage.setItem("client_username", nameVal);
+      window.location.href = "dashboard.html";
+    },
+  });
+};
+
+function handleGoogleSignup() {
+  let name = document.getElementById("regName").value;
+  let email = document.getElementById("regEmail").value;
+  if(!name || !email) {
+    alert("Please fill in your name and email.");
+    return;
+  }
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
+</script>
+</body>
+</html>
