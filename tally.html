@@ -181,7 +181,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     </button>
 
     <h3 style="margin-top:24px;"><i class="fa-solid fa-file-code" style="color:var(--cyan)"></i> 2. Tally TDL Integration Bridge</h3>
-    <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Download the official TDL file for direct one-click Tally import screen opening.</p>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Download the official TDL file with correct Report execution syntax.</p>
     <button class="btn-action btn-tdl" id="downloadTdlBtn">
       <i class="fa-solid fa-file-code"></i> Download TDL File (kcrish_bridge.tdl)
     </button>
@@ -198,7 +198,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
         <li>Press <strong>F1</strong> (Help) &gt; Go to <strong>TDL &amp; Add-ons</strong> (Shortcut: <code>Alt + O</code>).</li>
         <li>Select <strong>Manage Local TDLs</strong> and set <em>Load TDL files on startup</em> to <strong>Yes</strong>.</li>
         <li>Provide the exact folder path where your <code>kcrish_bridge.tdl</code> is saved.</li>
-        <li>Once loaded, click <strong>Kcrish Import Vouchers</strong> on Gateway of Tally to directly open the import panel!</li>
+        <li>Once loaded, see <strong>Kcrish Automation Hub</strong> on Gateway of Tally to open the integration panel!</li>
       </ol>
     </div>
 
@@ -393,17 +393,46 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     statusLog.innerHTML += `<br>[Export] Tally-ready CSV downloaded successfully!`;
   });
 
-  // Download TDL File Event (Directly opens Tally's Import Data screen)
+  // Download TDL File Event (Fixed syntax using valid Form display)
   downloadTdlBtn.addEventListener('click', () => {
     const tdlCode = `;; ==========================================================================
-;; Kcrish Automation Suite - Direct Tally Import Bridge TDL
+;; Kcrish Automation Suite - Tally Definition Language (TDL Bridge)
 ;; ==========================================================================
 
 [#Menu: Gateway of Tally]
-    Add: Item : "Kcrish Import Vouchers" : EXECUTE : Import Data
+    Add: Item : "Kcrish Automation Hub" : Display : KcrishHubReport
+
+[Report: KcrishHubReport]
+    Title : "Kcrish Automation Hub"
+    Form  : KcrishHubForm
+
+[Form: KcrishHubForm]
+    Parts   : KcrishHubPart
+    Buttons : KcrishImportBtn
+
+[Part: KcrishHubPart]
+    Lines : KcrishHubLine1, KcrishHubLine2
+
+[Line: KcrishHubLine1]
+    Fields : InfoField1
+[Field: InfoField1]
+    Set as : "== KCRISH AUTOMATION HUB == Export CSV from web and import below."
+    Style  : Normal Bold
+
+[Line: KcrishHubLine2]
+    Fields : InfoField2
+[Field: InfoField2]
+    Set as : "Click 'Import Tally Data' button on right or press Alt+I."
+    Style  : Italic
+
+[Button: KcrishImportBtn]
+    Title  : "Import Tally Data"
+    Key    : Alt+I
+    Action : Display : Import Data
 `;
 
     const blob = new Blob([tdlCode], { type: 'text/plain;charset=utf-8;' });
+    const userFolder = localStorage.getItem('active_user_folder') || '/Kcrish_Data/';
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
@@ -412,7 +441,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     link.click();
     document.body.removeChild(link);
 
-    statusLog.innerHTML += `<br>[TDL Bridge] Direct Import TDL downloaded successfully!`;
+    statusLog.innerHTML += `<br>[TDL Bridge] Updated 'kcrish_bridge.tdl' downloaded successfully!`;
   });
 })();
 </script>
