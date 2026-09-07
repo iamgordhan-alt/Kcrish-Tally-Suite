@@ -7,46 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
-  <style>
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .menu-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 30px 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-    }
-    .menu-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-4px);
-      box-shadow: 0 10px 15px -3px rgba(88, 53, 223, 0.1);
-    }
-    .menu-card .icon-box {
-      width: 64px; height: 64px;
-      background: #f0edff;
-      color: var(--primary);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-      margin-bottom: 16px;
-    }
-    .menu-card.green .icon-box { background: #ecfdf5; color: var(--success); }
-    .menu-card h3 { margin: 0 0 8px 0; font-size: 16px; font-weight: 600; }
-    .menu-card p { margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-  </style>
 </head>
 <body>
 
@@ -63,34 +23,34 @@
   </div>
 
   <div class="card">
-    <h2 style="margin-top:0; font-size:18px; font-weight:600; color:var(--text);">Automation Modules</h2>
+    <h2 style="margin-top:0; font-size:18px; font-weight:700; color:var(--text-dark);">Automation Modules</h2>
     <p style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">Select a module below to start processing and syncing data.</p>
     
     <div class="menu-grid">
       <!-- Purchase Import -->
-      <a href="purchase.html" class="menu-card green">
+      <a href="purchase.html" class="menu-card">
         <div class="icon-box"><i class="fa-solid fa-cart-shopping"></i></div>
         <h3>Purchase Import</h3>
         <p>Upload purchase spreadsheets, generate XML or party-wise ZIP packages.</p>
       </a>
 
-      <!-- Masters Hub (Combined Item & Ledger Masters) -->
-      <a href="masters.html" class="menu-card">
-        <div class="icon-box"><i class="fa-solid fa-boxes-stacked"></i></div>
+      <!-- Master Management -->
+      <a href="masters.html" class="menu-card blue">
+        <div class="icon-box" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 8px 16px rgba(139,92,246,0.25);"><i class="fa-solid fa-boxes-stacked"></i></div>
         <h3>Master Management</h3>
         <p>Manage and generate Item Stocks, Inventories, and General Ledgers.</p>
       </a>
 
-      <!-- XML to Excel -->
-      <a href="converter.html" class="menu-card">
+      <!-- XML to Excel Converter -->
+      <a href="converter.html" class="menu-card blue">
         <div class="icon-box"><i class="fa-solid fa-file-excel"></i></div>
         <h3>XML to Excel Converter</h3>
         <p>Transform Tally XML exports into structured Debit & Credit sheets.</p>
       </a>
 
       <!-- Drive Restore -->
-      <a href="restore.html" class="menu-card green">
-        <div class="icon-box"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+      <a href="restore.html" class="menu-card">
+        <div class="icon-box" style="background: linear-gradient(135deg, #06b6d4, #0891b2); box-shadow: 0 8px 16px rgba(6,182,212,0.25);"><i class="fa-solid fa-cloud-arrow-down"></i></div>
         <h3>Drive Restore</h3>
         <p>Audit, view and download synced JSON archives from your Google Drive.</p>
       </a>
