@@ -72,19 +72,36 @@ header {
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
 
-/* Chrome Web Store style clean underline tabs */
+/* Navigation with Hover Preview Tooltips */
 .nav-bar {
-  max-width: 1300px; width: 100%; margin: 0 auto 28px; display: flex; gap: 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  max-width: 1300px; width: 100%; margin: 0 auto 32px; display: flex; gap: 28px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); position: relative;
+}
+.nav-item {
+  position: relative;
 }
 .nav-tab-link {
   background: none; border: none; color: var(--text-muted); padding: 10px 0; font-size: 15px; font-weight: 600;
-  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; position: relative; cursor: pointer; transition: color 0.2s;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: color 0.2s;
 }
 .nav-tab-link:hover { color: #fff; }
 .nav-tab-link.active { color: var(--primary-light); }
 .nav-tab-link.active::after {
   content: ""; position: absolute; bottom: -1px; left: 0; right: 0; height: 3px; background-color: var(--primary); border-radius: 3px 3px 0 0;
 }
+
+/* Hover Preview Card Popup */
+.nav-preview-card {
+  position: absolute; top: 100%; left: 0; margin-top: 12px; width: 220px;
+  background: rgba(10, 22, 32, 0.95); border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px; padding: 14px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+  backdrop-filter: blur(16px); opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: all 0.25s ease-in-out; z-index: 50; pointer-events: none;
+}
+.nav-item:hover .nav-preview-card {
+  opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto;
+}
+.nav-preview-card h4 { font-size: 13px; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.nav-preview-card p { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
 
 .container {
   max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
@@ -127,15 +144,63 @@ header {
   </div>
 </header>
 
-<!-- Chrome Web Store style underline tab navigation -->
+<!-- Navigation bar with hover preview cards -->
 <nav class="nav-bar">
-  <a href="dashboard.html" class="nav-tab-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-  <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
-  <a href="ledger.html" class="nav-tab-link"><i class="fa-solid fa-book"></i> Ledgers</a>
-  <a href="masters.html" class="nav-tab-link"><i class="fa-solid fa-database"></i> Masters</a>
-  <a href="purchase.html" class="nav-tab-link"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
-  <a href="restore.html" class="nav-tab-link"><i class="fa-solid fa-rotate-left"></i> Restore</a>
-  <a href="about.html" class="nav-tab-link"><i class="fa-solid fa-circle-info"></i> About &amp; Info</a>
+  <div class="nav-item">
+    <a href="dashboard.html" class="nav-tab-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+    <div class="nav-preview-card">
+      <h4><i class="fa-solid fa-chart-line" style="color:var(--primary)"></i> Dashboard</h4>
+      <p>Overview of system metrics, local storage, and shortcuts.</p>
+    </div>
+  </div>
+
+  <div class="nav-item">
+    <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
+    <div class="nav-preview-card">
+      <h4><i class="fa-solid fa-file-excel" style="color:#34d399"></i> XML Converter</h4>
+      <p>Transform Tally XML exports into structured Excel sheets.</p>
+    </div>
+  </div>
+
+  <div class="nav-item">
+    <a href="ledger.html" class="nav-tab-link"><i class="fa-solid fa-book"></i> Ledgers</a>
+    <div class="nav-preview-card">
+      <h4><i class="fa-solid fa-book" style="color:var(--cyan)"></i> Ledgers</h4>
+      <p>Manage and reconcile account ledgers instantly.</p>
+    </div>
+  </div>
+
+  <div class="nav-item">
+    <a href="masters.html" class="nav-tab-link"><i class="fa-solid fa-database"></i> Masters</a>
+    <div class="nav-preview-card">
+      <h4><i class="fa-solid fa-database" style="color:#f59e0b"></i> Masters Data</h4>
+      <p>Configure stock items, groups, and inventory masters.</p>
+    </div>
+  </div>
+
+  <div class="nav-item">
+    <a href="purchase.html" class="nav-tab-link"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
+    <div class="nav-preview-card">
+      <h4><i class="fa-solid fa-cart-shopping" style="color:#60a5fa"></i> Purchase Hub</h4>
+      <p>Process purchase vouchers and bills efficiently.</p>
+    </div>
+  </div>
+
+  <div class="nav-item">
+    <a href="restore.html" class="nav-tab-link"><i class="fa-solid fa-rotate-left"></i> Restore</a>
+    <div class="nav-preview-card">
+      <h4><i class="fa-solid fa-rotate-left" style="color:#f43f5e"></i> Backup Restore</h4>
+      <p>Restore previous backups and sync local records.</p>
+    </div>
+  </div>
+
+  <div class="nav-item">
+    <a href="about.html" class="nav-tab-link"><i class="fa-solid fa-circle-info"></i> About</a>
+    <div class="nav-preview-card">
+      <h4><i class="fa-solid fa-circle-info" style="color:#a78bfa"></i> About &amp; Info</h4>
+      <p>System configuration, version details, and shortcuts.</p>
+    </div>
+  </div>
 </nav>
 
 <main class="container">
