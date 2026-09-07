@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>General Ledger - Tally Suite</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+  <div class="dashboard-header">
+    <div>
+      <h1>General Ledger Master</h1>
+      <p>Manage Accounts and Ledgers</p>
+    </div>
+    <div class="header-actions">
+      <a href="dashboard.html" class="btn-template" style="color:var(--text); text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="step-box">
+      <span>Download general ledger master template:</span>
+      <button class="btn-template" onclick="downloadLedgerTemplate()"><i class="fa-solid fa-download"></i> Template</button>
+    </div>
+    <div class="dropzone" onclick="document.getElementById('ledgerExcelFile').click()">
+      <input type="file" id="ledgerExcelFile" accept=".xlsx, .xls" onchange="fileSelected('ledgerExcelFile', 'ledgerFileName')" />
+      <div class="icon"><i class="fa-solid fa-address-card"></i></div>
+      <div class="msg">Upload Ledger Spreadsheet (Click or Drag & Drop File Here)</div>
+      <div id="ledgerFileName" class="file-name"></div>
+    </div>
+    <button class="btn-action" onclick="generateLedgerXML()"><i class="fa-solid fa-bolt"></i> Generate Ledger XML & Sync</button>
+    <div id="alertBox" class="alert"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

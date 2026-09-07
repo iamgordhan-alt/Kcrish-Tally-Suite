@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purchase Import - Tally Suite</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+  <div class="dashboard-header">
+    <div>
+      <h1>Purchase Voucher Import</h1>
+      <p>Process Purchase Excel & Sync to Google Drive</p>
+    </div>
+    <div class="header-actions">
+      <a href="dashboard.html" class="btn-template" style="color:var(--text); text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="step-box">
+      <span>Download structured purchase template with calculations:</span>
+      <button class="btn-template" onclick="downloadPurchaseTemplate()"><i class="fa-solid fa-download"></i> Template</button>
+    </div>
+    <div class="dropzone" onclick="document.getElementById('purchExcelFile').click()">
+      <input type="file" id="purchExcelFile" accept=".xlsx, .xls" onchange="fileSelected('purchExcelFile', 'purchFileName')" />
+      <div class="icon"><i class="fa-solid fa-file-excel"></i></div>
+      <div class="msg">Upload Purchase Excel (Click or Drag & Drop File Here)</div>
+      <div id="purchFileName" class="file-name"></div>
+    </div>
+    <div class="options-box">
+      <input type="checkbox" id="partyWiseCheck" />
+      <label for="partyWiseCheck" style="cursor: pointer;">Generate party-wise separate XML packages (ZIP archive)</label>
+    </div>
+    <button class="btn-action" onclick="generatePurchaseXML()"><i class="fa-solid fa-bolt"></i> Process & Sync to Personal Drive</button>
+    <div id="alertBox" class="alert"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

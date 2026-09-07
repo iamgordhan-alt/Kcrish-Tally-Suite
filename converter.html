@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XML to Excel - Tally Suite</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+  <div class="dashboard-header">
+    <div>
+      <h1>XML to Excel Converter</h1>
+      <p>Transform Tally XML exports into structured spreadsheets</p>
+    </div>
+    <div class="header-actions">
+      <a href="dashboard.html" class="btn-template" style="color:var(--text); text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="step-box" style="background:#f9fafb;">
+      <span style="color:var(--text); font-weight: 500;">Transform Tally XML exports into structured Debit & Credit spreadsheets</span>
+    </div>
+    <div class="dropzone" onclick="document.getElementById('xmlFile').click()">
+      <input type="file" id="xmlFile" accept=".xml" onchange="fileSelected('xmlFile', 'xmlFileName')" />
+      <div class="icon"><i class="fa-solid fa-file-code"></i></div>
+      <div class="msg">Select Tally XML File (Click or Drag & Drop File Here)</div>
+      <div id="xmlFileName" class="file-name"></div>
+    </div>
+    <button class="btn-action blue" onclick="convertXmlToExcel()"><i class="fa-solid fa-file-excel"></i> Convert XML to Excel</button>
+    <div id="previewContainer" class="preview-table-box">
+      <table id="previewTable"><thead></thead><tbody></tbody></table>
+    </div>
+    <div id="alertBox" class="alert"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

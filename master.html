@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Item Master - Tally Suite</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+  <div class="dashboard-header">
+    <div>
+      <h1>Item Stock Master</h1>
+      <p>Manage Inventory and Stock Items</p>
+    </div>
+    <div class="header-actions">
+      <a href="dashboard.html" class="btn-template" style="color:var(--text); text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="step-box">
+      <span>Download standard inventory stock item master template:</span>
+      <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
+    </div>
+    <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
+      <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" />
+      <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
+      <div class="msg">Upload Stock Inventory (Click or Drag & Drop File Here)</div>
+      <div id="masterFileName" class="file-name"></div>
+    </div>
+    <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML & Sync</button>
+    <div id="alertBox" class="alert"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
