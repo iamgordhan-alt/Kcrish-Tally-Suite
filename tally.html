@@ -256,11 +256,16 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
       }
     }
 
-    // 2. Voucher Type Finder
+    // 2. Smart Voucher Type Finder (Auto-detects Purchase or Sales)
     let vchType = 'Sales';
+    const headerString = Object.keys(row).join(' ').toLowerCase();
+    if (headerString.includes('purchase') || headerString.includes('pur')) {
+      vchType = 'Purchase';
+    }
     for (let k of Object.keys(normalizedRow)) {
       if (k.includes('vouchertype') || k.includes('type') || k.includes('category')) {
-        vchType = normalizedRow[k] || 'Sales';
+        const val = String(normalizedRow[k]).trim();
+        if (val) vchType = val;
         break;
       }
     }
@@ -286,7 +291,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     // 5. Amount Finder
     let amt = 0;
     for (let k of Object.keys(normalizedRow)) {
-      if (k.includes('amount') || k.includes('total') || k.includes('net') || k.includes('value') || k.includes('sum') || k.includes('amt')) {
+      if (k.includes('amount') || k.includes('total') || k.includes('net') || k.includes('value') || k.includes('sum') || k.includes('amt') || k.includes('billamount')) {
         const val = parseFloat(normalizedRow[k]);
         if (!isNaN(val)) {
           amt = val;
