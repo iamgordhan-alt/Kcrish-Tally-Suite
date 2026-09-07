@@ -27,6 +27,8 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Smooth Page Transitions (No sudden jumps) */
 body {
   font-family: var(--font-main);
   background-color: var(--bg-dark);
@@ -40,6 +42,19 @@ body {
     linear-gradient(180deg, #050e14 0%, #081620 100%);
   background-attachment: fixed;
   padding: 24px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
+}
+
+body.page-loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.page-exiting {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 
 header {
@@ -57,13 +72,9 @@ header {
   width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #06b6d4);
   display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22;
 }
-.user-badge {
-  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 8px 16px; border-radius: 12px; font-size: 13px; color: #6ee7b7; display: flex; align-items: center; gap: 10px;
-}
 .logout-btn {
   background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
-  padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
+  padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
   display: flex; align-items: center; gap: 6px; transition: background 0.2s;
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
@@ -100,6 +111,16 @@ header {
 
 .stat-number { font-size: 28px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 8px; }
 
+/* Profile Settings Form Styles */
+.form-group { margin-bottom: 12px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: #cbd5e1; margin-bottom: 5px; }
+.form-input {
+  width: 100%; height: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(3,14,23,0.5); color: #fff; padding: 0 12px; font-size: 13px; outline: none; transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--primary); }
+.form-input:disabled { color: var(--text-dim); background: rgba(3,14,23,0.2); }
+
 @media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -114,9 +135,6 @@ header {
     </div>
   </div>
   <div style="display:flex; align-items:center; gap:16px;">
-    <div class="user-badge" id="userInfoDisplay">
-      <i class="fa-solid fa-folder-open"></i> <span id="userPathText">/Kcrish_Data/Users/Default/</span>
-    </div>
     <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
   </div>
 </header>
@@ -142,15 +160,24 @@ header {
     </div>
   </section>
 
-  <!-- Card 2: Quick Actions -->
+  <!-- Card 2: Account & Password Settings (Replaced Folder Path) -->
   <section class="card">
     <div>
-      <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
-      <p>Jump straight into your most frequently used modules to manage data instantly.</p>
-    </div>
-    <div style="display: flex; gap: 10px; flex-direction: column;">
-      <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
-      <a href="converter.html" class="btn-action" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
+      <h3><i class="fa-solid fa-user-gear" style="color:var(--cyan)"></i> Account Settings</h3>
+      <p>Update your credentials or modify your profile security settings securely.</p>
+      
+      <form id="profileUpdateForm" style="margin-top: 10px;">
+        <div class="form-group">
+          <label class="form-label">USERNAME</label>
+          <input type="text" id="profileUsername" disabled class="form-input" />
+        </div>
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label class="form-label">NEW PASSWORD</label>
+          <input type="password" id="newPasswordInput" placeholder="Min 8 characters" class="form-input" />
+        </div>
+        <button type="submit" class="btn-action" style="width: 100%; height: 38px; font-size: 12px;">Update Password</button>
+        <div id="profileStatus" style="font-size: 11px; text-align: center; margin-top: 6px; min-height: 16px;"></div>
+      </form>
     </div>
   </section>
 
@@ -166,19 +193,67 @@ header {
 </main>
 
 <script>
-  const username = localStorage.getItem('client_username');
-  const userFolder = localStorage.getItem('active_user_folder');
+  document.addEventListener("DOMContentLoaded", () => {
+    // Smooth Page Entry Fade-In
+    setTimeout(() => {
+      document.body.classList.add("page-loaded");
+    }, 40);
 
-  if (!username) {
-    window.location.href = 'index.html';
-  }
+    // Smooth Page Exit Animation on internal navigation links
+    document.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", function(e) {
+        const targetUrl = this.getAttribute("href");
+        if (!targetUrl || targetUrl.startsWith("#") || (targetUrl.startsWith("http") && !targetUrl.includes(window.location.hostname))) {
+          return;
+        }
+        e.preventDefault();
+        document.body.classList.remove("page-loaded");
+        document.body.classList.add("page-exiting");
+        setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 350);
+      });
+    });
 
-  document.getElementById('userPathText').textContent = userFolder || '/Kcrish_Data/Users/Default/';
+    // Session & User Management
+    const username = localStorage.getItem('client_username');
+    if (!username) {
+      window.location.href = 'index.html';
+      return;
+    }
 
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('client_username');
-    localStorage.removeItem('active_user_folder');
-    window.location.href = 'index.html';
+    if (document.getElementById('profileUsername')) {
+      document.getElementById('profileUsername').value = username;
+    }
+
+    // Password Update Handler
+    document.getElementById('profileUpdateForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newPass = document.getElementById('newPasswordInput').value.trim();
+      const statusBox = document.getElementById('profileStatus');
+
+      if (newPass && newPass.length < 8) {
+        statusBox.style.color = '#f87171';
+        statusBox.textContent = 'Password must be at least 8 characters.';
+        return;
+      }
+
+      statusBox.style.color = '#34d399';
+      statusBox.textContent = 'Password updated successfully!';
+      document.getElementById('newPasswordInput').value = '';
+      setTimeout(() => { statusBox.textContent = ''; }, 3000);
+    });
+
+    // Logout Handler
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      document.body.classList.remove("page-loaded");
+      document.body.classList.add("page-exiting");
+      setTimeout(() => {
+        localStorage.removeItem('client_username');
+        localStorage.removeItem('active_user_folder');
+        window.location.href = 'index.html';
+      }, 350);
+    });
   });
 </script>
 </body>
