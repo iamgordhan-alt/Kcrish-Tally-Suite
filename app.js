@@ -1,5 +1,5 @@
 /* app.js */
-const FIXED_COMPANY_NAME = "Experiments";
+const FIXED_COMPANY_NAME = "Kcrish";
 let accessToken = null;
 
 window.onload = function() {
@@ -12,8 +12,30 @@ window.onload = function() {
   }
   accessToken = savedToken;
   if(savedUser) {
-    document.getElementById("welcomeClientTitle").innerText = "Welcome, " + savedUser + " | Tally Suite";
+    const titleEl = document.getElementById("welcomeClientTitle");
+    if(titleEl) titleEl.innerText = "Welcome, " + savedUser + " | Tally Suite";
   }
+
+  // Smooth Entry Trigger for Liquid Glass UI
+  setTimeout(() => {
+    document.body.classList.add("page-loaded");
+  }, 40);
+
+  // Smooth Exit Handler for internal links
+  document.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", function(e) {
+      const target = this.getAttribute("href");
+      if (!target || target.startsWith("#") || target.startsWith("javascript:") || (target.startsWith("http") && !target.includes(window.location.hostname))) {
+        return;
+      }
+      e.preventDefault();
+      document.body.classList.remove("page-loaded");
+      document.body.classList.add("page-exiting");
+      setTimeout(() => {
+        window.location.href = target;
+      }, 300);
+    });
+  });
 };
 
 function handleLogout() {
@@ -43,7 +65,8 @@ async function uploadJsonToPersonalDrive(jsonData, fileName) {
 
 async function loadPersonalDriveFiles() {
   const container = document.getElementById('driveJsonContainer');
-  container.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Loading from your Google Drive...";
+  if(!container) return;
+  container.innerHTML = "<i class='fa-solid fa-spinner fa-spin' style='color:var(--primary); margin-right:6px;'></i> Loading from your Google Drive...";
   try {
     let res = await fetch('https://www.googleapis.com/drive/v3/files?q=mimeType=\'application/json\'', {
       headers: new Headers({ 'Authorization': 'Bearer ' + accessToken })
@@ -55,12 +78,12 @@ async function loadPersonalDriveFiles() {
         container.innerHTML = "No JSON files found in your Google Drive.";
         return;
     }
-    let html = "<table style='width:100%; border-collapse:collapse;'><thead><tr><th>File Name</th><th style='text-align:right;'>Action</th></tr></thead><tbody>";
+    let html = "<table style='width:100%; border-collapse:collapse;'><thead><tr style='border-bottom:1px solid rgba(255,255,255,0.1);'><th style='padding:10px; text-align:left;'>File Name</th><th style='padding:10px; text-align:right;'>Action</th></tr></thead><tbody>";
     files.forEach(file => {
-        html += `<tr>
-          <td>${file.name}</td>
-          <td style='text-align:right;'>
-            <button onclick="downloadPersonalFile('${file.id}', '${file.name}')" style="background:var(--primary); color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:600;">Download JSON</button>
+        html += `<tr style='border-bottom:1px solid rgba(255,255,255,0.05);'>
+          <td style='padding:12px 10px;'>${file.name}</td>
+          <td style='padding:12px 10px; text-align:right;'>
+            <button onclick="downloadPersonalFile('${file.id}', '${file.name}')" class="btn-template">Download JSON</button>
           </td>
         </tr>`;
     });
@@ -93,13 +116,15 @@ function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   hideAlert();
-  document.getElementById('previewContainer').style.display = "none";
+  const previewContainer = document.getElementById('previewContainer');
+  if(previewContainer) previewContainer.style.display = "none";
 
   const btnMap = { 'tab-purchase': 0, 'tab-master': 1, 'tab-ledger': 2, 'tab-converter': 3, 'tab-restore': 4 };
   if(btnMap[tabId] !== undefined) {
     document.querySelectorAll('.tab-btn')[btnMap[tabId]].classList.add('active');
   }
-  document.getElementById(tabId).classList.add('active');
+  const targetTab = document.getElementById(tabId);
+  if(targetTab) targetTab.classList.add('active');
 
   if(tabId === 'tab-restore') {
     loadPersonalDriveFiles();
@@ -107,8 +132,11 @@ function switchTab(tabId) {
 }
 
 function fileSelected(inputId, displayId) {
-  const file = document.getElementById(inputId).files[0];
-  if (file) document.getElementById(displayId).innerText = "File: " + file.name;
+  const fileInput = document.getElementById(inputId);
+  if(fileInput && fileInput.files[0]) {
+    const disp = document.getElementById(displayId);
+    if(disp) disp.innerText = "File: " + fileInput.files[0].name;
+  }
 }
 
 function xmlEscape(str) {
@@ -157,7 +185,7 @@ function getPackDenominator(name) {
 
 function downloadPurchaseTemplate() {
   const ws_data = [
-    ["Invoice No", "Date", "Party Name", "Godown", "Purchase Ledger", "#", "Item Nam", "MRP", "Rate/CB", "Qty. Case", "Qty. Bottle", "Qty. BL", "Purchase Amount", "Excise Fee", "Composition Amt / VAT", "Surcharge On C.A./VAT", "TCS(2%)", "AED to be Paid", "Invoice value", "Loading Charges", "Bill Amount"],
+    ["Invoice No", "Date", "Party Name", "Godown", "Purchase Ledger", "#", "Item Name", "MRP", "Rate/CB", "Qty. Case", "Qty. Bottle", "Qty. BL", "Purchase Amount", "Excise Fee", "Composition Amt / VAT", "Surcharge On C.A./VAT", "TCS(2%)", "AED to be Paid", "Invoice value", "Loading Charges", "Bill Amount"],
     ["RSBCL-ITP-RSGSM-ITP-JSM01-4424", "01-04-2026", "Rsbcl", "Main Location", "Imfl Purchase", 1, "100 Pipers Blended Malt Scotch Whisky_180-(Nips)", 1200, 1000.00, 0, 12, 2.16, 171518.22, 10320.48, 45900.18, 9180.15, 4766.60, 1410.79, 243096.42, 230.10, {t: 'n', f: 'IF(A2<>A1, S2+T2, "")'}]
   ];
   const ws = XLSX.utils.aoa_to_sheet(ws_data);
@@ -260,7 +288,7 @@ async function generatePurchaseXML() {
   const fileInput = document.getElementById('purchExcelFile');
   if (!fileInput.files.length) return showAlert("Please select a Purchase Excel file.", "error");
 
-  const isPartyWise = document.getElementById('partyWiseCheck').checked;
+  const isPartyWise = document.getElementById('partyWiseCheck') ? document.getElementById('partyWiseCheck').checked : false;
 
   const reader = new FileReader();
   reader.onload = async function(e) {
@@ -596,6 +624,7 @@ function convertXmlToExcel() {
 
 function renderTablePreview(data) {
   const table = document.getElementById('previewTable');
+  if (!table) return;
   const thead = table.querySelector('thead');
   const tbody = table.querySelector('tbody');
   thead.innerHTML = ""; tbody.innerHTML = "";
@@ -610,14 +639,19 @@ function renderTablePreview(data) {
     cols.forEach(c => { let td = document.createElement('td'); td.innerText = row[c] !== undefined ? row[c] : ""; tr.appendChild(td); });
     tbody.appendChild(tr);
   });
-  document.getElementById('previewContainer').style.display = "block";
+  const previewContainer = document.getElementById('previewContainer');
+  if (previewContainer) previewContainer.style.display = "block";
 }
 
 function showAlert(msg, type) {
   const box = document.getElementById('alertBox');
-  box.className = type === 'success' ? 'alert alert-success' : 'alert alert-error';
+  if (!box) return;
+  box.className = type === 'success' ? 'alert alert-success show' : 'alert alert-error show';
   box.innerText = msg;
   box.style.display = 'block';
 }
 
-function hideAlert() { document.getElementById('alertBox').style.display = 'none'; }
+function hideAlert() { 
+  const box = document.getElementById('alertBox');
+  if (box) box.style.display = 'none'; 
+}
