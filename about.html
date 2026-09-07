@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kcrish Automation Workspace - Architecture & Project Learnings">
+<meta name="description" content="Kcrish Automation Workspace - Architecture, Learnings & Shortcuts">
 <meta name="theme-color" content="#061219">
-<title>Kcrish Workspace • Architecture & System Info</title>
+<title>Kcrish Workspace • Architecture & Shortcuts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -99,6 +99,18 @@ header {
   background: rgba(3, 14, 23, 0.6); border-left: 4px solid var(--primary); padding: 14px 18px; border-radius: 0 12px 12px 0; margin: 16px 0; font-size: 13px; color: #cbd5e1;
 }
 
+.shortcut-table {
+  width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;
+}
+.shortcut-table th, .shortcut-table td {
+  padding: 10px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); text-align: left;
+}
+.shortcut-table th { color: var(--text-muted); font-size: 12px; background: rgba(3, 14, 23, 0.4); }
+kbd {
+  background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 3px 8px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; color: #34d399;
+}
+
 @media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -109,7 +121,7 @@ header {
     <div class="brand-logo">KA</div>
     <div>
       <h2 style="font-size:18px; color:#fff;">Kcrish Automation Suite</h2>
-      <span style="font-size:11px; color:var(--text-muted);">System Architecture &amp; Knowledge Hub</span>
+      <span style="font-size:11px; color:var(--text-muted);">Architecture &amp; Shortcuts Knowledge Hub</span>
     </div>
   </div>
   <div style="display:flex; align-items:center; gap:16px;">
@@ -127,42 +139,72 @@ header {
   <a href="masters.html" class="nav-tab-link"><i class="fa-solid fa-database"></i> Masters</a>
   <a href="purchase.html" class="nav-tab-link"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
   <a href="restore.html" class="nav-tab-link"><i class="fa-solid fa-rotate-left"></i> Restore</a>
-  <a href="tally.html" class="nav-tab-link active"><i class="fa-solid fa-circle-info"></i> System Info</a>
+  <a href="knowledge.html" class="nav-tab-link active"><i class="fa-solid fa-graduation-cap"></i> Knowledge Hub</a>
 </nav>
 
 <main class="container">
-  <!-- Left Panel: Core Philosophy & Learnings -->
+  <!-- Left Panel: Engineering Philosophy & Architecture Learnings -->
   <section class="card">
     <h3><i class="fa-solid fa-lightbulb" style="color:var(--primary)"></i> Engineering Philosophy &amp; Learnings</h3>
-    <p>The <strong>Kcrish Automation Suite</strong> was built to solve real-world financial data friction between messy client spreadsheets and enterprise accounting engines like TallyPrime.</p>
+    <p>The <strong>Kcrish Automation Suite</strong> was architected to bridge the gap between irregular supplier spreadsheets and structured accounting databases without relying on fragile server connections.</p>
     
     <div class="highlight-box">
-      <strong>Core Takeaway:</strong> Modern automation doesn't always need heavy server infrastructure or brittle browser-to-desktop API calls. Client-side local compute combined with standardized CSV exchange is infinitely more reliable.
+      <strong>Core Architectural Learning:</strong> Bypassing browser-to-desktop network ports (like Port 9000 XML push) in favor of <em>Client-side SheetJS Parsing + Standardized CSV Export</em> completely eliminates CORS errors and environment-specific security roadblocks.
     </div>
 
-    <p><strong>Key Architectural Pillars:</strong></p>
+    <p><strong>System Stack &amp; Technologies:</strong></p>
     <div style="margin-top: 10px;">
-      <span class="tech-badge">Zero CORS Overhead</span>
-      <span class="tech-badge">Local SheetJS Parsing</span>
-      <span class="tech-badge">Smart Column Auto-Mapper</span>
-      <span class="tech-badge">Offline First Jugad</span>
+      <span class="tech-badge">Vanilla HTML5 &amp; CSS3</span>
+      <span class="tech-badge">SheetJS (XLSX) Engine</span>
+      <span class="tech-badge">Smart Auto-Mapper</span>
+      <span class="tech-badge">LocalStorage Sessions</span>
     </div>
   </section>
 
-  <!-- Right Panel: User Guide & System Overview -->
+  <!-- Right Panel: Master Shortcuts Reference -->
   <section class="card">
-    <h3><i class="fa-solid fa-book-open" style="color:var(--cyan)"></i> User Guide &amp; System Modules</h3>
-    <p>This workspace serves as a unified suite for financial data transformation. Here is what has been engineered so far:</p>
+    <h3><i class="fa-solid fa-keyboard" style="color:var(--cyan)"></i> Suite Master Keyboard Shortcuts</h3>
+    <p>Quick reference guide for navigating modules and executing high-speed automated actions across the workspace:</p>
     
-    <ul style="padding-left: 18px; font-size: 13px; color: var(--text-muted); line-height: 1.8;">
-      <li><strong>Converter Module:</strong> Normalizes varied raw supplier formats into uniform accounting structures.</li>
-      <li><strong>Ledgers &amp; Masters:</strong> Automatically categorizes party heads, inventory items, and group allocations.</li>
-      <li><strong>Purchase &amp; Sales Hub:</strong> Processes bulk transactional logs (spanning thousands of rows) instantly.</li>
-      <li><strong>Restore Hub:</strong> Maintains user session backups and data persistence via browser LocalStorage.</li>
-    </ul>
+    <table class="shortcut-table">
+      <thead>
+        <tr>
+          <th>Action / Module</th>
+          <th>Shortcut Key</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Upload Excel</td>
+          <td><kbd>Click / Drag</kbd></td>
+          <td>Drop spreadsheet in active module zone</td>
+        </tr>
+        <tr>
+          <td>Export CSV</td>
+          <td><kbd>Alt + X</kbd> / Click</td>
+          <td>Generate clean Tally-ready CSV output</td>
+        </tr>
+        <tr>
+          <td>Quick Navigation</td>
+          <td><kbd>Tab Bar</kbd></td>
+          <td>Switch seamlessly between modules</td>
+        </tr>
+        <tr>
+          <td>Session Logout</td>
+          <td><kbd>Top-Right Btn</kbd></td>
+          <td>Securely clear current user workspace</td>
+        </tr>
+        <tr>
+          <td>Tally Import (Alt)</td>
+          <td><kbd>Ctrl + Alt + I</kbd></td>
+          <td>Native Tally import trigger pipeline</td>
+        </tr>
+      </tbody>
+    </table>
 
-    <div class="highlight-box" style="border-left-color: var(--cyan); margin-top: 20px;">
-      <em>"Simplicity is the ultimate sophistication."</em> — Designed for high-speed offline accounting operations without network bottlenecks.
+    <div class="highlight-box" style="border-left-color: var(--cyan); margin-top: 18px;">
+      <em>"Reliability beats complexity."</em> — Built for absolute zero-downtime offline accounting automation.
     </div>
   </section>
 </main>
