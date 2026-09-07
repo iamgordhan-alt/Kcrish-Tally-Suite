@@ -3,590 +3,163 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kcrish Automation Workspace - Enterprise Grade Excel to Tally Processing Engine">
+<meta name="description" content="Kcrish Automation Suite - Secure Client Login">
 <meta name="theme-color" content="#061219">
-<title>Kcrish • Excel to Tally Automation Suite</title>
+<title>Kcrish Workspace • Secure Login</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- Google Identity Services SDK -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
   --primary: #10b981;
   --primary-hover: #059669;
   --primary-light: #34d399;
-  --primary-glow: rgba(16, 185, 129, 0.35);
   --cyan: #06b6d4;
   --bg-dark: #061118;
-  --bg-card: rgba(12, 26, 36, 0.75);
+  --bg-card: rgba(12, 26, 36, 0.85);
   --border-card: rgba(255, 255, 255, 0.12);
-  --border-input: rgba(255, 255, 255, 0.14);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --success: #10b981;
   --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { min-height: 100%; }
-
 body {
   font-family: var(--font-main);
   background-color: var(--bg-dark);
   color: var(--text-main);
-  line-height: 1.5;
-  position: relative;
-  overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.15) 0%, transparent 45%),
-    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.14) 0%, transparent 40%),
-    radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-    linear-gradient(180deg, #050e14 0%, #081620 50%, #050c12 100%);
-  background-attachment: fixed;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 32px 16px;
-}
-
-.orb {
-  position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(60px); will-change: transform;
-}
-.orb-1 {
-  width: 400px; height: 400px; left: -80px; top: 15%; background: rgba(16, 185, 129, 0.14);
-  animation: floatOrb 14s ease-in-out infinite alternate;
-}
-.orb-2 {
-  width: 380px; height: 380px; right: -90px; bottom: 10%; background: rgba(6, 182, 212, 0.12);
-  animation: floatOrb 18s ease-in-out -4s infinite alternate-reverse;
-}
-@keyframes floatOrb {
-  0% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-35px) scale(1.08); }
-  100% { transform: translateY(20px) scale(0.95); }
-}
-
-.grid-bg {
-  position: fixed; inset: 0; background-size: 40px 40px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  pointer-events: none; z-index: 0;
-}
-
-.shell {
-  position: relative; z-index: 1; width: 100%; max-width: 1240px; margin: auto;
-  display: grid; grid-template-columns: 1.15fr 0.95fr; gap: 56px; align-items: center;
-}
-
-.showcase { display: flex; flex-direction: column; gap: 24px; }
-
-.badge {
-  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
-  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.28);
-  color: #a7f3d0; font-size: 12px; font-weight: 600; width: fit-content; backdrop-filter: blur(8px);
-}
-.pulse-dot {
-  width: 7px; height: 7px; border-radius: 50%; background-color: var(--primary-light);
-  box-shadow: 0 0 8px var(--primary-light); animation: pulseBeacon 2s infinite;
-}
-@keyframes pulseBeacon {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-.brand-header { display: flex; align-items: center; gap: 12px; }
-.brand-logo-icon {
-  width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4);
-}
-.brand-title { font-size: 24px; font-weight: 800; color: #ffffff; }
-.brand-title span { color: var(--primary-light); }
-
-h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; color: #ffffff; }
-.gradient-text {
-  background: linear-gradient(90deg, #ffffff 10%, #a7f3d0 60%, #67e8f9 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-
-.desc { color: var(--text-muted); font-size: 16px; line-height: 1.65; max-width: 580px; }
-
-.sync-preview-card {
-  background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 20px;
-  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.45); backdrop-filter: blur(20px);
-  display: flex; flex-direction: column; gap: 16px; max-width: 560px;
-}
-.sync-card-header {
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px;
-}
-.sync-title { font-size: 13px; font-weight: 700; color: #cbd5e1; display: flex; align-items: center; gap: 8px; }
-.sync-status-tag {
-  font-size: 11px; font-family: var(--font-mono); background: rgba(16, 185, 129, 0.15);
-  color: #6ee7b7; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.sync-flow { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
-.sync-node {
-  background: rgba(3, 14, 23, 0.6); border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 4px;
-}
-.sync-node-label { font-size: 11px; text-transform: uppercase; color: var(--text-dim); font-weight: 700; }
-.sync-node-val { font-size: 13px; font-weight: 600; color: #f1f5f9; display: flex; align-items: center; gap: 6px; }
-.sync-arrow { color: var(--primary); display: flex; align-items: center; justify-content: center; }
-
-.sync-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-top: 4px; }
-.metric-box { background: rgba(255, 255, 255, 0.03); border-radius: 10px; padding: 8px 12px; text-align: center; }
-.metric-box .val { font-size: 15px; font-weight: 800; color: #38bdf8; font-family: var(--font-mono); }
-.metric-box .lbl { font-size: 10px; color: var(--text-dim); font-weight: 600; }
-
-.pills { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 4px; }
-.pill {
-  padding: 7px 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08); font-size: 12px; color: #cbd5e1; display: flex; align-items: center; gap: 6px;
+  justify-content: center;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
+    linear-gradient(135deg, #040d12 0%, #081620 100%);
+  background-attachment: fixed;
+  padding: 20px;
 }
 
 .login-card {
-  position: relative; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 28px; padding: 36px 32px;
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6); backdrop-filter: blur(28px); overflow: hidden;
-}
-.login-card::before {
-  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent 0%, #10b981 50%, transparent 100%);
-}
-
-.tabs-container {
-  display: grid; grid-template-columns: 1fr 1fr; background: rgba(3, 14, 23, 0.6); padding: 4px;
-  border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 22px;
-}
-.tab-btn {
-  border: none; background: transparent; color: var(--text-muted); padding: 10px 12px; border-radius: 10px;
-  font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.tab-btn.active { color: #ffffff; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.3); }
-
-.auth-header { margin-bottom: 20px; }
-.auth-header h2 { font-size: 24px; font-weight: 800; color: #ffffff; }
-.auth-header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
-
-.form-group { margin-bottom: 16px; position: relative; }
-.form-label { display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
-.input-wrapper { position: relative; display: flex; align-items: center; }
-.input-icon { position: absolute; left: 14px; color: var(--text-dim); pointer-events: none; }
-.form-input {
-  width: 100%; height: 48px; border-radius: 12px; border: 1px solid var(--border-input);
-  background: rgba(3, 14, 23, 0.55); color: #ffffff; padding: 0 42px; font-family: inherit; font-size: 14px; outline: none;
-}
-.form-input:focus { border-color: var(--primary); background: rgba(3, 14, 23, 0.85); box-shadow: 0 0 0 3px var(--primary-glow); }
-
-.eye-toggle {
-  position: absolute; right: 10px; width: 32px; height: 32px; border-radius: 8px; border: none;
-  background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.eye-toggle:hover { color: #ffffff; background: rgba(255, 255, 255, 0.08); }
-
-.caps-badge {
-  display: none; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #fef08a;
-  background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.35); padding: 4px 10px; border-radius: 6px; margin-top: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 440px;
+  backdrop-filter: blur(25px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+  text-align: center;
 }
 
-.password-meter-wrap { margin-top: 8px; display: none; }
-.meter-bar-container { height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
-.meter-bar { height: 100%; width: 0%; transition: width 0.3s ease, background-color 0.3s ease; }
-.meter-rules { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; color: var(--text-dim); }
-.rule-item.valid { color: #6ee7b7; }
-
-.signup-extra-fields { display: none; }
-
-.form-options { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin: 6px 0 20px; color: var(--text-muted); }
-.checkbox-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.checkbox-wrap input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
-.link-btn { background: none; border: none; color: var(--primary-light); font-size: 13px; font-weight: 600; cursor: pointer; }
-.link-btn:hover { text-decoration: underline; }
-
-.btn-submit {
-  width: 100%; height: 50px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%); color: #022c22; font-size: 15px; font-weight: 800;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 25px var(--primary-glow);
+.brand-logo-large {
+  width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, #10b981, #06b6d4);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; color: #022c22;
+  margin: 0 auto 16px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
 }
-.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(16, 185, 129, 0.45); }
 
-.spinner {
-  display: none; width: 18px; height: 18px; border: 2px solid rgba(2, 44, 34, 0.3); border-top-color: #022c22; border-radius: 50%; animation: spin 0.7s linear infinite;
+.login-card h2 {
+  font-size: 22px; color: #fff; margin-bottom: 6px; font-weight: 700;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.status-box {
-  min-height: 20px; margin-top: 14px; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; display: none;
+.login-card p {
+  font-size: 13px; color: var(--text-muted); margin-bottom: 28px;
 }
-.status-box.error { display: flex; align-items: center; gap: 8px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
-.status-box.success { display: flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #6ee7b7; }
 
-.auth-divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 16px; color: var(--text-dim); font-size: 12px; }
-.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.08); }
-
-.sso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.sso-btn {
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px;
-  padding: 9px 12px; color: #e2e8f0; font-size: 12px; font-weight: 600; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;
+.input-group {
+  text-align: left; margin-bottom: 18px;
 }
-.sso-btn:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); color: #ffffff; }
-
-.card-foot { text-align: center; margin-top: 22px; font-size: 11px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; gap: 6px; }
-
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
+.input-group label {
+  display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;
 }
-.modal-overlay.open { display: flex; }
-.modal-box { background: #091722; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; width: 100%; max-width: 440px; padding: 28px; position: relative; }
-.modal-close-btn { position: absolute; top: 18px; right: 18px; background: rgba(255, 255, 255, 0.06); border: none; color: #94a3b8; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.input-field {
+  width: 100%; height: 48px; background: rgba(3, 14, 23, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px; padding: 0 16px; color: #fff; font-size: 14px; font-family: var(--font-main);
+  transition: all 0.2s;
+}
+.input-field:focus {
+  outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
 
-@media (max-width: 992px) { .shell { grid-template-columns: 1fr; max-width: 580px; gap: 40px; } }
+.btn-login {
+  width: 100%; height: 48px; border-radius: 12px; border: none; background: linear-gradient(135deg, #34d399, #10b981);
+  color: #022c22; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.25);
+}
+.btn-login:hover {
+  transform: translateY(-2px); box-shadow: 0 15px 25px rgba(16, 185, 129, 0.35);
+}
+
+.error-msg {
+  background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
+  padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 16px; display: none; text-align: left;
+}
+
+.login-footer {
+  margin-top: 24px; font-size: 12px; color: var(--text-dim); display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 16px;
+}
+.login-footer a {
+  color: var(--cyan); text-decoration: none; font-weight: 600; transition: color 0.2s;
+}
+.login-footer a:hover {
+  color: #38bdf8; text-decoration: underline;
+}
 </style>
 </head>
 <body>
 
-<div class="grid-bg"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
+<div class="login-card">
+  <div class="brand-logo-large">KA</div>
+  <h2>Kcrish Automation Suite</h2>
+  <p>Secure Enterprise Workspace Login</p>
 
-<main class="shell">
-  <section class="showcase">
-    <div class="badge">
-      <span class="pulse-dot"></span>
-      <span>TallyPrime &amp; ERP 9 Engine v4.2 • Ready[cite: 1]</span>
+  <div class="error-msg" id="errorBox">Please enter a valid username.</div>
+
+  <form id="loginForm">
+    <div class="input-group">
+      <label for="usernameInput">Client Username / ID</label>
+      <input type="text" id="usernameInput" class="input-field" placeholder="Enter your username..." required autocomplete="off">
     </div>
 
-    <div class="brand-header">
-      <div class="brand-logo-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 4h6v6H4z"/><path d="M14 4h6v6h-6z"/><path d="M4 14h6v6H4z"/>
-          <path d="M17 14v6"/><path d="M14 17h6"/>
-        </svg>
-      </div>
-      <div class="brand-title">Kcrish <span>Automation</span></div>
-    </div>
+    <button type="submit" class="btn-login">
+      <i class="fa-solid fa-right-to-bracket"></i> Launch Workspace
+    </button>
+  </form>
 
-    <h1>
-      Excel to Tally.<br>
-      <span class="gradient-text">Beautifully Automated.</span>
-    </h1>
-
-    <p class="desc">
-      The high-performance workspace for accounting firms and enterprises. Automatically parse, validate GST, map chart-of-accounts, and push thousands of vouchers directly to Tally in seconds[cite: 1].
-    </p>
-
-    <div class="sync-preview-card">
-      <div class="sync-card-header">
-        <span class="sync-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-          </svg>
-          Live Pipeline Simulation
-        </span>
-        <span class="sync-status-tag">STATUS: IDLE • READY</span>
-      </div>
-
-      <div class="sync-flow">
-        <div class="sync-node">
-          <span class="sync-node-label">Source Input</span>
-          <span class="sync-node-val"><i class="fa-solid fa-file-excel" style="color:var(--primary)"></i> Sales_Register.xlsx</span>
-        </div>
-        <div class="sync-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-        <div class="sync-node">
-          <span class="sync-node-label">Target Engine</span>
-          <span class="sync-node-val"><i class="fa-solid fa-server" style="color:var(--cyan)"></i> Tally XML (9000)</span>
-        </div>
-      </div>
-
-      <div class="sync-metrics">
-        <div class="metric-box"><div class="val">99.98%</div><div class="lbl">GST Match</div></div>
-        <div class="metric-box"><div class="val">10K+</div><div class="lbl">Rows / Min</div></div>
-        <div class="metric-box"><div class="val">0.00s</div><div class="lbl">Lag</div></div>
-      </div>
-    </div>
-
-    <div class="pills">
-      <span class="pill"><i class="fa-solid fa-shield-halved" style="color:var(--primary)"></i> 256-Bit Encryption[cite: 1]</span>
-      <span class="pill"><i class="fa-solid fa-file-invoice" style="color:var(--primary)"></i> E-Way Bill Ready[cite: 1]</span>
-    </div>
-  </section>
-
-  <section class="login-card">
-    <div class="tabs-container">
-      <button type="button" class="tab-btn active" id="loginTab">Sign In</button>
-      <button type="button" class="tab-btn" id="signupTab">Create Account</button>
-    </div>
-
-    <div class="auth-header">
-      <h2 id="authTitle">Welcome back</h2>
-      <p id="authSubtitle">Enter your credentials to access your workspace[cite: 1].</p>
-    </div>
-
-    <form id="form" novalidate>
-      <div class="form-group signup-extra-fields" id="groupFullName" style="display: none;">
-        <label class="form-label" for="fullName">Full Name</label>
-        <div class="input-wrapper">
-          <input id="fullName" class="form-input" type="text" placeholder="Ashok Gitiyal">
-          <span class="input-icon"><i class="fa-solid fa-user"></i></span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="user">Username</label>
-        <div class="input-wrapper">
-          <input id="user" class="form-input" type="text" placeholder="Enter your username" required>
-          <span class="input-icon"><i class="fa-solid fa-id-badge"></i></span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="pass">Password</label>
-        <div class="input-wrapper">
-          <input id="pass" class="form-input" type="password" placeholder="Enter your password" required>
-          <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
-          <button type="button" id="eyeBtn" class="eye-toggle"><i class="fa-solid fa-eye" id="eyeIcon"></i></button>
-        </div>
-        <div id="capsBadge" class="caps-badge"><i class="fa-solid fa-triangle-exclamation"></i> Caps Lock is ON</div>
-      </div>
-
-      <div class="form-options">
-        <label class="checkbox-wrap" for="rememberMe">
-          <input type="checkbox" id="rememberMe">
-          <span>Remember me</span>
-        </label>
-        <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
-      </div>
-
-      <button type="submit" class="btn-submit" id="submitBtn">
-        <div class="spinner" id="spinner"></div>
-        <span id="submitIcon"><i class="fa-solid fa-lock"></i></span>
-        <span id="submitLabel">Sign In Securely</span>
-      </button>
-
-      <div class="status-box" id="statusBox"></div>
-
-      <div class="auth-divider">Or authenticate via</div>
-      <div class="sso-grid">
-        <button type="button" class="sso-btn" id="googleSsoBtn">
-          <svg width="15" height="15" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-          </svg>
-          Google
-        </button>
-
-        <button type="button" class="sso-btn" id="tallySsoBtn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5">
-            <polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>
-          </svg>
-          Tally .NET
-        </button>
-      </div>
-    </form>
-
-    <div class="card-foot">
-      <i class="fa-solid fa-shield"></i>
-      <span>Kcrish Secure Central Storage • User-wise Subfolders Mapped</span>
-    </div>
-  </section>
-</main>
-
-<div class="modal-overlay" id="resetModal">
-  <div class="modal-box">
-    <button type="button" class="modal-close-btn" id="modalCloseBtn">✕</button>
-    <h3 style="color:#fff; margin-bottom:8px;">Reset Password</h3>
-    <p style="color:var(--text-muted); font-size:13px; margin-bottom:20px;">Enter your username to receive recovery instructions.</p>
-    <form id="resetForm" novalidate>
-      <div class="form-group">
-        <label class="form-label" for="resetEmail">Username</label>
-        <div class="input-wrapper">
-          <input id="resetEmail" class="form-input" type="text" placeholder="Enter your username" required>
-          <span class="input-icon"><i class="fa-solid fa-user"></i></span>
-        </div>
-      </div>
-      <button type="submit" class="btn-submit" style="height: 46px; font-size: 14px;">Send Recovery Code</button>
-      <div class="status-box" id="modalStatusBox" style="margin-top: 12px;"></div>
-    </form>
+  <div class="login-footer">
+    <span>© Kcrish Systems</span>
+    <a href="about.html"><i class="fa-solid fa-circle-info"></i> About &amp; System Info</a>
   </div>
 </div>
 
 <script>
-(() => {
-  const $ = id => document.getElementById(id);
-  let isSignup = false;
+  // Redirect if already logged in
+  if (localStorage.getItem('client_username')) {
+    window.location.href = 'dashboard.html';
+  }
 
-  // Google OAuth Client Configuration
-  const CLIENT_ID = "306902298167-6o9o8o84955pu92k5k07u5al7djhp6op.apps.googleusercontent.com";
-  const SCOPES = "https://www.googleapis.com/auth/drive.file";
-  let tokenClient;
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('usernameInput').value.trim();
+    const errorBox = document.getElementById('errorBox');
 
-  window.onload = function() {
-    // Initialize Google Identity Token Client
-    if (typeof google !== 'undefined' && google.accounts) {
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        callback: (response) => {
-          if (response.error !== undefined) {
-            showStatus("Google Authentication failed!");
-            return;
-          }
-          localStorage.setItem("google_access_token", response.access_token);
-          localStorage.setItem("client_username", "Google User");
-          localStorage.setItem("active_user_folder", "/Kcrish_Data/Users/Google_User_Drive/");
-          window.location.href = "dashboard.html";
-        },
-      });
+    if (!username || username.length < 2) {
+      errorBox.textContent = 'Please enter a valid username (at least 2 characters).';
+      errorBox.style.display = 'block';
+      return;
     }
-  };
 
-  const setAuthMode = (signup) => {
-    isSignup = signup;
-    if ($('loginTab')) $('loginTab').classList.toggle('active', !signup);
-    if ($('signupTab')) $('signupTab').classList.toggle('active', signup);
-    if ($('authTitle')) $('authTitle').textContent = signup ? 'Create Account' : 'Welcome back';
-    if ($('authSubtitle')) $('authSubtitle').textContent = signup ? 'Register your workspace credentials[cite: 1].' : 'Enter your credentials to access your workspace[cite: 1].';
-    if ($('submitLabel')) $('submitLabel').textContent = signup ? 'Register Account' : 'Sign In Securely';
+    // Save session data
+    localStorage.setItem('client_username', username);
+    localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${username.replace(/\s+/g, '_')}/`);
     
-    const extra = $('groupFullName');
-    if(extra) extra.style.display = signup ? 'block' : 'none';
-    const sb = $('statusBox');
-    if(sb) sb.style.display = 'none';
-  };
-
-  const loginTab = $('loginTab'), signupTab = $('signupTab');
-  if(loginTab) loginTab.addEventListener('click', () => setAuthMode(false));
-  if(signupTab) signupTab.addEventListener('click', () => setAuthMode(true));
-
-  const eyeBtn = $('eyeBtn');
-  if(eyeBtn) {
-    eyeBtn.addEventListener('click', () => {
-      const p = $('pass');
-      const icon = $('eyeIcon');
-      if (p && p.type === 'password') {
-        p.type = 'text';
-        if(icon) icon.className = 'fa-solid fa-eye-slash';
-      } else if (p) {
-        p.type = 'password';
-        if(icon) icon.className = 'fa-solid fa-eye';
-      }
-    });
-  }
-
-  const showStatus = (msg, type = 'error') => {
-    const box = $('statusBox');
-    if(!box) return;
-    box.className = 'status-box ' + type;
-    box.textContent = msg;
-    box.style.display = 'flex';
-  };
-
-  // Google SSO Button Click Event Handler
-  const googleBtn = $('googleSsoBtn');
-  if (googleBtn) {
-    googleBtn.addEventListener('click', () => {
-      if (tokenClient) {
-        tokenClient.requestAccessToken({ prompt: 'consent' });
-      } else {
-        showStatus("Google API Client not loaded yet. Please check internet.");
-      }
-    });
-  }
-
-  const tallyBtn = $('tallySsoBtn');
-  if (tallyBtn) {
-    tallyBtn.addEventListener('click', () => {
-      showStatus('Connecting to local Tally .NET license daemon (Port 9000)...', 'success');
-    });
-  }
-
-  const form = $('form');
-  if(form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const userField = $('user');
-      const passField = $('pass');
-      
-      const user = userField ? userField.value.trim() : '';
-      const pass = passField ? passField.value : '';
-
-      if (!user || !pass) {
-        showStatus('Please fill in all required fields.');
-        return;
-      }
-
-      let usersDb = {};
-      try {
-        usersDb = JSON.parse(localStorage.getItem('kcrish_users_db') || '{}');
-      } catch (err) {
-        usersDb = {};
-      }
-
-      if (isSignup) {
-        if (usersDb[user]) {
-          showStatus('Username already exists. Choose another.');
-          return;
-        }
-        usersDb[user] = {
-          password: pass,
-          folderPath: `/Kcrish_Data/Users/Username_${user}/`
-        };
-        localStorage.setItem('kcrish_users_db', JSON.stringify(usersDb));
-        
-        showStatus(`Account created! Subfolder: /Kcrish_Data/Users/Username_${user}/`, 'success');
-        setTimeout(() => setAuthMode(false), 2000);
-      } else {
-        // Default admin bypass
-        if (user === 'admin' && pass === 'Kcrish@2026') {
-          localStorage.setItem('client_username', user);
-          localStorage.setItem('active_user_folder', '/Kcrish_Data/Users/Username_admin/');
-          localStorage.setItem('google_access_token', 'central_managed_token');
-          window.location.href = 'dashboard.html';
-          return;
-        }
-
-        if (!usersDb[user] || usersDb[user].password !== pass) {
-          showStatus('Invalid username or password.');
-          return;
-        }
-        
-        localStorage.setItem('client_username', user);
-        localStorage.setItem('active_user_folder', usersDb[user].folderPath);
-        localStorage.setItem('google_access_token', 'central_managed_token');
-        window.location.href = 'dashboard.html';
-      }
-    });
-  }
-
-  const forgotBtn = $('forgotBtn'), resetModal = $('resetModal'), modalClose = $('modalCloseBtn');
-  if(forgotBtn && resetModal) forgotBtn.addEventListener('click', () => resetModal.classList.add('open'));
-  if(modalClose && resetModal) modalClose.addEventListener('click', () => resetModal.classList.remove('open'));
-
-  const resetForm = $('resetForm');
-  if(resetForm) {
-    resetForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const val = $('resetEmail').value.trim();
-      const box = $('modalStatusBox');
-      if (!val) {
-        if(box) { box.className = 'status-box error'; box.textContent = 'Please enter your username.'; box.style.display = 'flex'; }
-        return;
-      }
-      if(box) { box.className = 'status-box success'; box.textContent = `Recovery instructions dispatched for user: ${val}`; box.style.display = 'flex'; }
-    });
-  }
-})();
+    // Redirect to dashboard
+    window.location.href = 'dashboard.html';
+  });
 </script>
 </body>
 </html>
