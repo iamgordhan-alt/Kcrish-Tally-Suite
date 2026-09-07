@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kcrish Automation Workspace - Tally Bridge & XML Sync Engine">
+<meta name="description" content="Kcrish Automation Workspace - Tally CSV Generator">
 <meta name="theme-color" content="#061219">
-<title>Kcrish Workspace • Tally Sync Engine</title>
+<title>Kcrish Workspace • Tally CSV Exporter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -134,7 +134,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     <div class="brand-logo">KA</div>
     <div>
       <h2 style="font-size:18px; color:#fff;">Kcrish Automation Suite</h2>
-      <span style="font-size:11px; color:var(--text-muted);">TallyPrime &amp; ERP 9 Bridge (Port 9000)</span>
+      <span style="font-size:11px; color:var(--text-muted);">Tally CSV &amp; File Exporter</span>
     </div>
   </div>
   <div style="display:flex; align-items:center; gap:16px;">
@@ -170,8 +170,8 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
       <input type="text" id="targetCompanyInput" class="form-input" value="Default Company" style="width:100%; height:42px; border-radius:10px; border:1px solid var(--border-input); background:rgba(3,14,23,0.5); color:#fff; padding:0 12px; font-family:inherit;">
     </div>
 
-    <button class="btn-action" id="pushToTallyBtn" disabled>
-      <i class="fa-solid fa-paper-plane"></i> Push Vouchers to Tally (Port 9000)
+    <button class="btn-action" id="downloadCsvBtn" disabled>
+      <i class="fa-solid fa-download"></i> Download Tally-Ready CSV
     </button>
   </section>
 
@@ -198,7 +198,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 
     <div style="margin-top:16px;">
       <span style="font-size:12px; font-weight:700; color:var(--text-muted);">Execution Logs:</span>
-      <div class="status-log" id="statusLog">Ready. Drop any Excel file to auto-detect mapping...</div>
+      <div class="status-log" id="statusLog">Ready. Drop any Excel file to auto-generate clean Tally CSV...</div>
     </div>
   </section>
 </main>
@@ -226,7 +226,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
 
   const fileInput = document.getElementById('excelFileInput');
   const statusLog = document.getElementById('statusLog');
-  const pushBtn = document.getElementById('pushToTallyBtn');
+  const downloadBtn = document.getElementById('downloadCsvBtn');
   const previewTableBody = document.querySelector('#previewTable tbody');
 
   // Smart Column Auto-Mapper Logic
@@ -256,7 +256,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
       }
     }
 
-    // 2. Smart Voucher Type Finder (Auto-detects Purchase or Sales)
+    // 2. Smart Voucher Type Finder
     let vchType = 'Sales';
     const headerString = Object.keys(row).join(' ').toLowerCase();
     if (headerString.includes('purchase') || headerString.includes('pur')) {
@@ -305,8 +305,7 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
       voucherType: String(vchType).trim(),
       voucherNumber: String(vchNo).trim(),
       partyName: String(party).trim(),
-      amount: amt,
-      companyName: document.getElementById('targetCompanyInput').value.trim()
+      amount: amt
     };
   }
 
@@ -334,14 +333,14 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
         parsedVouchers = jsonRows.map(row => smartParseRow(row));
 
         previewTableBody.innerHTML = '';
-        parsedVouchers.forEach(v => {
+        parsedVouchers.slice(0, 50).forEach(v => {
           const tr = document.createElement('tr');
           tr.innerHTML = `<td>${v.date}</td><td>${v.voucherType}</td><td>${v.voucherNumber}</td><td>${v.partyName}</td><td>₹${v.amount}</td>`;
           previewTableBody.appendChild(tr);
         });
 
-        statusLog.innerHTML += `<br>[Smart Mapper] Successfully mapped ${parsedVouchers.length} rows automatically. Ready to sync.`;
-        pushBtn.disabled = false;
+        statusLog.innerHTML += `<br>[Smart Mapper] Successfully mapped ${parsedVouchers.length} rows automatically. CSV ready for download.`;
+        downloadBtn.disabled = false;
       } catch (err) {
         console.error(err);
         statusLog.innerHTML += `<br>[Error] Failed to parse Excel file.`;
@@ -351,21 +350,26 @@ tr:hover { background: rgba(255, 255, 255, 0.02); }
     reader.readAsArrayBuffer(file);
   });
 
-  pushBtn.addEventListener('click', async () => {
+  downloadBtn.addEventListener('click', () => {
     if (parsedVouchers.length === 0) return;
 
-    pushBtn.disabled = true;
-    statusLog.innerHTML += `<br>[Sync Engine] Connecting to Tally on Port 9000...`;
+    // Generate CSV content from parsed data
+    let csvContent = "Date,VoucherType,VoucherNo,PartyName,Amount\n";
+    parsedVouchers.forEach(v => {
+      csvContent += `"${v.date}","${v.voucherType}","${v.voucherNumber}","${v.partyName}","${v.amount}"\n`;
+    });
 
-    if (typeof pushVouchersToTally === 'function') {
-      const result = await pushVouchersToTally(parsedVouchers);
-      statusLog.innerHTML += `<br>[Sync Complete] Total: ${result.total} | Success: ${result.success} | Failed: ${result.failed}`;
-      saveLocalBackup(parsedVouchers, 'Uploaded_Vouchers.xlsx');
-    } else {
-      statusLog.innerHTML += `<br>[Error] pushVouchersToTally function missing from app.js!`;
-    }
+    // Create a downloadable blob and trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Kcrish_Tally_Sync_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-    pushBtn.disabled = false;
+    statusLog.innerHTML += `<br>[Export Success] Tally-ready CSV file downloaded successfully!`;
   });
 })();
 </script>
