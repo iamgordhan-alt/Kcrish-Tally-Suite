@@ -33,17 +33,17 @@
       <h2 style="margin-top:0; font-size:16px; font-weight:700; color:#0f172a;">Available Masters</h2>
       <p style="font-size:13px; color:#64748b; margin-bottom:20px;">Choose whether you want to manage stock items or general accounts.</p>
       
-      <div class="menu-grid" style="margin-top: 0;">
+      <div class="menu-grid">
         <!-- Item Master Option -->
         <a href="master.html" class="menu-card blue">
-          <div class="icon-box" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 8px 20px rgba(139,92,246,0.35);"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <div class="icon-box"><i class="fa-solid fa-boxes-stacked"></i></div>
           <h3>Item Master</h3>
           <p>Manage stock inventory items, units, and categories with ready XML sync.</p>
         </a>
 
         <!-- General Ledger Option -->
         <a href="ledger.html" class="menu-card">
-          <div class="icon-box" style="background: linear-gradient(135deg, #ec4899, #be185d); box-shadow: 0 8px 20px rgba(236,72,153,0.35);"><i class="fa-solid fa-address-book"></i></div>
+          <div class="icon-box"><i class="fa-solid fa-address-book"></i></div>
           <h3>General Ledger</h3>
           <p>Create and sync general ledgers, party accounts, and sundry creditors.</p>
         </a>
@@ -56,13 +56,9 @@
 <script src="sidebar.js"></script>
 <script src="app.js"></script>
 <script>
-  // Session check and sidebar toggle handler
   document.addEventListener("DOMContentLoaded", () => {
     const username = localStorage.getItem('client_username');
-    if (!username) {
-      window.location.href = 'index.html';
-    }
-
+    if (!username) { window.location.href = 'index.html'; }
     const sidebarToggle = document.getElementById('sidebarToggle');
     if (sidebarToggle) {
       sidebarToggle.addEventListener('click', () => {
