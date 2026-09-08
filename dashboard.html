@@ -243,7 +243,6 @@ header {
       });
     });
 
-    // Session check: If username is missing, redirect to index.html
     const username = localStorage.getItem('client_username');
     if (!username) {
       window.location.href = 'index.html';
