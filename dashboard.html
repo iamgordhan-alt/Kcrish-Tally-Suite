@@ -34,16 +34,15 @@ body {
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
   background-image: 
     radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
     radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
     linear-gradient(180deg, #050e14 0%, #081620 100%);
   background-attachment: fixed;
-  padding: 24px;
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
+  overflow-x: hidden;
 }
 
 body.page-loaded {
@@ -56,55 +55,196 @@ body.page-exiting {
   transform: translateY(-8px);
 }
 
-header {
+/* Glassmorphism Sidebar */
+.sidebar {
+  width: 280px;
+  background: rgba(10, 22, 31, 0.85);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 18px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.brand-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
+}
+
+.brand-logo {
+  width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #10b981, #06b6d4);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22; font-size: 16px;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+.brand-title {
+  font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.01em;
+}
+.brand-subtitle {
+  font-size: 11px; color: var(--text-muted);
+}
+
+/* User Account Widget inside Sidebar */
+.sidebar-user-btn {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 24px;
+  color: #6ee7b7;
+  font-family: inherit;
+  width: 100%;
+}
+.sidebar-user-btn:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #fff;
+}
+.user-info-left {
+  display: flex; align-items: center; gap: 10px; overflow: hidden;
+}
+.user-avatar-icon {
+  width: 32px; height: 32px; border-radius: 50%; background: rgba(6, 182, 212, 0.2);
+  display: flex; align-items: center; justify-content: center; color: var(--cyan); font-size: 13px; flex-shrink: 0;
+}
+.user-name-text {
+  font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px;
+}
+
+/* Menu Section */
+.menu-section-title {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); font-weight: 700; margin-bottom: 10px; padding-left: 8px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.sidebar-link i {
+  font-size: 15px;
+  width: 20px;
+  text-align: center;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #fff;
+}
+
+.sidebar-link:hover i, .sidebar-link.active i {
+  color: var(--primary-light);
+}
+
+.sidebar-footer {
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logout-sidebar-btn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+.logout-sidebar-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fff;
+}
+.logout-sidebar-btn i {
+  color: #f87171;
+  width: 20px;
+  text-align: center;
+}
+
+/* Main Content Area */
+.main-content {
+  margin-left: 280px;
+  flex: 1;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  max-width: calc(100% - 280px);
+}
+
+.top-bar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1300px;
-  width: 100%;
-  margin: 0 auto 20px;
-  padding-bottom: 20px;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.brand-box { display: flex; align-items: center; gap: 12px; }
-.brand-logo {
-  width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #06b6d4);
-  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22;
+
+.top-bar-title h1 {
+  font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.02em;
+}
+.top-bar-title p {
+  font-size: 13px; color: var(--text-muted); margin-top: 2px;
 }
 
-.user-profile-btn {
-  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 8px 16px; border-radius: 12px; font-size: 13px; color: #6ee7b7; display: flex; align-items: center; gap: 10px;
-  cursor: pointer; transition: all 0.2s; font-family: inherit; font-weight: 600;
-}
-.user-profile-btn:hover { background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.5); color: #fff; }
-
-.logout-btn {
-  background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
-  padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 600;
-  display: flex; align-items: center; gap: 6px; transition: background 0.2s;
-}
-.logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
-
-.nav-bar {
-  max-width: 1300px; width: 100%; margin: 0 auto 24px; display: flex; gap: 10px; flex-wrap: wrap;
-}
-.nav-tab-link {
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-muted); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
-  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
-}
-.nav-tab-link:hover, .nav-tab-link.active {
-  background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #fff;
-}
-
-.container {
-  max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+.container-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
 .card {
-  background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 28px;
-  backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .card h3 { font-size: 18px; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 10px; }
 .card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
@@ -118,6 +258,7 @@ header {
 
 .stat-number { font-size: 28px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 8px; }
 
+/* Modal Styles */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
   display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
@@ -138,68 +279,104 @@ header {
   background: rgba(3,14,23,0.6); color: #fff; padding: 0 12px; font-size: 13px; outline: none;
 }
 
-@media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
+@media(max-width: 1100px) {
+  .sidebar { width: 80px; padding: 20px 10px; }
+  .brand-title, .brand-subtitle, .sidebar-link span, .menu-section-title, .logout-sidebar-btn span, .user-name-text, .sidebar-user-btn i:last-child { display: none; }
+  .main-content { margin-left: 80px; max-width: calc(100% - 80px); }
+  .sidebar-user-btn { justify-content: center; padding: 10px; }
+  .sidebar-link { justify-content: center; padding: 12px; }
+  .sidebar-link i { font-size: 18px; width: auto; }
+  .logout-sidebar-btn { justify-content: center; padding: 12px; }
+  .logout-sidebar-btn i { font-size: 18px; width: auto; }
+}
+
+@media(max-width: 800px) {
+  .container-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand-box">
+<!-- Liquid Glass Sidebar Navigation -->
+<aside class="sidebar">
+  <div class="brand-area">
     <div class="brand-logo">KA</div>
     <div>
-      <h2 style="font-size:18px; color:#fff;">Kcrish Automation Suite</h2>
-      <span style="font-size:11px; color:var(--text-muted);">Enterprise Workspace Dashboard</span>
+      <div class="brand-title">Kcrish Suite</div>
+      <div class="brand-subtitle">Automation v4.2</div>
     </div>
   </div>
-  <div style="display:flex; align-items:center; gap:12px;">
-    <button class="user-profile-btn" id="openProfileModal">
-      <i class="fa-solid fa-user-gear"></i> <span id="headerUsernameText">Account</span>
+
+  <button class="sidebar-user-btn" id="openProfileModal" title="Account Settings">
+    <div class="user-info-left">
+      <div class="user-avatar-icon"><i class="fa-solid fa-user"></i></div>
+      <span class="user-name-text" id="headerUsernameText">Account</span>
+    </div>
+    <i class="fa-solid fa-chevron-down" style="font-size: 11px; opacity: 0.7;"></i>
+  </button>
+
+  <div class="menu-section-title">Navigation Menu</div>
+  
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="sidebar-link active"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a>
+    <a href="converter.html" class="sidebar-link"><i class="fa-solid fa-file-excel"></i> <span>Converter</span></a>
+    <a href="ledger.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Ledgers</span></a>
+    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-database"></i> <span>Masters</span></a>
+    <a href="purchase.html" class="sidebar-link"><i class="fa-solid fa-cart-shopping"></i> <span>Purchase Hub</span></a>
+    <a href="restore.html" class="sidebar-link"><i class="fa-solid fa-rotate-left"></i> <span>Restore Hub</span></a>
+    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>About &amp; Info</span></a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="logout-sidebar-btn" id="logoutBtn">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Log Out</span>
     </button>
-    <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
   </div>
-</header>
+</aside>
 
-<nav class="nav-bar">
-  <a href="dashboard.html" class="nav-tab-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-  <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
-  <a href="ledger.html" class="nav-tab-link"><i class="fa-solid fa-book"></i> Ledgers</a>
-  <a href="masters.html" class="nav-tab-link"><i class="fa-solid fa-database"></i> Masters</a>
-  <a href="purchase.html" class="nav-tab-link"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
-  <a href="restore.html" class="nav-tab-link"><i class="fa-solid fa-rotate-left"></i> Restore</a>
-  <a href="about.html" class="nav-tab-link"><i class="fa-solid fa-circle-info"></i> About &amp; Info</a>
-</nav>
+<!-- Main Workspace Content -->
+<main class="main-content">
+  <div class="top-bar-header">
+    <div class="top-bar-title">
+      <h1>Enterprise Dashboard</h1>
+      <p>Welcome back! Your workspace is active and securely connected.</p>
+    </div>
+  </div>
 
-<main class="container">
-  <section class="card">
-    <div>
-      <h3><i class="fa-solid fa-server" style="color:var(--primary)"></i> System Overview</h3>
-      <p>Your workspace is active and securely connected to your isolated local directory path.</p>
-      <div class="stat-number">0 Active</div>
-      <span style="font-size: 11px; color: var(--text-dim);">Vouchers queued for local processing</span>
-    </div>
-  </section>
+  <div class="container-grid">
+    <section class="card">
+      <div>
+        <h3><i class="fa-solid fa-server" style="color:var(--primary)"></i> System Overview</h3>
+        <p>Your workspace is active and securely connected to your isolated local directory path.</p>
+        <div class="stat-number">0 Active</div>
+        <span style="font-size: 11px; color: var(--text-dim);">Vouchers queued for local processing</span>
+      </div>
+    </section>
 
-  <section class="card">
-    <div>
-      <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
-      <p>Jump straight into your most frequently used modules to manage data instantly.</p>
-    </div>
-    <div style="display: flex; gap: 10px; flex-direction: column;">
-      <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
-      <a href="converter.html" class="btn-action" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
-    </div>
-  </section>
+    <section class="card">
+      <div>
+        <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
+        <p>Jump straight into your most frequently used modules to manage data instantly.</p>
+      </div>
+      <div style="display: flex; gap: 10px; flex-direction: column;">
+        <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
+        <a href="converter.html" class="btn-action" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
+      </div>
+    </section>
 
-  <section class="card">
-    <div>
-      <h3><i class="fa-solid fa-shield-halved" style="color:var(--warning)"></i> Local Storage</h3>
-      <p>Encrypted local directory tracking enabled for seamless offline record keeping.</p>
-      <div class="stat-number" style="color: var(--cyan);">256-Bit</div>
-      <span style="font-size: 11px; color: var(--text-dim);">Client-side security active</span>
-    </div>
-  </section>
+    <section class="card">
+      <div>
+        <h3><i class="fa-solid fa-shield-halved" style="color:var(--warning)"></i> Local Storage</h3>
+        <p>Encrypted local directory tracking enabled for seamless offline record keeping.</p>
+        <div class="stat-number" style="color: var(--cyan);">256-Bit</div>
+        <span style="font-size: 11px; color: var(--text-dim);">Client-side security active</span>
+      </div>
+    </section>
+  </div>
 </main>
 
+<!-- Profile Settings Modal -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal-box">
     <button type="button" class="modal-close-btn" id="closeProfileModal">✕</button>
