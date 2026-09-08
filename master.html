@@ -11,33 +11,60 @@
 </head>
 <body>
 
-<div class="app-container">
-  <div class="dashboard-header">
-    <div>
-      <h1>Item Stock Master</h1>
-      <p>Manage Inventory and Stock Items</p>
+<!-- Permanent Locked Sidebar Injector via sidebar.js -->
+<main class="main-content" style="width: 100%;">
+  <div class="app-container" style="max-width: 1300px; margin: 0 auto;">
+    
+    <div class="dashboard-header">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <h1>Item Stock Master</h1>
+          <p>Manage Inventory and Stock Items</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="sync-badge"><span></span> Live Sync</div>
+      </div>
     </div>
-    <div class="header-actions">
-      <a href="dashboard.html" class="btn-template" style="color:var(--text); text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="step-box">
-      <span>Download standard inventory stock item master template:</span>
-      <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
+    <div class="card">
+      <div class="step-box">
+        <span>Download standard inventory stock item master template:</span>
+        <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
+      </div>
+      <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
+        <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" />
+        <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
+        <div class="msg">Upload Stock Inventory (Click or Drag & Drop File Here)</div>
+        <div id="masterFileName" class="file-name"></div>
+      </div>
+      <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML & Sync</button>
+      <div id="alertBox" class="alert"></div>
     </div>
-    <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
-      <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" />
-      <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
-      <div class="msg">Upload Stock Inventory (Click or Drag & Drop File Here)</div>
-      <div id="masterFileName" class="file-name"></div>
-    </div>
-    <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML & Sync</button>
-    <div id="alertBox" class="alert"></div>
-  </div>
-</div>
 
+  </div>
+</main>
+
+<script src="sidebar.js"></script>
 <script src="app.js"></script>
+<script>
+  // Session check and sidebar toggle handler
+  document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem('client_username');
+    if (!username) {
+      window.location.href = 'index.html';
+    }
+
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        document.body.classList.toggle('sidebar-collapsed');
+      });
+    }
+  });
+</script>
 </body>
 </html>
