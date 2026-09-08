@@ -1,4 +1,4 @@
-/* app.js - Unified & Fixed Session Management */
+/* app.js - Unified & Fixed Session Management with Quota Limit */
 const FIXED_COMPANY_NAME = "Kcrish";
 let accessToken = null;
 
@@ -6,7 +6,6 @@ window.onload = function() {
   let savedToken = localStorage.getItem("google_access_token");
   let savedUser = localStorage.getItem("client_username");
   
-  // Sirf username check karega, token optional rakhega taaki redirect loop na ho
   if (!savedUser) {
     window.location.href = "index.html";
     return;
@@ -45,6 +44,38 @@ function handleLogout() {
   localStorage.removeItem("google_access_token");
   localStorage.removeItem("client_username");
   window.location.href = "index.html";
+}
+
+function checkFileGenerationLimit() {
+  let savedToken = localStorage.getItem("google_access_token");
+  if (savedToken) {
+    return true; 
+  }
+
+  let currentMonth = new Date().toISOString().slice(0, 7); 
+  let storedMonth = localStorage.getItem("kcrish_quota_month");
+  let fileCount = parseInt(localStorage.getItem("kcrish_file_count") || "0", 10);
+
+  if (storedMonth !== currentMonth) {
+    localStorage.setItem("kcrish_quota_month", currentMonth);
+    localStorage.setItem("kcrish_file_count", "0");
+    fileCount = 0;
+  }
+
+  if (fileCount >= 1200) {
+    alert("Aapne is mahine ki free limit (1200 files) poori kar li hai. Unlimited files generate karne ke liye please 'Google Drive' se Sign In karein.");
+    return false;
+  }
+
+  return true;
+}
+
+function incrementFileCount() {
+  let savedToken = localStorage.getItem("google_access_token");
+  if (!savedToken) {
+    let fileCount = parseInt(localStorage.getItem("kcrish_file_count") || "0", 10);
+    localStorage.setItem("kcrish_file_count", fileCount + 1);
+  }
 }
 
 async function uploadJsonToPersonalDrive(jsonData, fileName) {
@@ -288,6 +319,8 @@ function buildPurchaseXMLString(invoices) {
 }
 
 async function generatePurchaseXML() {
+  if (!checkFileGenerationLimit()) return;
+
   const fileInput = document.getElementById('purchExcelFile');
   if (!fileInput.files.length) return showAlert("Please select a Purchase Excel file.", "error");
 
@@ -392,6 +425,7 @@ async function generatePurchaseXML() {
         document.body.appendChild(dl);
         dl.click();
         document.body.removeChild(dl);
+        incrementFileCount();
         showAlert("Party-wise ZIP downloaded and synced to your Drive.", "success");
 
       } else {
@@ -403,6 +437,7 @@ async function generatePurchaseXML() {
         document.body.appendChild(dl);
         dl.click();
         document.body.removeChild(dl);
+        incrementFileCount();
         showAlert("Purchase XML generated and synced to your Drive.", "success");
       }
 
@@ -449,6 +484,8 @@ function buildMasterXMLString(json) {
 }
 
 function generateMasterXML() {
+  if (!checkFileGenerationLimit()) return;
+
   const fileInput = document.getElementById('masterExcelFile');
   if (!fileInput.files.length) return showAlert("Please select an item master file.", "error");
 
@@ -467,6 +504,7 @@ function generateMasterXML() {
       document.body.appendChild(dl);
       dl.click();
       document.body.removeChild(dl);
+      incrementFileCount();
       showAlert("Master XML generated and synced to your Drive.", "success");
     } catch (err) { showAlert("Error: " + err.message, "error"); }
   };
@@ -539,6 +577,8 @@ function buildLedgerXMLString(json) {
 }
 
 function generateLedgerXML() {
+  if (!checkFileGenerationLimit()) return;
+
   const fileInput = document.getElementById('ledgerExcelFile');
   if (!fileInput.files.length) return showAlert("Please select a ledger file.", "error");
 
@@ -557,6 +597,7 @@ function generateLedgerXML() {
       document.body.appendChild(dl);
       dl.click();
       document.body.removeChild(dl);
+      incrementFileCount();
       showAlert("Ledger XML generated and synced to your Drive.", "success");
     } catch (err) { showAlert("Error: " + err.message, "error"); }
   };
@@ -564,6 +605,8 @@ function generateLedgerXML() {
 }
 
 function convertXmlToExcel() {
+  if (!checkFileGenerationLimit()) return;
+
   const fileInput = document.getElementById('xmlFile');
   if (!fileInput.files.length) return showAlert("Please select an XML file.", "error");
 
@@ -671,6 +714,7 @@ function convertXmlToExcel() {
       XLSX.utils.book_append_sheet(wb, ws, "TallyData");
       XLSX.writeFile(wb, "Tally_Dr_Cr_Data.xlsx");
       
+      incrementFileCount();
       showAlert(`Successfully converted ${extractedData.length} records across ${vouchers.length} vouchers.`, "success");
     } catch (err) { 
       showAlert("Error: " + err.message, "error"); 
