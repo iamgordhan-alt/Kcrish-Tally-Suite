@@ -2,6 +2,27 @@
 const FIXED_COMPANY_NAME = "Kcrish";
 let accessToken = null;
 
+// 30 Minutes Inactivity Auto-Logout System
+let inactivityTimer;
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(performAutoLogout, 30 * 60 * 1000);
+}
+function performAutoLogout() {
+  const username = localStorage.getItem('client_username');
+  if (username) {
+    localStorage.removeItem('client_username');
+    localStorage.removeItem('active_user_folder');
+    localStorage.removeItem('google_access_token');
+    alert("Session expired due to 30 minutes of inactivity. Please sign in again.");
+    window.location.href = 'index.html';
+  }
+}
+const activityEvents = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart', 'click'];
+activityEvents.forEach(event => {
+  window.addEventListener(event, resetInactivityTimer, true);
+});
+
 window.onload = function() {
   let savedToken = localStorage.getItem("google_access_token");
   let savedUser = localStorage.getItem("client_username");
@@ -12,6 +33,7 @@ window.onload = function() {
   }
   
   accessToken = savedToken || "";
+  resetInactivityTimer();
   
   const titleEl = document.getElementById("welcomeClientTitle");
   if (titleEl) {
@@ -79,7 +101,10 @@ function incrementFileCount() {
 }
 
 async function uploadJsonToPersonalDrive(jsonData, fileName) {
-  if (!accessToken) return alert("Google Session Expired. Please sign in again.");
+  if (!accessToken) {
+    // Token nahi hai toh bina error alert diye silently exit ho jao
+    return;
+  }
   try {
     let metadata = { name: fileName + ".json", mimeType: "application/json" };
     let fileContent = JSON.stringify(jsonData, null, 2);
@@ -100,6 +125,10 @@ async function uploadJsonToPersonalDrive(jsonData, fileName) {
 async function loadPersonalDriveFiles() {
   const container = document.getElementById('driveJsonContainer');
   if(!container) return;
+  if (!accessToken) {
+    container.innerHTML = "Please sign in with Google Drive to view synced archives.";
+    return;
+  }
   container.innerHTML = "<i class='fa-solid fa-spinner fa-spin' style='color:var(--primary); margin-right:6px;'></i> Loading from your Google Drive...";
   try {
     let res = await fetch('https://www.googleapis.com/drive/v3/files?q=mimeType=\'application/json\'', {
@@ -112,10 +141,10 @@ async function loadPersonalDriveFiles() {
         container.innerHTML = "No JSON files found in your Google Drive.";
         return;
     }
-    let html = "<table style='width:100%; border-collapse:collapse;'><thead><tr style='border-bottom:1px solid rgba(255,255,255,0.1);'><th style='padding:10px; text-align:left;'>File Name</th><th style='padding:10px; text-align:right;'>Action</th></tr></thead><tbody>";
+    let html = "<table style='width:100%; border-collapse:collapse;'><thead><tr style='border-bottom:1px solid #e2e8f0;'><th style='padding:10px; text-align:left; color:#334155;'>File Name</th><th style='padding:10px; text-align:right; color:#334155;'>Action</th></tr></thead><tbody>";
     files.forEach(file => {
-        html += `<tr style='border-bottom:1px solid rgba(255,255,255,0.05);'>
-          <td style='padding:12px 10px;'>${file.name}</td>
+        html += `<tr style='border-bottom:1px solid #f1f5f9;'>
+          <td style='padding:12px 10px; color:#475569;'>${file.name}</td>
           <td style='padding:12px 10px; text-align:right;'>
             <button onclick="downloadPersonalFile('${file.id}', '${file.name}')" class="btn-template">Download JSON</button>
           </td>
@@ -426,7 +455,7 @@ async function generatePurchaseXML() {
         dl.click();
         document.body.removeChild(dl);
         incrementFileCount();
-        showAlert("Party-wise ZIP downloaded and synced to your Drive.", "success");
+        showAlert("Party-wise ZIP downloaded successfully.", "success");
 
       } else {
         let xml = buildPurchaseXMLString(invoices);
@@ -438,7 +467,7 @@ async function generatePurchaseXML() {
         dl.click();
         document.body.removeChild(dl);
         incrementFileCount();
-        showAlert("Purchase XML generated and synced to your Drive.", "success");
+        showAlert("Purchase XML generated successfully.", "success");
       }
 
     } catch (err) { showAlert("Error: " + err.message, "error"); }
@@ -505,7 +534,7 @@ function generateMasterXML() {
       dl.click();
       document.body.removeChild(dl);
       incrementFileCount();
-      showAlert("Master XML generated and synced to your Drive.", "success");
+      showAlert("Master XML generated successfully.", "success");
     } catch (err) { showAlert("Error: " + err.message, "error"); }
   };
   reader.readAsArrayBuffer(fileInput.files[0]);
@@ -598,7 +627,7 @@ function generateLedgerXML() {
       dl.click();
       document.body.removeChild(dl);
       incrementFileCount();
-      showAlert("Ledger XML generated and synced to your Drive.", "success");
+      showAlert("Ledger XML generated successfully.", "success");
     } catch (err) { showAlert("Error: " + err.message, "error"); }
   };
   reader.readAsArrayBuffer(fileInput.files[0]);
