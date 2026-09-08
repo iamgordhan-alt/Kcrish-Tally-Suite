@@ -1,4 +1,262 @@
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq7Ss9RPffs5IVlVkiItHJh3dZM3o0fW0XpW4TNefK5puQ8xJ33oXW0Q/exec";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kcrish Automation Suite - Enterprise Workspace Dashboard">
+<meta name="theme-color" content="#061219">
+<title>Kcrish Workspace • Enterprise Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --primary-light: #34d399;
+  --cyan: #06b6d4;
+  --bg-dark: #061118;
+  --bg-card: rgba(12, 26, 36, 0.75);
+  --border-card: rgba(255, 255, 255, 0.12);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+    linear-gradient(180deg, #050e14 0%, #081620 100%);
+  background-attachment: fixed;
+  padding: 24px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
+}
+
+body.page-loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.page-exiting {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.brand-box { display: flex; align-items: center; gap: 12px; }
+.brand-logo {
+  width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #06b6d4);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22;
+}
+
+.user-profile-btn {
+  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 8px 16px; border-radius: 12px; font-size: 13px; color: #6ee7b7; display: flex; align-items: center; gap: 10px;
+  cursor: pointer; transition: all 0.2s; font-family: inherit; font-weight: 600;
+}
+.user-profile-btn:hover { background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.5); color: #fff; }
+
+.logout-btn {
+  background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
+  padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px; transition: background 0.2s;
+}
+.logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
+
+.nav-bar {
+  max-width: 1300px; width: 100%; margin: 0 auto 24px; display: flex; gap: 10px; flex-wrap: wrap;
+}
+.nav-tab-link {
+  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
+}
+.nav-tab-link:hover, .nav-tab-link.active {
+  background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #fff;
+}
+
+.container {
+  max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+
+.card {
+  background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 28px;
+  backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; justify-content: space-between;
+}
+.card h3 { font-size: 18px; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 10px; }
+.card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+
+.btn-action {
+  background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399;
+  padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;
+}
+.btn-action:hover { background: rgba(16, 185, 129, 0.25); color: #fff; }
+
+.stat-number { font-size: 28px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 8px; }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #091722; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
+  width: 100%; max-width: 400px; padding: 28px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); position: relative;
+}
+.modal-close-btn {
+  position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.06); border: none; color: #94a3b8;
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+.form-input {
+  width: 100%; height: 42px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(3,14,23,0.6); color: #fff; padding: 0 12px; font-size: 13px; outline: none;
+}
+
+@media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-box">
+    <div class="brand-logo">KA</div>
+    <div>
+      <h2 style="font-size:18px; color:#fff;">Kcrish Automation Suite</h2>
+      <span style="font-size:11px; color:var(--text-muted);">Enterprise Workspace Dashboard</span>
+    </div>
+  </div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <button class="user-profile-btn" id="openProfileModal">
+      <i class="fa-solid fa-user-gear"></i> <span id="headerUsernameText">Account</span>
+    </button>
+    <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+  </div>
+</header>
+
+<nav class="nav-bar">
+  <a href="dashboard.html" class="nav-tab-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+  <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
+  <a href="ledger.html" class="nav-tab-link"><i class="fa-solid fa-book"></i> Ledgers</a>
+  <a href="masters.html" class="nav-tab-link"><i class="fa-solid fa-database"></i> Masters</a>
+  <a href="purchase.html" class="nav-tab-link"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
+  <a href="restore.html" class="nav-tab-link"><i class="fa-solid fa-rotate-left"></i> Restore</a>
+  <a href="about.html" class="nav-tab-link"><i class="fa-solid fa-circle-info"></i> About &amp; Info</a>
+</nav>
+
+<main class="container">
+  <section class="card">
+    <div>
+      <h3><i class="fa-solid fa-server" style="color:var(--primary)"></i> System Overview</h3>
+      <p>Your workspace is active and securely connected to your isolated local directory path.</p>
+      <div class="stat-number">0 Active</div>
+      <span style="font-size: 11px; color: var(--text-dim);">Vouchers queued for local processing</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
+      <p>Jump straight into your most frequently used modules to manage data instantly.</p>
+    </div>
+    <div style="display: flex; gap: 10px; flex-direction: column;">
+      <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
+      <a href="converter.html" class="btn-action" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <h3><i class="fa-solid fa-shield-halved" style="color:var(--warning)"></i> Local Storage</h3>
+      <p>Encrypted local directory tracking enabled for seamless offline record keeping.</p>
+      <div class="stat-number" style="color: var(--cyan);">256-Bit</div>
+      <span style="font-size: 11px; color: var(--text-dim);">Client-side security active</span>
+    </div>
+  </section>
+</main>
+
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-box">
+    <button type="button" class="modal-close-btn" id="closeProfileModal">✕</button>
+    <h3 style="font-size:18px; color:#fff; margin-bottom:6px;">Profile Settings</h3>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Manage your profile credentials securely.</p>
+    
+    <form id="profileUpdateForm">
+      <div class="form-group">
+        <label class="form-label">USERNAME</label>
+        <input type="text" id="modalUsername" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">NEW PASSWORD</label>
+        <input type="password" id="modalNewPassword" placeholder="Minimum 8 characters" class="form-input" />
+      </div>
+      <button type="submit" class="btn-action" style="width: 100%; height: 44px; margin-top: 6px;">Save Changes</button>
+      <div id="modalStatus" style="font-size: 12px; text-align: center; margin-top: 10px; min-height: 18px;"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq7Ss9RPffs5IVlVkiItHJh3dZM3o0fW0XpW4TNefK5puQ8xJ33oXW0Q/exec";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      document.body.classList.add("page-loaded");
+    }, 40);
+
+    document.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", function(e) {
+        const targetUrl = this.getAttribute("href");
+        if (!targetUrl || targetUrl.startsWith("#") || (targetUrl.startsWith("http") && !targetUrl.includes(window.location.hostname))) {
+          return;
+        }
+        e.preventDefault();
+        document.body.classList.remove("page-loaded");
+        document.body.classList.add("page-exiting");
+        setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 350);
+      });
+    });
+
+    const username = localStorage.getItem('client_username');
+    if (!username) {
+      window.location.href = 'index.html';
+      return;
+    }
+
+    document.getElementById('headerUsernameText').textContent = username;
+    document.getElementById('modalUsername').value = username;
+
+    const modal = document.getElementById('profileModal');
+    document.getElementById('openProfileModal').addEventListener('click', () => modal.classList.add('open'));
+    document.getElementById('closeProfileModal').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
 
     document.getElementById('profileUpdateForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -55,3 +313,18 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq
         statusBox.textContent = 'Network error. Server update fail ho gaya.';
       }
     });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      document.body.classList.remove("page-loaded");
+      document.body.classList.add("page-exiting");
+      setTimeout(() => {
+        localStorage.removeItem('client_username');
+        localStorage.removeItem('active_user_folder');
+        localStorage.removeItem('google_access_token');
+        window.location.href = 'index.html';
+      }, 350);
+    });
+  });
+</script>
+</body>
+</html>
