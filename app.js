@@ -97,6 +97,11 @@ function incrementFileCount() {
   if (!savedToken) {
     let fileCount = parseInt(localStorage.getItem("kcrish_file_count") || "0", 10);
     localStorage.setItem("kcrish_file_count", fileCount + 1);
+    
+    // Live update sidebar widget if present
+    if (typeof updateSidebarTokenCount === 'function') {
+      updateSidebarTokenCount();
+    }
   }
 }
 
