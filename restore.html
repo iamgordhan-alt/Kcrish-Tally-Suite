@@ -12,8 +12,8 @@
 <body onload="loadPersonalDriveFiles()">
 
 <!-- Permanent Locked Sidebar Injector via sidebar.js -->
-<main class="main-content" style="width: 100%;">
-  <div class="app-container" style="max-width: 1300px; margin: 0 auto;">
+<main class="main-content">
+  <div class="app-container">
     
     <div class="dashboard-header">
       <div style="display: flex; align-items: center; gap: 14px;">
@@ -31,11 +31,13 @@
     </div>
 
     <div class="card">
-      <div class="step-box" style="background:rgba(255,255,255,0.02);">
-        <span style="color:var(--text-dark); font-weight: 500;">Retrieve and audit synced JSON archives from personal Google Drive</span>
-        <button class="btn-template" onclick="loadPersonalDriveFiles()" style="border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      <div class="step-box">
+        <span style="color:#334155; font-weight: 600;">Retrieve and audit synced JSON archives from personal Google Drive</span>
+        <button class="btn-template" onclick="loadPersonalDriveFiles()">
+          <i class="fa-solid fa-rotate"></i> Refresh
+        </button>
       </div>
-      <div id="driveJsonContainer" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border-glass); border-radius: 8px; padding: 16px; background: rgba(3,14,23,0.6); font-size: 12px; text-align: center; color: var(--text-muted); width: 100%;">
+      <div id="driveJsonContainer" style="max-height: 400px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; background: #f8fafc; font-size: 13px; text-align: center; color: #475569; width: 100%;">
         Loading files from your Drive...
       </div>
       <div id="alertBox" class="alert"></div>
