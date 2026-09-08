@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  // 1. Sidebar HTML Injector
+  // 1. Sidebar HTML Injector with Token Counter
   const sidebarHTML = `
     <aside class="sidebar">
       <div class="brand-area">
@@ -29,6 +29,15 @@ document.addEventListener("DOMContentLoaded", function() {
         <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>About &amp; Info</span></a>
       </nav>
 
+      <!-- Token / Free Quota Display Widget -->
+      <div style="margin: 12px 0; padding: 10px 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 8px;">
+        <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; font-weight: 700; margin-bottom: 4px;">Free Quota Limit</div>
+        <div style="font-size: 12px; font-weight: 600; color: #34d399; display: flex; align-items: center; justify-content: space-between;">
+          <span id="sidebarTokenText">0 / 1200 Used</span>
+          <i class="fa-solid fa-bolt" style="font-size: 11px; color: #fbbf24;"></i>
+        </div>
+      </div>
+
       <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
         <button class="sidebar-link" id="logoutBtn" style="width: 100%; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.25); color: #fca5a5; cursor: pointer; text-align: left; border-radius: 10px;">
           <i class="fa-solid fa-right-from-bracket" style="color: #f87171;"></i>
@@ -56,19 +65,30 @@ document.addEventListener("DOMContentLoaded", function() {
     if (userText) userText.textContent = username;
   }
 
+  // Update Token Usage Display
+  updateSidebarTokenCount();
+
   // Logout handler
   document.getElementById('logoutBtn')?.addEventListener('click', () => {
     localStorage.clear();
     window.location.href = 'index.html';
   });
 });
+
+function updateSidebarTokenCount() {
+  const fileCount = localStorage.getItem("kcrish_file_count") || "0";
+  const tokenTextEl = document.getElementById('sidebarTokenText');
+  if (tokenTextEl) {
+    tokenTextEl.textContent = `${fileCount} / 1200 Used`;
+  }
+}
+
 // 30 Minutes Inactivity Auto-Logout System
 (function() {
   let inactivityTimer;
 
   function resetInactivityTimer() {
     clearTimeout(inactivityTimer);
-    // 30 minutes = 30 * 60 * 1000 ms = 1800000 ms
     inactivityTimer = setTimeout(performAutoLogout, 30 * 60 * 1000);
   }
 
@@ -82,13 +102,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Events to track user activity
   const activityEvents = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart', 'click'];
-  
   activityEvents.forEach(event => {
     window.addEventListener(event, resetInactivityTimer, true);
   });
 
-  // Initial call on page load
   resetInactivityTimer();
 })();
