@@ -16,13 +16,12 @@
   --primary-hover: #059669;
   --primary-light: #34d399;
   --cyan: #06b6d4;
-  --bg-dark: #0f172a;
-  --bg-sidebar: #1e293b;
-  --bg-card: #ffffff;
-  --border-card: #e2e8f0;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --text-dim: #94a3b8;
+  --bg-dark: #061118;
+  --bg-card: rgba(12, 26, 36, 0.75);
+  --border-card: rgba(255, 255, 255, 0.12);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
   --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
@@ -31,10 +30,15 @@
 
 body {
   font-family: var(--font-main);
-  background-color: #f1f5f9;
+  background-color: var(--bg-dark);
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+    linear-gradient(180deg, #050e14 0%, #081620 100%);
+  background-attachment: fixed;
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
@@ -51,83 +55,88 @@ body.page-exiting {
   transform: translateY(-8px);
 }
 
-/* Permanent Fixed Sidebar matching the reference UI */
+/* Permanent Fixed Sidebar matching your original titles & layout */
 .sidebar {
-  width: 260px;
-  background: var(--bg-sidebar);
-  border-right: 1px solid #334155;
+  width: 280px;
+  background: rgba(10, 22, 31, 0.9);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
   display: flex;
   flex-direction: column;
-  padding: 20px 16px;
+  padding: 24px 18px;
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   z-index: 50;
   overflow-y: auto;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
 }
 
 .brand-area {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #334155;
-  margin-bottom: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
 }
 
 .brand-logo {
-  width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg, #10b981, #06b6d4);
-  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; font-size: 15px;
+  width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #10b981, #06b6d4);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22; font-size: 16px;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
 }
 
 .brand-title {
-  font-size: 15px; font-weight: 800; color: #ffffff; letter-spacing: -0.01em;
+  font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.01em;
 }
 .brand-subtitle {
-  font-size: 10px; color: var(--text-dim);
+  font-size: 11px; color: var(--text-muted);
 }
 
 /* User Account Widget inside Sidebar */
 .sidebar-user-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 10px 12px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 14px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: 20px;
-  color: #cbd5e1;
+  margin-bottom: 24px;
+  color: #6ee7b7;
   font-family: inherit;
   width: 100%;
 }
 .sidebar-user-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
   color: #fff;
 }
 .user-info-left {
-  display: flex; align-items: center; gap: 8px; overflow: hidden;
+  display: flex; align-items: center; gap: 10px; overflow: hidden;
 }
 .user-avatar-icon {
-  width: 28px; height: 28px; border-radius: 50%; background: rgba(16, 185, 129, 0.2);
-  display: flex; align-items: center; justify-content: center; color: #34d399; font-size: 12px; flex-shrink: 0;
+  width: 32px; height: 32px; border-radius: 50%; background: rgba(6, 182, 212, 0.2);
+  display: flex; align-items: center; justify-content: center; color: var(--cyan); font-size: 13px; flex-shrink: 0;
 }
 .user-name-text {
-  font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;
+  font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px;
 }
 
 /* Menu Section */
 .menu-section-title {
-  font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); font-weight: 700; margin-bottom: 8px; padding-left: 8px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); font-weight: 700; margin-bottom: 10px; padding-left: 8px;
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
 }
 
@@ -135,44 +144,46 @@ body.page-exiting {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  color: #94a3b8;
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: var(--text-muted);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .sidebar-link i {
-  font-size: 14px;
-  width: 18px;
+  font-size: 15px;
+  width: 20px;
   text-align: center;
-  color: #64748b;
+  color: var(--text-dim);
+  transition: color 0.2s;
 }
 
 .sidebar-link:hover, .sidebar-link.active {
-  background: #10b981;
-  color: #ffffff;
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #fff;
 }
 
 .sidebar-link:hover i, .sidebar-link.active i {
-  color: #ffffff;
+  color: var(--primary-light);
 }
 
 .sidebar-footer {
-  padding-top: 14px;
-  border-top: 1px solid #334155;
-  margin-top: 10px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .logout-sidebar-btn {
   background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   color: #fca5a5;
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 11px 14px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
@@ -188,49 +199,35 @@ body.page-exiting {
 }
 .logout-sidebar-btn i {
   color: #f87171;
-  width: 18px;
+  width: 20px;
   text-align: center;
 }
 
 /* Main Content Area */
 .main-content {
-  margin-left: 260px;
+  margin-left: 280px;
   flex: 1;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   overflow-y: auto;
 }
 
-.top-bar {
-  background: #1e293b;
-  color: #fff;
-  padding: 14px 28px;
+.top-bar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #334155;
-  position: sticky;
-  top: 0;
-  z-index: 40;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.top-bar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+.top-bar-title h1 {
+  font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.02em;
 }
-
-.top-bar-left h2 {
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.content-body {
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+.top-bar-title p {
+  font-size: 13px; color: var(--text-muted); margin-top: 2px;
 }
 
 .container-grid {
@@ -242,62 +239,72 @@ body.page-exiting {
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-.card h3 { font-size: 16px; margin-bottom: 10px; color: #1e293b; display: flex; align-items: center; gap: 8px; }
-.card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+.card h3 { font-size: 18px; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 10px; }
+.card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
 
 .btn-action {
-  background: #10b981; color: #fff;
-  padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; text-decoration: none;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s;
-  border: none;
+  background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399;
+  padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;
 }
-.btn-action:hover { background: #059669; }
+.btn-action:hover { background: rgba(16, 185, 129, 0.25); color: #fff; }
 
-.stat-number { font-size: 26px; font-weight: 800; color: #10b981; font-family: var(--font-mono); margin-top: 6px; }
+.stat-number { font-size: 28px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 8px; }
 
 /* Modal Styles */
 .modal-overlay {
-  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
   display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
 }
 .modal-overlay.open { display: flex; }
 .modal-box {
-  background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px;
-  width: 100%; max-width: 400px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); position: relative;
+  background: #091722; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
+  width: 100%; max-width: 400px; padding: 28px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); position: relative;
 }
 .modal-close-btn {
-  position: absolute; top: 16px; right: 16px; background: #f1f5f9; border: none; color: #64748b;
-  width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.06); border: none; color: #94a3b8;
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
 .form-group { margin-bottom: 14px; }
-.form-label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
 .form-input {
-  width: 100%; height: 40px; border-radius: 8px; border: 1px solid #cbd5e1;
-  background: #f8fafc; color: #1e293b; padding: 0 12px; font-size: 13px; outline: none;
+  width: 100%; height: 42px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(3,14,23,0.6); color: #fff; padding: 0 12px; font-size: 13px; outline: none;
 }
-.form-input:focus { border-color: #10b981; background: #fff; }
 
-@media(max-width: 900px) {
+@media(max-width: 1100px) {
+  .sidebar { width: 80px; padding: 20px 10px; }
+  .brand-title, .brand-subtitle, .sidebar-link span, .menu-section-title, .logout-sidebar-btn span, .user-name-text, .sidebar-user-btn i:last-child { display: none; }
+  .main-content { margin-left: 80px; }
+  .sidebar-user-btn { justify-content: center; padding: 10px; }
+  .sidebar-link { justify-content: center; padding: 12px; }
+  .sidebar-link i { font-size: 18px; width: auto; }
+  .logout-sidebar-btn { justify-content: center; padding: 12px; }
+  .logout-sidebar-btn i { font-size: 18px; width: auto; }
+}
+
+@media(max-width: 800px) {
   .container-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- Permanent Locked Sidebar matching the target design -->
+<!-- Permanent Fixed Sidebar with Original Kcrish Names & Layout -->
 <aside class="sidebar">
   <div class="brand-area">
-    <div class="brand-logo">TM</div>
+    <div class="brand-logo">KA</div>
     <div>
-      <div class="brand-title">THEKA MITRA</div>
-      <div class="brand-subtitle">Digital Cloud</div>
+      <div class="brand-title">Kcrish Automation Suite</div>
+      <div class="brand-subtitle">Enterprise Workspace Dashboard</div>
     </div>
   </div>
 
@@ -306,84 +313,67 @@ body.page-exiting {
       <div class="user-avatar-icon"><i class="fa-solid fa-user"></i></div>
       <span class="user-name-text" id="headerUsernameText">Account</span>
     </div>
-    <i class="fa-solid fa-chevron-down" style="font-size: 10px; opacity: 0.7;"></i>
+    <i class="fa-solid fa-chevron-down" style="font-size: 11px; opacity: 0.7;"></i>
   </button>
 
-  <div class="menu-section-title">Menu</div>
+  <div class="menu-section-title">Navigation Menu</div>
   
   <nav class="sidebar-nav">
-    <a href="dashboard.html" class="sidebar-link active"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+    <a href="dashboard.html" class="sidebar-link active"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a>
+    <a href="converter.html" class="sidebar-link"><i class="fa-solid fa-file-excel"></i> <span>Converter</span></a>
+    <a href="ledger.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Ledgers</span></a>
+    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-database"></i> <span>Masters</span></a>
     <a href="purchase.html" class="sidebar-link"><i class="fa-solid fa-cart-shopping"></i> <span>Purchase</span></a>
-    <a href="converter.html" class="sidebar-link"><i class="fa-solid fa-exchange-alt"></i> <span>Guarantee Transfer</span></a>
-    <a href="ledger.html" class="sidebar-link"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Direct Sale</span></a>
-    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Daily Parcha Report</span></a>
-    <a href="restore.html" class="sidebar-link"><i class="fa-solid fa-folder-open"></i> <span>Vouchers</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>Office Inward</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-store"></i> <span>Shop Debtors</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> <span>Account Ledgers</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-chart-bar"></i> <span>Reports</span></a>
-  </nav>
-
-  <div class="menu-section-title" style="margin-top: 14px;">Setting</div>
-  <nav class="sidebar-nav" style="flex: unset;">
-    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-gear"></i> <span>Account Master</span></a>
-    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-shop"></i> <span>Shops/Godowns</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Employee</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-tag"></i> <span>Price Label</span></a>
+    <a href="restore.html" class="sidebar-link"><i class="fa-solid fa-rotate-left"></i> <span>Restore</span></a>
+    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>About &amp; Info</span></a>
   </nav>
 
   <div class="sidebar-footer">
     <button class="logout-sidebar-btn" id="logoutBtn">
       <i class="fa-solid fa-right-from-bracket"></i>
-      <span>Log Out</span>
+      <span>Logout</span>
     </button>
   </div>
 </aside>
 
-<!-- Main Workspace Content with Top Header bar -->
+<!-- Main Workspace Content -->
 <main class="main-content">
-  <header class="top-bar">
-    <div class="top-bar-left">
-      <i class="fa-solid fa-bars" style="cursor: pointer;"></i>
-      <h2>Enterprise Workspace</h2>
+  <div class="top-bar-header">
+    <div class="top-bar-title">
+      <h1>Enterprise Dashboard</h1>
+      <p>Welcome back! Your workspace is active and securely connected.</p>
     </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <i class="fa-regular fa-bell" style="cursor: pointer;"></i>
-      <i class="fa-solid fa-expand" style="cursor: pointer;"></i>
-    </div>
-  </header>
+  </div>
 
-  <div class="content-body">
-    <div class="container-grid">
-      <section class="card">
-        <div>
-          <h3><i class="fa-solid fa-server" style="color:var(--primary)"></i> System Overview</h3>
-          <p>Your workspace is active and securely connected to your isolated local directory path.</p>
-          <div class="stat-number">0 Active</div>
-          <span style="font-size: 11px; color: var(--text-dim);">Vouchers queued for local processing</span>
-        </div>
-      </section>
+  <div class="container-grid">
+    <section class="card">
+      <div>
+        <h3><i class="fa-solid fa-server" style="color:var(--primary)"></i> System Overview</h3>
+        <p>Your workspace is active and securely connected to your isolated local directory path.</p>
+        <div class="stat-number">0 Active</div>
+        <span style="font-size: 11px; color: var(--text-dim);">Vouchers queued for local processing</span>
+      </div>
+    </section>
 
-      <section class="card">
-        <div>
-          <h3><i class="fa-solid fa-bolt" style="color:#06b6d4"></i> Quick Actions</h3>
-          <p>Jump straight into your most frequently used modules to manage data instantly.</p>
-        </div>
-        <div style="display: flex; gap: 10px; flex-direction: column;">
-          <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
-          <a href="converter.html" class="btn-action" style="background: #06b6d4;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
-        </div>
-      </section>
+    <section class="card">
+      <div>
+        <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
+        <p>Jump straight into your most frequently used modules to manage data instantly.</p>
+      </div>
+      <div style="display: flex; gap: 10px; flex-direction: column;">
+        <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
+        <a href="converter.html" class="btn-action" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
+      </div>
+    </section>
 
-      <section class="card">
-        <div>
-          <h3><i class="fa-solid fa-shield-halved" style="color:#f59e0b"></i> Local Storage</h3>
-          <p>Encrypted local directory tracking enabled for seamless offline record keeping.</p>
-          <div class="stat-number" style="color: #06b6d4;">256-Bit</div>
-          <span style="font-size: 11px; color: var(--text-dim);">Client-side security active</span>
-        </div>
-      </section>
-    </div>
+    <section class="card">
+      <div>
+        <h3><i class="fa-solid fa-shield-halved" style="color:var(--warning)"></i> Local Storage</h3>
+        <p>Encrypted local directory tracking enabled for seamless offline record keeping.</p>
+        <div class="stat-number" style="color: var(--cyan);">256-Bit</div>
+        <span style="font-size: 11px; color: var(--text-dim);">Client-side security active</span>
+      </div>
+    </section>
   </div>
 </main>
 
@@ -391,7 +381,7 @@ body.page-exiting {
 <div class="modal-overlay" id="profileModal">
   <div class="modal-box">
     <button type="button" class="modal-close-btn" id="closeProfileModal">✕</button>
-    <h3 style="font-size:16px; color:#1e293b; margin-bottom:6px;">Profile Settings</h3>
+    <h3 style="font-size:18px; color:#fff; margin-bottom:6px;">Profile Settings</h3>
     <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Manage your profile credentials securely.</p>
     
     <form id="profileUpdateForm">
@@ -403,7 +393,7 @@ body.page-exiting {
         <label class="form-label">NEW PASSWORD</label>
         <input type="password" id="modalNewPassword" placeholder="Minimum 8 characters" class="form-input" />
       </div>
-      <button type="submit" class="btn-action" style="width: 100%; height: 40px; margin-top: 6px;">Save Changes</button>
+      <button type="submit" class="btn-action" style="width: 100%; height: 44px; margin-top: 6px;">Save Changes</button>
       <div id="modalStatus" style="font-size: 12px; text-align: center; margin-top: 10px; min-height: 18px;"></div>
     </form>
   </div>
@@ -454,18 +444,18 @@ body.page-exiting {
       const statusBox = document.getElementById('modalStatus');
 
       if (!newUsername) {
-        statusBox.style.color = '#ef4444';
+        statusBox.style.color = '#f87171';
         statusBox.textContent = 'Username blank nahi ho sakta.';
         return;
       }
 
       if (newPass && newPass.length < 8) {
-        statusBox.style.color = '#ef4444';
+        statusBox.style.color = '#f87171';
         statusBox.textContent = 'Password must be at least 8 characters.';
         return;
       }
 
-      statusBox.style.color = '#64748b';
+      statusBox.style.color = '#cbd5e1';
       statusBox.textContent = 'Updating profile on server...';
 
       try {
@@ -485,7 +475,7 @@ body.page-exiting {
           localStorage.setItem('active_user_folder', result.folderPath);
           document.getElementById('headerUsernameText').textContent = result.username;
 
-          statusBox.style.color = '#10b981';
+          statusBox.style.color = '#34d399';
           statusBox.textContent = result.message;
           document.getElementById('modalNewPassword').value = '';
           setTimeout(() => { 
@@ -493,11 +483,11 @@ body.page-exiting {
             modal.classList.remove('open');
           }, 1500);
         } else {
-          statusBox.style.color = '#ef4444';
+          statusBox.style.color = '#f87171';
           statusBox.textContent = result.message;
         }
       } catch (err) {
-        statusBox.style.color = '#ef4444';
+        statusBox.style.color = '#f87171';
         statusBox.textContent = 'Network error. Server update fail ho gaya.';
       }
     });
