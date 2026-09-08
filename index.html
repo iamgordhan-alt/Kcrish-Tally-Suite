@@ -61,7 +61,7 @@ body {
 body.page-loaded { opacity: 1; transform: translateY(0); }
 body.page-exiting { opacity: 0; transform: translateY(-8px); }
 
-.orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(60px); }
+.orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(60px); will-change: transform; }
 .orb-1 { width: 400px; height: 400px; left: -80px; top: 15%; background: rgba(16, 185, 129, 0.14); }
 .orb-2 { width: 380px; height: 380px; right: -90px; bottom: 10%; background: rgba(6, 182, 212, 0.12); }
 
@@ -81,7 +81,7 @@ body.page-exiting { opacity: 0; transform: translateY(-8px); }
 .badge {
   display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
   background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.28);
-  color: #a7f3d0; font-size: 12px; font-weight: 600; width: fit-content;
+  color: #a7f3d0; font-size: 12px; font-weight: 600; width: fit-content; backdrop-filter: blur(8px);
 }
 .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background-color: var(--primary-light); box-shadow: 0 0 8px var(--primary-light); }
 
@@ -99,7 +99,7 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
 
 .sync-preview-card {
   background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 20px;
-  backdrop-filter: blur(20px); display: flex; flex-direction: column; gap: 16px; max-width: 560px;
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.45); backdrop-filter: blur(20px); display: flex; flex-direction: column; gap: 16px; max-width: 560px;
 }
 .sync-card-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px; }
 .sync-title { font-size: 13px; font-weight: 700; color: #cbd5e1; display: flex; align-items: center; gap: 8px; }
@@ -115,6 +115,10 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
 .metric-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 8px 12px; text-align: center; }
 .metric-box .val { font-size: 15px; font-weight: 800; color: #38bdf8; font-family: var(--font-mono); }
 .metric-box .lbl { font-size: 10px; color: var(--text-dim); font-weight: 600; }
+
+.pills { display: flex; flex-wrap: wrap; gap: 10px; }
+.pill { padding: 7px 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); font-size: 12px; color: #cbd5e1; display: flex; align-items: center; gap: 6px; }
+.pill svg { color: var(--primary); }
 
 .login-card {
   position: relative; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 28px; padding: 36px 32px;
@@ -167,6 +171,18 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
 .status-box.error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
 .status-box.success { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #6ee7b7; }
 
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 16px; color: var(--text-dim); font-size: 12px; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.08); }
+
+.sso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sso-btn {
+  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 9px 12px;
+  color: #e2e8f0; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.card-foot { text-align: center; margin-top: 22px; font-size: 11px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; gap: 6px; }
+.card-foot a { color: var(--cyan); text-decoration: none; font-weight: 600; margin-left: 8px; }
+
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
   display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
@@ -191,16 +207,42 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
 <div class="orb orb-2"></div>
 
 <main class="shell">
+  <!-- Left Side: Showcase Layout -->
   <section class="showcase">
     <div class="badge"><span class="pulse-dot"></span><span>TallyPrime &amp; ERP 9 Engine v4.2 • Ready</span></div>
     <div class="brand-header">
-      <div class="brand-logo-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h6v6H4z"/><path d="M14 4h6v6h-6z"/><path d="M4 14h6v6H4z"/><path d="M17 14v6"/><path d="M14 17h6"/></svg></div>
+      <div class="brand-logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h6v6H4z"/><path d="M14 4h6v6h-6z"/><path d="M4 14h6v6H4z"/><path d="M17 14v6"/><path d="M14 17h6"/></svg>
+      </div>
       <div class="brand-title">Kcrish <span>Automation</span></div>
     </div>
     <h1>Excel to Tally.<br><span class="gradient-text">Beautifully Automated.</span></h1>
     <p class="desc">The high-performance workspace for accounting firms and enterprises. Automatically parse, validate GST, map chart-of-accounts, and push thousands of vouchers directly to Tally in seconds.</p>
+    
+    <div class="sync-preview-card">
+      <div class="sync-card-header">
+        <span class="sync-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> Live Pipeline Simulation</span>
+        <span class="sync-status-tag">STATUS: IDLE • READY</span>
+      </div>
+      <div class="sync-flow">
+        <div class="sync-node"><span class="sync-node-label">Source Input</span><span class="sync-node-val">Sales_Register.xlsx</span></div>
+        <div class="sync-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
+        <div class="sync-node"><span class="sync-node-label">Target Engine</span><span class="sync-node-val">Tally XML (Port 9000)</span></div>
+      </div>
+      <div class="sync-metrics">
+        <div class="metric-box"><div class="val">99.98%</div><div class="lbl">GST Match</div></div>
+        <div class="metric-box"><div class="val">10,000+</div><div class="lbl">Rows / Minute</div></div>
+        <div class="metric-box"><div class="val">0.00s</div><div class="lbl">Lag</div></div>
+      </div>
+    </div>
+
+    <div class="pills">
+      <span class="pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> 256-Bit Encryption</span>
+      <span class="pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Multi-GSTIN Ready</span>
+    </div>
   </section>
 
+  <!-- Right Side: Login Card Layout -->
   <section class="login-card">
     <div class="tabs-container" role="tablist">
       <button type="button" class="tab-btn active" id="loginTab">Sign In</button>
@@ -246,6 +288,14 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
         </div>
       </div>
 
+      <div class="form-group signup-extra-fields" id="groupConfirmPass">
+        <label class="form-label" for="confirmPass">Confirm Password</label>
+        <div class="input-wrapper">
+          <input id="confirmPass" class="form-input" type="password" placeholder="Re-enter your password">
+          <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+        </div>
+      </div>
+
       <div class="form-options">
         <label class="checkbox-wrap"><input type="checkbox" id="rememberMe"><span id="rememberLabel">Remember me</span></label>
         <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
@@ -257,7 +307,18 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
       </button>
 
       <div class="status-box" id="statusBox"></div>
+
+      <div class="auth-divider">Or authenticate via</div>
+      <div class="sso-grid">
+        <button type="button" class="sso-btn" id="googleSsoBtn"><i class="fa-brands fa-google" style="color:#ea4335;"></i> Google Drive</button>
+        <button type="button" class="sso-btn" id="tallySsoBtn"><i class="fa-solid fa-bolt" style="color:#10b981;"></i> Workspace Sync</button>
+      </div>
     </form>
+
+    <div class="card-foot">
+      <span>Kcrish Secure Automation Engine • 256-Bit TLS</span>
+      <a href="about.html"><i class="fa-solid fa-circle-info"></i> About</a>
+    </div>
   </section>
 </main>
 
@@ -288,150 +349,9 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq7Ss9RPffs5IVlVkiItHJh3dZM3o0fW0XpW4TNefK5puQ8xJ33oXW0Q/exec";
   let targetEmail = "";
 
-  const setAuthMode = (signup) => {
-    isSignup = signup;
-    $('loginTab').classList.toggle('active', !signup);
-    $('signupTab').classList.toggle('active', signup);
-    $('authTitle').textContent = signup ? 'Create Account' : 'Welcome back';
-    $('submitLabel').textContent = signup ? 'Continue with Email OTP' : 'Sign In Securely';
-    
-    const extraFields = document.querySelectorAll('.signup-extra-fields');
-    extraFields.forEach(el => el.style.display = signup ? 'block' : 'none');
-    $('forgotBtn').style.display = signup ? 'none' : 'inline-block';
-    $('statusBox').style.display = 'none';
-  };
-
-  $('loginTab').addEventListener('click', () => setAuthMode(false));
-  $('signupTab').addEventListener('click', () => setAuthMode(true));
-
-  // Password toggle
-  $('eyeBtn').addEventListener('click', () => {
-    const pass = $('pass');
-    pass.type = pass.type === 'password' ? 'text' : 'password';
-  });
-
-  // Form Submit
-  $('form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const username = $('user').value.trim();
-    const password = $('pass').value;
-
-    let payload = {
-      action: isSignup ? 'signup' : 'login',
-      username: username,
-      password: password
-    };
-
-    if (isSignup) {
-      payload.fullName = $('fullName').value.trim();
-      payload.email = $('signupEmail').value.trim();
-      targetEmail = payload.email;
-      if (!payload.fullName || !payload.email || !username || !password) {
-        showStatus('Sabhi fields bharein.', 'error');
-        return;
-      }
-    } else {
-      targetEmail = username; // Can be username or email for login
-      if (!username || !password) {
-        showStatus('Username aur Password dalein.', 'error');
-        return;
-      }
-    }
-
-    $('submitBtn').disabled = true;
-    $('spinner').style.display = 'block';
-    $('submitLabel').textContent = 'Processing...';
-
-    try {
-      const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-      const result = await res.json();
-
-      $('submitBtn').disabled = false;
-      $('spinner').style.display = 'none';
-      $('submitLabel').textContent = isSignup ? 'Continue with Email OTP' : 'Sign In Securely';
-
-      if (result.success) {
-        if (result.requiresOtp || isSignup) {
-          if(result.email) targetEmail = result.email;
-          $('otpHeading').textContent = isSignup ? 'Email Verification OTP' : 'Login Verification OTP';
-          $('otpModal').classList.add('open');
-          showStatus(result.message, 'success');
-        } else {
-          localStorage.setItem('client_username', result.username || username);
-          localStorage.setItem('active_user_folder', result.folderPath);
-          window.location.href = 'dashboard.html';
-        }
-      } else {
-        showStatus(result.message, 'error');
-      }
-    } catch (err) {
-      $('submitBtn').disabled = false;
-      $('spinner').style.display = 'none';
-      $('submitLabel').textContent = isSignup ? 'Continue with Email OTP' : 'Sign In Securely';
-      showStatus('Network Error!', 'error');
-    }
-  });
-
-  // OTP Form Submit
-  $('otpForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const otp = $('otpInput').value.trim();
-    const box = $('otpStatusBox');
-    box.style.display = 'flex';
-
-    try {
-      const res = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'verify_otp', identifier: targetEmail, otp: otp })
-      });
-      const result = await res.json();
-
-      if (result.success) {
-        box.className = 'status-box success';
-        box.innerHTML = `<span>${result.message}</span>`;
-        localStorage.setItem('client_username', result.username);
-        localStorage.setItem('active_user_folder', result.folderPath);
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
-      } else {
-        box.className = 'status-box error';
-        box.innerHTML = `<span>${result.message}</span>`;
-      }
-    } catch (err) {
-      box.className = 'status-box error';
-      box.innerHTML = '<span>Verification failed.</span>';
-    }
-  });
-
-  $('otpCloseBtn').addEventListener('click', () => { $('otpModal').classList.remove('open'); });
-
-  function showStatus(msg, type) {
-    const box = $('statusBox');
-    box.style.display = 'block';
-    box.className = 'status-box ' + type;
-    box.innerText = msg;
-  }
-})();
-</script>
-</body>
-</html>
-<script>
-(() => {
-  const $ = id => document.getElementById(id);
-  let isSignup = false;
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq7Ss9RPffs5IVlVkiItHJh3dZM3o0fW0XpW4TNefK5puQ8xJ33oXW0Q/exec";
-  let targetEmail = "";
-
-  // Page load hote hi screen black se wapas aane ki guarantee
   window.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("page-loaded");
   });
-
-  window.onload = function() {
-    let savedToken = localStorage.getItem("google_access_token");
-    if(savedToken && localStorage.getItem("client_username")) {
-      window.location.href = "dashboard.html";
-    }
-  };
 
   const setAuthMode = (signup) => {
     isSignup = signup;
@@ -554,3 +474,5 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
   }
 })();
 </script>
+</body>
+</html>
