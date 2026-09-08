@@ -11,37 +11,57 @@
 </head>
 <body>
 
-<!-- Permanent Locked Sidebar Injector via sidebar.js -->
+<aside class="sidebar">
+  <div class="brand-area">
+    <div class="brand-logo">KA</div>
+    <div>
+      <div class="brand-title">Kcrish Suite</div>
+      <div class="brand-subtitle">Automation v4.2</div>
+    </div>
+  </div>
+
+  <div class="menu-section-title">Navigation Menu</div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a>
+    <a href="converter.html" class="sidebar-link"><i class="fa-solid fa-file-excel"></i> <span>Converter</span></a>
+    <a href="ledger.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Ledgers</span></a>
+    <a href="masters.html" class="sidebar-link active"><i class="fa-solid fa-database"></i> <span>Masters</span></a>
+    <a href="purchase.html" class="sidebar-link"><i class="fa-solid fa-cart-shopping"></i> <span>Purchase</span></a>
+    <a href="restore.html" class="sidebar-link"><i class="fa-solid fa-rotate-left"></i> <span>Restore</span></a>
+    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>About &amp; Info</span></a>
+  </nav>
+</aside>
+
 <main class="main-content">
-  <div class="app-container">
+  <div class="app-container" style="padding: 28px;">
     
-    <div class="dashboard-header">
+    <div class="dashboard-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
       <div style="display: flex; align-items: center; gap: 14px;">
         <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
           <i class="fa-solid fa-bars"></i>
         </button>
         <div>
           <h1>Item Stock Master</h1>
-          <p>Manage Inventory and Stock Items</p>
+          <p style="color: #64748b; font-size:13px;">Manage Inventory and Stock Items[cite: 1]</p>
         </div>
       </div>
       <div class="header-actions">
-        <div class="sync-badge"><span></span> Live Sync</div>
+        <div class="sync-badge" style="background: rgba(16,185,129,0.1); padding: 6px 12px; border-radius: 20px; color: #34d399; font-size: 12px; font-weight: 600;"><span style="width:6px; height:6px; background:#10b981; display:inline-block; border-radius:50%; margin-right:4px;"></span> Live Sync</div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="step-box">
-        <span>Download standard inventory stock item master template:</span>
-        <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
+    <div class="card" style="background: rgba(12, 26, 36, 0.75); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; padding: 28px;">
+      <div class="step-box" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:rgba(255,255,255,0.03); padding:14px; border-radius:12px;">
+        <span style="color:#94a3b8; font-size:13px;">Download standard inventory stock item master template[cite: 1]:</span>
+        <button class="btn-template" onclick="downloadMasterTemplate()" style="background:#06b6d4; color:#fff; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:600;"><i class="fa-solid fa-download"></i> Template[cite: 1]</button>
       </div>
-      <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
+      <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()" style="border: 2px dashed rgba(255,255,255,0.15); border-radius: 16px; padding: 30px; text-align: center; cursor: pointer; margin-bottom: 20px;">
         <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" style="display: none;" />
-        <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
-        <div class="msg">Upload Stock Inventory (Click or Drag & Drop File Here)</div>
+        <div class="icon" style="font-size:32px; color:#34d399; margin-bottom:10px;"><i class="fa-solid fa-boxes-packing"></i></div>
+        <div class="msg" style="color:#fff; font-size:14px; font-weight:600;">Upload Stock Inventory (Click or Drag & Drop File Here)[cite: 1]</div>
         <div id="masterFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #059669;"></div>
       </div>
-      <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML & Sync</button>
+      <button class="btn-action" onclick="generateMasterXML()" style="background:#10b981; color:#022c22; border:none; padding:12px 20px; border-radius:12px; font-weight:700; width:100%; cursor:pointer;"><i class="fa-solid fa-bolt"></i> Generate Item Master XML & Sync[cite: 1]</button>
       <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
 
@@ -53,7 +73,7 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const username = localStorage.getItem('client_username');
-    if (!username) { window.location.href = 'index.html'; }
+    if (!username) { window.location.href = 'index.html'; return; }
     const sidebarToggle = document.getElementById('sidebarToggle');
     if (sidebarToggle) {
       sidebarToggle.addEventListener('click', () => {
