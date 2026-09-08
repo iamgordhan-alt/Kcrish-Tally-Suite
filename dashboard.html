@@ -143,6 +143,56 @@ body.page-exiting {
   color: var(--primary-light);
 }
 
+/* Masters Dropdown Sub-menu Styling */
+.nav-item-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-menu {
+  display: none;
+  flex-direction: column;
+  padding-left: 28px;
+  margin-top: 3px;
+  gap: 3px;
+}
+
+.sub-menu.open {
+  display: flex;
+}
+
+.sub-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.sub-link:hover, .sub-link.active {
+  color: #fff;
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.sub-link i {
+  font-size: 11px;
+  width: 14px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.sub-link:hover i, .sub-link.active i {
+  color: var(--primary-light);
+}
+
 /* Sidebar Collapse Modifier (Icon-Only Mode) */
 body.sidebar-collapsed .sidebar {
   width: 72px;
@@ -152,9 +202,14 @@ body.sidebar-collapsed .brand-title,
 body.sidebar-collapsed .brand-subtitle,
 body.sidebar-collapsed .menu-section-title,
 body.sidebar-collapsed .sidebar-link span,
+body.sidebar-collapsed .sub-link span,
 body.sidebar-collapsed .user-name-text,
-body.sidebar-collapsed .sidebar-user-btn i:last-child {
+body.sidebar-collapsed .sidebar-user-btn i:last-child,
+body.sidebar-collapsed .masters-chevron {
   display: none !important;
+}
+body.sidebar-collapsed .sub-menu {
+  padding-left: 0 !important;
 }
 body.sidebar-collapsed .main-content {
   margin-left: 72px;
@@ -163,7 +218,8 @@ body.sidebar-collapsed .sidebar-user-btn {
   justify-content: center;
   padding: 10px;
 }
-body.sidebar-collapsed .sidebar-link {
+body.sidebar-collapsed .sidebar-link,
+body.sidebar-collapsed .sub-link {
   justify-content: center;
   padding: 11px;
 }
@@ -359,9 +415,21 @@ body.sidebar-collapsed .brand-area {
   <nav class="sidebar-nav">
     <a href="dashboard.html" class="sidebar-link active"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a>
     <a href="converter.html" class="sidebar-link"><i class="fa-solid fa-file-excel"></i> <span>Converter</span></a>
-    <a href="ledger.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Ledgers</span></a>
-    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-database"></i> <span>Masters</span></a>
     <a href="purchase.html" class="sidebar-link"><i class="fa-solid fa-cart-shopping"></i> <span>Purchase</span></a>
+    
+    <!-- Masters with Sub-menu (Item Master & General Ledger) -->
+    <div class="nav-item-group">
+      <button type="button" class="sidebar-link" id="mastersToggleBtn" style="width:100%; background:transparent; cursor:pointer; justify-content:space-between; display:flex; align-items:center;">
+        <span style="display:flex; align-items:center; gap:12px;"><i class="fa-solid fa-database"></i> <span>Masters</span></span>
+        <i class="fa-solid fa-chevron-down masters-chevron" id="mastersChevron" style="font-size:10px; transition: transform 0.2s;"></i>
+      </button>
+      
+      <div class="sub-menu" id="mastersSubMenu">
+        <a href="item-master.html" class="sub-link"><i class="fa-solid fa-boxes-stacked"></i> <span>Item Master</span></a>
+        <a href="general-ledger.html" class="sub-link"><i class="fa-solid fa-book"></i> <span>General Ledger</span></a>
+      </div>
+    </div>
+
     <a href="restore.html" class="sidebar-link"><i class="fa-solid fa-rotate-left"></i> <span>Restore</span></a>
     <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>About &amp; Info</span></a>
   </nav>
@@ -449,7 +517,7 @@ body.sidebar-collapsed .brand-area {
 </div>
 
 <script>
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq7Ss9RPffs5IVlVkiItHJh3dZM3o0fW0XpW4TNefK5puQ8xJ33oXW0Q/exec";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHmWpBKGd94Qj7NbGAweH5SZHeHUkVIw8lDBAA5HFqAy56dW2RkdTeXQ3eQRSIHwEmgQ/exec";
 
   document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
@@ -461,6 +529,20 @@ body.sidebar-collapsed .brand-area {
     if (sidebarToggle) {
       sidebarToggle.addEventListener('click', () => {
         document.body.classList.toggle('sidebar-collapsed');
+      });
+    }
+
+    // Masters Sub-menu Toggle Logic
+    const mastersToggleBtn = document.getElementById('mastersToggleBtn');
+    const mastersSubMenu = document.getElementById('mastersSubMenu');
+    const mastersChevron = document.getElementById('mastersChevron');
+
+    if (mastersToggleBtn && mastersSubMenu) {
+      mastersToggleBtn.addEventListener('click', () => {
+        mastersSubMenu.classList.toggle('open');
+        if (mastersChevron) {
+          mastersChevron.style.transform = mastersSubMenu.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
       });
     }
 
@@ -502,7 +584,7 @@ body.sidebar-collapsed .brand-area {
 
       if (!newUsername) {
         statusBox.style.color = '#f87171';
-        statusBox.textContent = 'Username blank nahi ho sakta.';
+        statusBox.textContent = 'Username cannot be blank.';
         return;
       }
 
@@ -545,7 +627,7 @@ body.sidebar-collapsed .brand-area {
         }
       } catch (err) {
         statusBox.style.color = '#f87171';
-        statusBox.textContent = 'Network error. Server update fail ho gaya.';
+        statusBox.textContent = 'Network error. Server update failed.';
       }
     });
 
