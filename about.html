@@ -10,96 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
 <style>
-:root {
-  --primary: #10b981;
-  --primary-hover: #059669;
-  --primary-light: #34d399;
-  --cyan: #06b6d4;
-  --bg-dark: #061118;
-  --bg-card: rgba(12, 26, 36, 0.75);
-  --border-card: rgba(255, 255, 255, 0.12);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
-  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: var(--font-main);
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
-    linear-gradient(180deg, #050e14 0%, #081620 100%);
-  background-attachment: fixed;
-  padding: 24px;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1300px;
-  width: 100%;
-  margin: 0 auto 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-.brand-box { display: flex; align-items: center; gap: 12px; }
-.brand-logo {
-  width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #06b6d4);
-  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22;
-}
-.user-badge {
-  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 8px 16px; border-radius: 12px; font-size: 13px; color: #6ee7b7; display: flex; align-items: center; gap: 10px;
-}
-.logout-btn {
-  background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;
-  padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
-  display: flex; align-items: center; gap: 6px; transition: background 0.2s;
-}
-.logout-btn:hover { background: rgba(239, 68, 68, 0.25); }
-
-.nav-bar {
-  max-width: 1300px; width: 100%; margin: 0 auto 24px; display: flex; gap: 10px; flex-wrap: wrap;
-}
-.nav-tab-link {
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-muted); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
-  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
-}
-.nav-tab-link:hover, .nav-tab-link.active {
-  background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #fff;
-}
-
+/* Page-specific inline overrides if any needed */
 .container {
   max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
 }
-
-.card {
-  background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 28px;
-  backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-.card h3 { font-size: 18px; margin-bottom: 16px; color: #fff; display: flex; align-items: center; gap: 10px; }
-.card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
-
-.tech-badge {
-  display: inline-block; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3);
-  color: #67e8f9; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); margin-right: 6px; margin-bottom: 8px;
-}
-
-.highlight-box {
-  background: rgba(3, 14, 23, 0.6); border-left: 4px solid var(--primary); padding: 14px 18px; border-radius: 0 12px 12px 0; margin: 16px 0; font-size: 13px; color: #cbd5e1;
-}
-
 .shortcut-table {
   width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;
 }
@@ -112,8 +28,6 @@ kbd {
   background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 3px 8px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; color: #34d399;
 }
-
-/* Toast notification popup */
 #shortcutToast {
   position: fixed; bottom: 24px; right: 24px; background: #064e3b; border: 1px solid #10b981;
   color: #ecfdf5; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600;
@@ -121,117 +35,116 @@ kbd {
   animation: slideUp 0.3s ease;
 }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
 @media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand-box">
-    <div class="brand-logo">KA</div>
-    <div>
-      <h2 style="font-size:18px; color:#fff;">Kcrish Automation Suite</h2>
-      <span style="font-size:11px; color:var(--text-muted);">Architecture &amp; Functional Shortcuts Hub</span>
-    </div>
-  </div>
-  <div style="display:flex; align-items:center; gap:16px;">
-    <div class="user-badge" id="userInfoDisplay">
-      <i class="fa-solid fa-folder-open"></i> <span id="userPathText">/Kcrish_Data/Users/Default/</span>
-    </div>
-    <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
-  </div>
-</header>
-
-<nav class="nav-bar">
-  <a href="dashboard.html" class="nav-tab-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-  <a href="converter.html" class="nav-tab-link"><i class="fa-solid fa-file-excel"></i> Converter</a>
-  <a href="ledger.html" class="nav-tab-link"><i class="fa-solid fa-book"></i> Ledgers</a>
-  <a href="masters.html" class="nav-tab-link"><i class="fa-solid fa-database"></i> Masters</a>
-  <a href="purchase.html" class="nav-tab-link"><i class="fa-solid fa-cart-shopping"></i> Purchase</a>
-  <a href="restore.html" class="nav-tab-link"><i class="fa-solid fa-rotate-left"></i> Restore</a>
-  <a href="about.html" class="nav-tab-link active"><i class="fa-solid fa-circle-info"></i> About &amp; Info</a>
-</nav>
-
-<main class="container">
-  <!-- Left Panel: Engineering Philosophy & Architecture Learnings -->
-  <section class="card">
-    <h3><i class="fa-solid fa-lightbulb" style="color:var(--primary)"></i> Engineering Philosophy &amp; Learnings</h3>
-    <p>The <strong>Kcrish Automation Suite</strong> was architected to bridge the gap between irregular supplier spreadsheets and structured accounting databases without relying on fragile server connections.</p>
+<!-- Permanent Locked Sidebar Injector via sidebar.js -->
+<main class="main-content" style="width: 100%;">
+  <div class="app-container" style="max-width: 1300px; margin: 0 auto;">
     
-    <div class="highlight-box">
-      <strong>Core Architectural Learning:</strong> Bypassing browser-to-desktop network ports in favor of <em>Client-side SheetJS Parsing + Standardized CSV Export</em> completely eliminates CORS errors and environment-specific security roadblocks.
+    <header class="dashboard-header">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <h1>Kcrish Automation Suite</h1>
+          <p>Architecture &amp; Functional Shortcuts Hub</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="sync-badge" id="userInfoDisplay">
+          <span></span> <span id="userPathText">/Kcrish_Data/Users/Default/</span>
+        </div>
+        <button class="btn-logout" id="logoutBtnTop"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Left Panel: Engineering Philosophy & Architecture Learnings -->
+      <section class="card">
+        <h3><i class="fa-solid fa-lightbulb" style="color:var(--primary)"></i> Engineering Philosophy &amp; Learnings</h3>
+        <p>The <strong>Kcrish Automation Suite</strong> was architected to bridge the gap between irregular supplier spreadsheets and structured accounting databases without relying on fragile server connections.</p>
+        
+        <div class="highlight-box" style="background: rgba(3, 14, 23, 0.6); border-left: 4px solid var(--primary); padding: 14px 18px; border-radius: 0 12px 12px 0; margin: 16px 0; font-size: 13px; color: #cbd5e1;">
+          <strong>Core Architectural Learning:</strong> Bypassing browser-to-desktop network ports in favor of <em>Client-side SheetJS Parsing + Standardized CSV Export</em> completely eliminates CORS errors and environment-specific security roadblocks.
+        </div>
+
+        <p><strong>System Stack &amp; Technologies:</strong></p>
+        <div style="margin-top: 10px;">
+          <span class="tech-badge" style="display: inline-block; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); margin-right: 6px; margin-bottom: 8px;">Vanilla HTML5 &amp; CSS3</span>
+          <span class="tech-badge" style="display: inline-block; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); margin-right: 6px; margin-bottom: 8px;">SheetJS (XLSX) Engine</span>
+          <span class="tech-badge" style="display: inline-block; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); margin-right: 6px; margin-bottom: 8px;">Smart Auto-Mapper</span>
+          <span class="tech-badge" style="display: inline-block; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); margin-right: 6px; margin-bottom: 8px;">LocalStorage Sessions</span>
+        </div>
+      </section>
+
+      <!-- Right Panel: Master Shortcuts Reference & Interactive Control -->
+      <section class="card">
+        <h3><i class="fa-solid fa-keyboard" style="color:var(--cyan)"></i> Suite Active Keyboard Shortcuts</h3>
+        <p>Press any of the shortcut keys below to instantly navigate modules or trigger suite actions:</p>
+        
+        <table class="shortcut-table">
+          <thead>
+            <tr>
+              <th>Module / Navigation</th>
+              <th>Active Shortcut</th>
+              <th>Function</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr onclick="location.href='dashboard.html'">
+              <td>Dashboard</td>
+              <td><kbd>Alt + D</kbd></td>
+              <td>Jump to Analytics &amp; Overview</td>
+            </tr>
+            <tr onclick="location.href='converter.html'">
+              <td>Converter</td>
+              <td><kbd>Alt + C</kbd></td>
+              <td>Open Excel Normalizer</td>
+            </tr>
+            <tr onclick="location.href='ledger.html'">
+              <td>Ledgers</td>
+              <td><kbd>Alt + L</kbd></td>
+              <td>Manage Party Heads</td>
+            </tr>
+            <tr onclick="location.href='masters.html'">
+              <td>Masters</td>
+              <td><kbd>Alt + M</kbd></td>
+              <td>Database &amp; Inventories</td>
+            </tr>
+            <tr onclick="location.href='purchase.html'">
+              <td>Purchase Hub</td>
+              <td><kbd>Alt + P</kbd></td>
+              <td>Bulk Transaction Processor</td>
+            </tr>
+            <tr onclick="location.href='restore.html'">
+              <td>Restore Hub</td>
+              <td><kbd>Alt + R</kbd></td>
+              <td>Session &amp; Backup Manager</td>
+            </tr>
+            <tr onclick="triggerLogout()">
+              <td>Secure Logout</td>
+              <td><kbd>Alt + Q</kbd></td>
+              <td>Clear session and exit</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box" style="border-left-color: var(--cyan); margin-top: 18px; background: rgba(3, 14, 23, 0.6); padding: 14px 18px; border-radius: 0 12px 12px 0; font-size: 13px; color: #cbd5e1;">
+          <em>Tip:</em> All shortcut keys are globally active across the suite modules when using <kbd>Alt</kbd> modifier keys.
+        </div>
+      </section>
     </div>
 
-    <p><strong>System Stack &amp; Technologies:</strong></p>
-    <div style="margin-top: 10px;">
-      <span class="tech-badge">Vanilla HTML5 &amp; CSS3</span>
-      <span class="tech-badge">SheetJS (XLSX) Engine</span>
-      <span class="tech-badge">Smart Auto-Mapper</span>
-      <span class="tech-badge">LocalStorage Sessions</span>
-    </div>
-  </section>
-
-  <!-- Right Panel: Master Shortcuts Reference & Interactive Control -->
-  <section class="card">
-    <h3><i class="fa-solid fa-keyboard" style="color:var(--cyan)"></i> Suite Active Keyboard Shortcuts</h3>
-    <p>Press any of the shortcut keys below to instantly navigate modules or trigger suite actions:</p>
-    
-    <table class="shortcut-table">
-      <thead>
-        <tr>
-          <th>Module / Navigation</th>
-          <th>Active Shortcut</th>
-          <th>Function</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr onclick="location.href='dashboard.html'">
-          <td>Dashboard</td>
-          <td><kbd>Alt + D</kbd></td>
-          <td>Jump to Analytics &amp; Overview</td>
-        </tr>
-        <tr onclick="location.href='converter.html'">
-          <td>Converter</td>
-          <td><kbd>Alt + C</kbd></td>
-          <td>Open Excel Normalizer</td>
-        </tr>
-        <tr onclick="location.href='ledger.html'">
-          <td>Ledgers</td>
-          <td><kbd>Alt + L</kbd></td>
-          <td>Manage Party Heads</td>
-        </tr>
-        <tr onclick="location.href='masters.html'">
-          <td>Masters</td>
-          <td><kbd>Alt + M</kbd></td>
-          <td>Database &amp; Inventories</td>
-        </tr>
-        <tr onclick="location.href='purchase.html'">
-          <td>Purchase Hub</td>
-          <td><kbd>Alt + P</kbd></td>
-          <td>Bulk Transaction Processor</td>
-        </tr>
-        <tr onclick="location.href='restore.html'">
-          <td>Restore Hub</td>
-          <td><kbd>Alt + R</kbd></td>
-          <td>Session &amp; Backup Manager</td>
-        </tr>
-        <tr onclick="triggerLogout()">
-          <td>Secure Logout</td>
-          <td><kbd>Alt + Q</kbd></td>
-          <td>Clear session and exit</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="highlight-box" style="border-left-color: var(--cyan); margin-top: 18px;">
-      <em>Tip:</em> All shortcut keys are globally active across the suite modules when using <kbd>Alt</kbd> modifier keys.
-    </div>
-  </section>
+  </div>
 </main>
 
 <div id="shortcutToast">Action Triggered!</div>
 
+<script src="sidebar.js"></script>
 <script>
   const username = localStorage.getItem('client_username');
   const userFolder = localStorage.getItem('active_user_folder');
@@ -240,7 +153,10 @@ kbd {
     window.location.href = 'index.html';
   }
 
-  document.getElementById('userPathText').textContent = userFolder || '/Kcrish_Data/Users/Default/';
+  const userPathElem = document.getElementById('userPathText');
+  if(userPathElem) {
+    userPathElem.textContent = userFolder || '/Kcrish_Data/Users/Default/';
+  }
 
   function triggerLogout() {
     localStorage.removeItem('client_username');
@@ -248,10 +164,16 @@ kbd {
     window.location.href = 'index.html';
   }
 
-  document.getElementById('logoutBtn').addEventListener('click', triggerLogout);
+  document.getElementById('logoutBtnTop')?.addEventListener('click', triggerLogout);
+
+  // Sidebar toggle handler
+  document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+    document.body.classList.toggle('sidebar-collapsed');
+  });
 
   function showToast(msg) {
     const toast = document.getElementById('shortcutToast');
+    if(!toast) return;
     toast.textContent = msg;
     toast.style.display = 'block';
     setTimeout(() => { toast.style.display = 'none'; }, 2000);
@@ -292,6 +214,6 @@ kbd {
       }
     }
   });
-<script src="sidebar.js"></script>
+</script>
 </body>
 </html>
