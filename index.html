@@ -414,3 +414,143 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
 </script>
 </body>
 </html>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let isSignup = false;
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq7Ss9RPffs5IVlVkiItHJh3dZM3o0fW0XpW4TNefK5puQ8xJ33oXW0Q/exec";
+  let targetEmail = "";
+
+  // Page load hote hi screen black se wapas aane ki guarantee
+  window.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("page-loaded");
+  });
+
+  window.onload = function() {
+    let savedToken = localStorage.getItem("google_access_token");
+    if(savedToken && localStorage.getItem("client_username")) {
+      window.location.href = "dashboard.html";
+    }
+  };
+
+  const setAuthMode = (signup) => {
+    isSignup = signup;
+    $('loginTab').classList.toggle('active', !signup);
+    $('signupTab').classList.toggle('active', signup);
+    $('authTitle').textContent = signup ? 'Create Account' : 'Welcome back';
+    $('submitLabel').textContent = signup ? 'Continue with Email OTP' : 'Sign In Securely';
+    
+    const extraFields = document.querySelectorAll('.signup-extra-fields');
+    extraFields.forEach(el => el.style.display = signup ? 'block' : 'none');
+    $('forgotBtn').style.display = signup ? 'none' : 'inline-block';
+    $('statusBox').style.display = 'none';
+  };
+
+  $('loginTab').addEventListener('click', () => setAuthMode(false));
+  $('signupTab').addEventListener('click', () => setAuthMode(true));
+
+  $('eyeBtn').addEventListener('click', () => {
+    const pass = $('pass');
+    pass.type = pass.type === 'password' ? 'text' : 'password';
+  });
+
+  $('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = $('user').value.trim();
+    const password = $('pass').value;
+
+    let payload = {
+      action: isSignup ? 'signup' : 'login',
+      username: username,
+      password: password
+    };
+
+    if (isSignup) {
+      payload.fullName = $('fullName').value.trim();
+      payload.email = $('signupEmail').value.trim();
+      targetEmail = payload.email;
+      if (!payload.fullName || !payload.email || !username || !password) {
+        showStatus('Sabhi fields bharein.', 'error');
+        return;
+      }
+    } else {
+      targetEmail = username;
+      if (!username || !password) {
+        showStatus('Username aur Password dalein.', 'error');
+        return;
+      }
+    }
+
+    $('submitBtn').disabled = true;
+    $('spinner').style.display = 'block';
+    $('submitLabel').textContent = 'Processing...';
+
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+      const result = await res.json();
+
+      $('submitBtn').disabled = false;
+      $('spinner').style.display = 'none';
+      $('submitLabel').textContent = isSignup ? 'Continue with Email OTP' : 'Sign In Securely';
+
+      if (result.success) {
+        if (result.requiresOtp || isSignup) {
+          if(result.email) targetEmail = result.email;
+          $('otpHeading').textContent = isSignup ? 'Email Verification OTP' : 'Login Verification OTP';
+          $('otpModal').classList.add('open');
+          showStatus(result.message, 'success');
+        } else {
+          localStorage.setItem('client_username', result.username || username);
+          localStorage.setItem('active_user_folder', result.folderPath);
+          window.location.href = 'dashboard.html';
+        }
+      } else {
+        showStatus(result.message, 'error');
+      }
+    } catch (err) {
+      $('submitBtn').disabled = false;
+      $('spinner').style.display = 'none';
+      $('submitLabel').textContent = isSignup ? 'Continue with Email OTP' : 'Sign In Securely';
+      showStatus('Network Error!', 'error');
+    }
+  });
+
+  $('otpForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const otp = $('otpInput').value.trim();
+    const box = $('otpStatusBox');
+    box.style.display = 'flex';
+
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'verify_otp', identifier: targetEmail, otp: otp })
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        box.className = 'status-box success';
+        box.innerHTML = `<span>${result.message}</span>`;
+        localStorage.setItem('client_username', result.username);
+        localStorage.setItem('active_user_folder', result.folderPath);
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+      } else {
+        box.className = 'status-box error';
+        box.innerHTML = `<span>${result.message}</span>`;
+      }
+    } catch (err) {
+      box.className = 'status-box error';
+      box.innerHTML = '<span>Verification failed.</span>';
+    }
+  });
+
+  $('otpCloseBtn').addEventListener('click', () => { $('otpModal').classList.remove('open'); });
+
+  function showStatus(msg, type) {
+    const box = $('statusBox');
+    box.style.display = 'block';
+    box.className = 'status-box ' + type;
+    box.innerText = msg;
+  }
+})();
+</script>
