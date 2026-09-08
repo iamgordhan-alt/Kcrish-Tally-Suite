@@ -1,82 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kcrish Automation Workspace - Architecture, Learnings & Functional Shortcuts">
-<meta name="theme-color" content="#061219">
-<title>Kcrish Workspace • About & Active Shortcuts</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="style.css">
-<style>
-/* Page-specific overrides */
-.container-grid-about {
-  max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
-}
-.shortcut-table {
-  width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;
-}
-.shortcut-table th, .shortcut-table td {
-  padding: 10px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); text-align: left;
-}
-.shortcut-table th { color: var(--text-muted); font-size: 12px; background: rgba(3, 14, 23, 0.4); }
-.shortcut-table tr:hover { background: rgba(16, 185, 129, 0.04); cursor: pointer; }
-kbd {
-  background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 3px 8px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; color: #34d399;
-}
-#shortcutToast {
-  position: fixed; bottom: 24px; right: 24px; background: #064e3b; border: 1px solid #10b981;
-  color: #ecfdf5; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: none; z-index: 9999;
-  animation: slideUp 0.3s ease;
-}
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@media(max-width: 1000px) { .container-grid-about { grid-template-columns: 1fr; } }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kcrish Workspace • About & Active Shortcuts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Page-specific overrides */
+    .container-grid-about {
+      width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .shortcut-table {
+      width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;
+    }
+    .shortcut-table th, .shortcut-table td {
+      padding: 10px 12px; border-bottom: 1px solid #f1f5f9; text-align: left;
+    }
+    .shortcut-table th { color: #334155; font-size: 12px; background: #f8fafc; font-weight: 700; }
+    .shortcut-table tr:hover { background: #f8fafc; cursor: pointer; }
+    kbd {
+      background: #f1f5f9; border: 1px solid #cbd5e1;
+      padding: 3px 8px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #059669; font-weight: 600;
+    }
+    #shortcutToast {
+      position: fixed; bottom: 24px; right: 24px; background: #064e3b; border: 1px solid #10b981;
+      color: #ecfdf5; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: none; z-index: 9999;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @media(max-width: 1000px) { .container-grid-about { grid-template-columns: 1fr; } }
+  </style>
 </head>
-<body class="page-loaded">
+<body>
 
 <!-- Permanent Locked Sidebar Injector via sidebar.js -->
 <main class="main-content">
   <div class="app-container">
     
-    <header class="dashboard-header" style="display: flex; align-items: center; gap: 14px;">
-      <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      <div>
-        <h1 style="margin: 0; font-size: 20px;">Kcrish Automation Suite</h1>
-        <p style="margin: 0; font-size: 13px; color: var(--text-muted);">Architecture &amp; Functional Shortcuts Hub</p>
+    <div class="dashboard-header">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <h1>Kcrish Automation Suite</h1>
+          <p>Architecture &amp; Functional Shortcuts Hub</p>
+        </div>
       </div>
-    </header>
+      <div class="header-actions">
+        <div class="sync-badge"><span></span> Live Sync</div>
+      </div>
+    </div>
 
     <div class="container-grid-about">
       <!-- Left Panel: Engineering Philosophy & Architecture Learnings -->
       <section class="card">
-        <h3><i class="fa-solid fa-lightbulb" style="color:var(--primary)"></i> Engineering Philosophy &amp; Learnings</h3>
-        <p>The <strong>Kcrish Automation Suite</strong> was architected to bridge the gap between irregular supplier spreadsheets and structured accounting databases without relying on fragile server connections.</p>
+        <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-lightbulb" style="color:var(--primary)"></i> Engineering Philosophy &amp; Learnings
+        </h3>
+        <p style="font-size: 13px; color: #475569; line-height: 1.5;">The <strong>Kcrish Automation Suite</strong> was architected to bridge the gap between irregular supplier spreadsheets and structured accounting databases without relying on fragile server connections.</p>
         
-        <div class="highlight-box" style="background: rgba(3, 14, 23, 0.6); border-left: 4px solid var(--primary); padding: 14px 18px; border-radius: 0 12px 12px 0; margin: 16px 0; font-size: 13px; color: #cbd5e1;">
+        <div class="highlight-box" style="background: #f8fafc; border-left: 4px solid var(--primary); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 13px; color: #334155; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
           <strong>Core Architectural Learning:</strong> Bypassing browser-to-desktop network ports in favor of <em>Client-side SheetJS Parsing + Standardized CSV Export</em> completely eliminates CORS errors and environment-specific security roadblocks.
         </div>
 
-        <p><strong>System Stack &amp; Technologies:</strong></p>
-        <div style="margin-top: 10px;">
-          <span class="tech-badge" style="display: inline-block; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); margin-right: 6px; margin-bottom: 8px;">Vanilla HTML5 &amp; CSS3</span>
-          <span class="tech-badge" style="display: inline-block; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); margin-right: 6px; margin-bottom: 8px;">SheetJS (XLSX) Engine</span>
-          <span class="tech-badge" style="display: inline-block; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); margin-right: 6px; margin-bottom: 8px;">Smart Auto-Mapper</span>
-          <span class="tech-badge" style="display: inline-block; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); margin-right: 6px; margin-bottom: 8px;">LocalStorage Sessions</span>
+        <p style="font-size: 13px; font-weight: 700; color: #0f172a; margin-top: 14px;">System Stack &amp; Technologies:</p>
+        <div style="margin-top: 8px;">
+          <span class="tech-badge" style="display: inline-block; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: monospace; margin-right: 6px; margin-bottom: 8px;">Vanilla HTML5 &amp; CSS3</span>
+          <span class="tech-badge" style="display: inline-block; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: monospace; margin-right: 6px; margin-bottom: 8px;">SheetJS (XLSX) Engine</span>
+          <span class="tech-badge" style="display: inline-block; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: monospace; margin-right: 6px; margin-bottom: 8px;">Smart Auto-Mapper</span>
+          <span class="tech-badge" style="display: inline-block; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: monospace; margin-right: 6px; margin-bottom: 8px;">LocalStorage Sessions</span>
         </div>
       </section>
 
       <!-- Right Panel: Master Shortcuts Reference & Interactive Control -->
       <section class="card">
-        <h3><i class="fa-solid fa-keyboard" style="color:var(--cyan)"></i> Suite Active Keyboard Shortcuts</h3>
-        <p>Press any of the shortcut keys below to instantly navigate modules or trigger suite actions:</p>
+        <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-keyboard" style="color:var(--cyan)"></i> Suite Active Keyboard Shortcuts
+        </h3>
+        <p style="font-size: 13px; color: #475569; margin-bottom: 8px;">Press any of the shortcut keys below to instantly navigate modules or trigger suite actions:</p>
         
         <table class="shortcut-table">
           <thead>
@@ -88,80 +93,80 @@ kbd {
           </thead>
           <tbody>
             <tr onclick="location.href='dashboard.html'">
-              <td>Dashboard</td>
+              <td style="color:#0f172a; font-weight:600;">Dashboard</td>
               <td><kbd>Alt + D</kbd></td>
               <td>Jump to Analytics &amp; Overview</td>
             </tr>
             <tr onclick="location.href='converter.html'">
-              <td>Converter</td>
+              <td style="color:#0f172a; font-weight:600;">Converter</td>
               <td><kbd>Alt + C</kbd></td>
               <td>Open Excel Normalizer</td>
             </tr>
             <tr onclick="location.href='ledger.html'">
-              <td>Ledgers</td>
+              <td style="color:#0f172a; font-weight:600;">Ledgers</td>
               <td><kbd>Alt + L</kbd></td>
               <td>Manage Party Heads</td>
             </tr>
             <tr onclick="location.href='masters.html'">
-              <td>Masters</td>
+              <td style="color:#0f172a; font-weight:600;">Masters</td>
               <td><kbd>Alt + M</kbd></td>
               <td>Database &amp; Inventories</td>
             </tr>
             <tr onclick="location.href='purchase.html'">
-              <td>Purchase Hub</td>
+              <td style="color:#0f172a; font-weight:600;">Purchase Hub</td>
               <td><kbd>Alt + P</kbd></td>
               <td>Bulk Transaction Processor</td>
             </tr>
             <tr onclick="location.href='restore.html'">
-              <td>Restore Hub</td>
+              <td style="color:#0f172a; font-weight:600;">Restore Hub</td>
               <td><kbd>Alt + R</kbd></td>
               <td>Session &amp; Backup Manager</td>
             </tr>
             <tr onclick="triggerLogout()">
-              <td>Secure Logout</td>
+              <td style="color:#dc2626; font-weight:600;">Secure Logout</td>
               <td><kbd>Alt + Q</kbd></td>
               <td>Clear session and exit</td>
             </tr>
           </tbody>
         </table>
 
-        <div class="highlight-box" style="border-left-color: var(--cyan); margin-top: 18px; background: rgba(3, 14, 23, 0.6); padding: 14px 18px; border-radius: 0 12px 12px 0; font-size: 13px; color: #cbd5e1;">
+        <div class="highlight-box" style="border-left-color: var(--cyan); margin-top: 14px; background: #f8fafc; padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 12px; color: #475569; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
           <em>Tip:</em> All shortcut keys are globally active across the suite modules when using <kbd>Alt</kbd> modifier keys.
         </div>
       </section>
 
       <!-- Full-Width Author Profile Card -->
-      <section class="card" style="grid-column: 1 / -1; margin-top: 4px; display: flex; flex-direction: column; gap: 20px;">
+      <section class="card" style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 18px;">
         <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
           
           <!-- Author Photo Container -->
-          <div style="position: relative; width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); flex-shrink: 0;">
+          <div style="position: relative; width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 2px solid #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.2); flex-shrink: 0;">
             <img src="kcrish-saran.jpg" alt="Kcrish Saran" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div style="display: none; width: 100%; height: 100%; background: rgba(16,185,129,0.1); align-items: center; justify-content: center; color: var(--primary); font-size: 32px;">
+            <div style="display: none; width: 100%; height: 100%; background: #ecfdf5; align-items: center; justify-content: center; color: #059669; font-size: 28px;">
               <i class="fa-solid fa-user"></i>
             </div>
           </div>
 
           <!-- Author Info & Profession -->
           <div style="flex: 1; min-width: 250px;">
-            <h3 style="margin: 0 0 4px 0; display: flex; align-items: center; gap: 10px;">
-              <i class="fa-solid fa-user-gear" style="color:var(--success)"></i> Kcrish Saran
+            <h3 style="margin: 0 0 4px 0; display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: #0f172a;">
+              <i class="fa-solid fa-user-gear" style="color:#059669"></i> Kcrish Saran
             </h3>
-            <p style="margin: 0 0 8px 0; font-size: 13px; color: #34d399; font-weight: 600;">
+            <p style="margin: 0 0 6px 0; font-size: 13px; color: #059669; font-weight: 600;">
               Professional Accountant &amp; Tally Automation Architect (Wine Shop Specialist)
             </p>
-            <p style="margin: 0; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+            <p style="margin: 0; font-size: 13px; color: #475569; line-height: 1.5;">
               Built by <strong>Kcrish Saran</strong> — bridging the gap between heavy compliance and lightning-fast execution. Mastered in high-precision <strong>Wine Shop Accounting &amp; Tally XML Automations</strong>, transforming complex spreadsheets into seamless, serverless workflows.
             </p>
           </div>
         </div>
 
         <!-- Action Links / Clickable Buttons -->
-        <div style="display: flex; gap: 12px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08);">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid #e2e8f0;">
           <a href="https://github.com" target="_blank" class="btn-template" style="text-decoration: none;">
-            <i class="fa-brands fa-github" style="color: #fff;"></i> GitHub Repository
+            <i class="fa-brands fa-github" style="color: #0f172a;"></i> GitHub Repository
           </a>
-          <a href="dashboard.html" class="btn-template" style="text-decoration: none; border-color: rgba(16,185,129,0.4); color: #34d399;">
+          <a href="dashboard.html" class="btn-template" style="text-decoration: none; border-color: #a7f3d0; color: #059669; background: #ecfdf5;">
             <i class="fa-solid fa-chart-line"></i> Open Automation Suite
           </a>
         </div>
