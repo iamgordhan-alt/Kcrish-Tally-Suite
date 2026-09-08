@@ -55,7 +55,7 @@ body.page-exiting {
   transform: translateY(-8px);
 }
 
-/* Permanent Fixed Sidebar matching your reference layout & icons */
+/* Permanent Fixed Sidebar matching your exact buttons & theme */
 .sidebar {
   width: 260px;
   background: rgba(10, 22, 31, 0.95);
@@ -337,7 +337,7 @@ body.sidebar-collapsed .brand-area {
 </head>
 <body>
 
-<!-- Permanent Fixed Sidebar with Collapsible Support -->
+<!-- Permanent Fixed Sidebar with exact user buttons & original theme -->
 <aside class="sidebar">
   <div class="brand-area">
     <div class="brand-logo">KA</div>
@@ -358,36 +358,23 @@ body.sidebar-collapsed .brand-area {
   <div class="menu-section-title">Navigation Menu</div>
   <nav class="sidebar-nav">
     <a href="dashboard.html" class="sidebar-link active"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a>
+    <a href="converter.html" class="sidebar-link"><i class="fa-solid fa-file-excel"></i> <span>Converter</span></a>
+    <a href="ledger.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Ledgers</span></a>
+    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-database"></i> <span>Masters</span></a>
     <a href="purchase.html" class="sidebar-link"><i class="fa-solid fa-cart-shopping"></i> <span>Purchase</span></a>
-    <a href="converter.html" class="sidebar-link"><i class="fa-solid fa-exchange-alt"></i> <span>Guarantee Transfer</span></a>
-    <a href="ledger.html" class="sidebar-link"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Direct Sale</span></a>
-    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Daily Parcha Report</span></a>
-    <a href="restore.html" class="sidebar-link"><i class="fa-solid fa-folder-open"></i> <span>Vouchers</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>Office Inward</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-store"></i> <span>Shop Debtors</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> <span>Account Ledgers</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-chart-bar"></i> <span>Reports</span></a>
-  </nav>
-
-  <div class="menu-section-title">Setting</div>
-  <nav class="sidebar-nav">
-    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-gear"></i> <span>Account Master</span></a>
-    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-shop"></i> <span>Shops/Godowns</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Employee</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-tag"></i> <span>Price Label</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-boxes-stacked"></i> <span>Items</span></a>
-    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-bell"></i> <span>Notifications</span></a>
+    <a href="restore.html" class="sidebar-link"><i class="fa-solid fa-rotate-left"></i> <span>Restore</span></a>
+    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>About &amp; Info</span></a>
   </nav>
 
   <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
     <button class="sidebar-link" id="logoutBtn" style="width: 100%; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.25); color: #fca5a5; cursor: pointer; text-align: left;">
       <i class="fa-solid fa-right-from-bracket" style="color: #f87171;"></i>
-      <span>Log Out</span>
+      <span>Logout</span>
     </button>
   </div>
 </aside>
 
-<!-- Main Content Area with Sticky Header Bar -->
+<!-- Main Content Area with Sticky Header Bar & Collapse Control -->
 <main class="main-content">
   <header class="top-bar-header">
     <div class="top-bar-left">
@@ -549,4 +536,30 @@ body.sidebar-collapsed .brand-area {
           statusBox.textContent = result.message;
           document.getElementById('modalNewPassword').value = '';
           setTimeout(() => { 
-            statusBox.textContent = ''
+            statusBox.textContent = ''; 
+            modal.classList.remove('open');
+          }, 1500);
+        } else {
+          statusBox.style.color = '#f87171';
+          statusBox.textContent = result.message;
+        }
+      } catch (err) {
+        statusBox.style.color = '#f87171';
+        statusBox.textContent = 'Network error. Server update fail ho gaya.';
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      document.body.classList.remove("page-loaded");
+      document.body.classList.add("page-exiting");
+      setTimeout(() => {
+        localStorage.removeItem('client_username');
+        localStorage.removeItem('active_user_folder');
+        localStorage.removeItem('google_access_token');
+        window.location.href = 'index.html';
+      }, 350);
+    });
+  });
+</script>
+</body>
+</html>
