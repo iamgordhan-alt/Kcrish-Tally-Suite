@@ -287,7 +287,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
 <div class="orb orb-2"></div>
 
 <main class="shell">
-  <!-- Left Side: Enterprise Showcase & Live Sync Preview -->
   <section class="showcase">
     <div class="badge">
       <span class="pulse-dot"></span>
@@ -313,7 +312,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
       The high-performance workspace for accounting firms and enterprises. Automatically parse, validate GST, map chart-of-accounts, and push thousands of vouchers directly to Tally in seconds.
     </p>
 
-    <!-- Interactive Live Sync Metric Card -->
     <div class="sync-preview-card">
       <div class="sync-card-header">
         <span class="sync-title">
@@ -366,7 +364,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
       </div>
     </div>
 
-    <!-- Trust Badges -->
     <div class="pills">
       <span class="pill">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -383,9 +380,7 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
     </div>
   </section>
 
-  <!-- Right Side: Advanced Glassmorphic Authentication Card -->
   <section class="login-card" aria-labelledby="authTitle">
-    <!-- Switcher Tabs -->
     <div class="tabs-container" role="tablist">
       <button type="button" class="tab-btn active" id="loginTab" role="tab" aria-selected="true" aria-controls="form">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
@@ -397,15 +392,12 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
       </button>
     </div>
 
-    <!-- Header Text -->
     <div class="auth-header">
       <h2 id="authTitle">Welcome back</h2>
       <p id="authSubtitle">Enter your credentials to access your Kcrish automation workspace.</p>
     </div>
 
-    <!-- Main Auth Form -->
     <form id="form" novalidate>
-      <!-- Signup-Only: Full Name -->
       <div class="form-group signup-extra-fields" id="groupFullName">
         <label class="form-label" for="fullName">Full Name</label>
         <div class="input-wrapper">
@@ -416,9 +408,8 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
         </div>
       </div>
 
-      <!-- Signup-Only: Work Email -->
       <div class="form-group signup-extra-fields" id="groupEmail">
-        <label class="form-label" for="signupEmail">Work Email (For OTP & Login Alerts)</label>
+        <label class="form-label" for="signupEmail">Work Email (For OTP)</label>
         <div class="input-wrapper">
           <input id="signupEmail" class="form-input" type="email" autocomplete="email" placeholder="name@company.com">
           <span class="input-icon">
@@ -427,7 +418,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
         </div>
       </div>
 
-      <!-- Username or Email (Shared) -->
       <div class="form-group">
         <label class="form-label" for="user" id="userLabel">Username or Email</label>
         <div class="input-wrapper">
@@ -438,7 +428,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
         </div>
       </div>
 
-      <!-- Password Field -->
       <div class="form-group">
         <label class="form-label" for="pass">Password</label>
         <div class="input-wrapper">
@@ -453,13 +442,11 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
           </button>
         </div>
 
-        <!-- Caps Lock Notification Badge -->
         <div id="capsBadge" class="caps-badge" role="status">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
           <span>Caps Lock is ON</span>
         </div>
 
-        <!-- Password Strength Meter (Signup Mode Only) -->
         <div id="passwordMeter" class="password-meter-wrap">
           <div class="meter-bar-container">
             <div id="meterBar" class="meter-bar"></div>
@@ -473,7 +460,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
         </div>
       </div>
 
-      <!-- Signup-Only: Confirm Password -->
       <div class="form-group signup-extra-fields" id="groupConfirmPass">
         <label class="form-label" for="confirmPass">Confirm Password</label>
         <div class="input-wrapper">
@@ -489,7 +475,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
         </div>
       </div>
 
-      <!-- Options Row: Remember Me & Forgot Password -->
       <div class="form-options">
         <label class="checkbox-wrap" for="rememberMe">
           <input type="checkbox" id="rememberMe">
@@ -498,7 +483,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
         <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
       </div>
 
-      <!-- Submit Action Button -->
       <button type="submit" class="btn-submit" id="submitBtn">
         <div class="spinner" id="spinner"></div>
         <span id="submitIcon">
@@ -510,10 +494,8 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
         <span id="submitLabel">Sign In Securely</span>
       </button>
 
-      <!-- Inline Notification Box -->
       <div class="status-box" id="statusBox" role="alert" aria-live="polite"></div>
 
-      <!-- Single Sign-On / Alternative Logins -->
       <div class="auth-divider">Or authenticate via</div>
       <div class="sso-grid">
         <button type="button" class="sso-btn" id="googleSsoBtn">
@@ -535,7 +517,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
       </div>
     </form>
 
-    <!-- Card Security Watermark & About Link -->
     <div class="card-foot">
       <span>Kcrish Secure Automation Engine • 256-Bit TLS</span>
       <a href="about.html"><i class="fa-solid fa-circle-info"></i> About</a>
@@ -543,7 +524,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
   </section>
 </main>
 
-<!-- Password Reset Modal Dialog -->
 <div class="modal-overlay" id="resetModal" role="dialog" aria-modal="true" aria-labelledby="modalHeading">
   <div class="modal-box">
     <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">✕</button>
@@ -568,7 +548,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
   </div>
 </div>
 
-<!-- OTP Verification Modal Dialog -->
 <div class="modal-overlay" id="otpModal" role="dialog" aria-modal="true" aria-labelledby="otpHeading">
   <div class="modal-box">
     <button type="button" class="modal-close-btn" id="otpCloseBtn" aria-label="Close modal">✕</button>
@@ -602,7 +581,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
   let tokenClient;
   let pendingEmail = "";
 
-  // Smooth Page Transitions
   window.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       document.body.classList.add("page-loaded");
@@ -624,7 +602,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
     });
   });
 
-  // Initialize Google OAuth Token Client on load
   window.onload = function() {
     let savedToken = localStorage.getItem("google_access_token");
     if(savedToken && localStorage.getItem("client_username")) {
@@ -650,7 +627,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
     }
   };
 
-  // Load Remembered Username from localStorage
   try {
     const savedUser = localStorage.getItem(userKey);
     if (savedUser) {
@@ -661,7 +637,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
     console.warn('LocalStorage unavailable', e);
   }
 
-  // Switch between Login and Sign Up modes
   const setAuthMode = (signup) => {
     isSignup = signup;
     $('loginTab').classList.toggle('active', !signup);
@@ -676,7 +651,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
     $('submitLabel').textContent = signup ? 'Continue with Email OTP' : 'Sign In Securely';
     $('pass').autocomplete = signup ? 'new-password' : 'current-password';
     
-    // Toggle extra fields
     const extraFields = document.querySelectorAll('.signup-extra-fields');
     extraFields.forEach(el => el.style.display = signup ? 'block' : 'none');
     $('passwordMeter').style.display = signup ? 'block' : 'none';
@@ -690,7 +664,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
   $('loginTab').addEventListener('click', () => setAuthMode(false));
   $('signupTab').addEventListener('click', () => setAuthMode(true));
 
-  // Password Visibility Toggle Logic with Animated SVG
   const setupEyeToggle = (toggleBtn, inputField) => {
     toggleBtn.addEventListener('click', () => {
       const isVisible = inputField.type === 'text';
@@ -712,7 +685,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
   setupEyeToggle($('eyeBtn'), $('pass'));
   setupEyeToggle($('confirmEyeBtn'), $('confirmPass'));
 
-  // Caps Lock Detector
   const handleCapsLock = (e) => {
     if (e.getModifierState && (e.getModifierState('CapsLock') || e.getModifierState('Caps'))) {
       $('capsBadge').style.display = 'inline-flex';
@@ -724,7 +696,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
   $('pass').addEventListener('keyup', handleCapsLock);
   $('pass').addEventListener('blur', () => $('capsBadge').style.display = 'none');
 
-  // Password Strength Validator
   $('pass').addEventListener('input', () => {
     if (!isSignup) return;
     const val = $('pass').value;
@@ -758,7 +729,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
     }
   });
 
-  // Status Box Helpers
   const showStatus = (msg, type = 'error') => {
     const box = $('statusBox');
     box.style.display = 'flex';
@@ -776,7 +746,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
     document.querySelectorAll('.form-input').forEach(i => i.classList.remove('error'));
   };
 
-  // Main Form Validation and Submission (Connected with Google Apps Script Backend)
   $('form').addEventListener('submit', async (e) => {
     e.preventDefault();
     clearErrors();
@@ -862,7 +831,7 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
     submitBtn.disabled = true;
     $('spinner').style.display = 'block';
     $('submitIcon').style.display = 'none';
-    $('submitLabel').textContent = isSignup ? 'Sending OTP to Email...' : 'Authenticating & Sending Alert...';
+    $('submitLabel').textContent = isSignup ? 'Sending OTP to Email...' : 'Authenticating...';
     hideStatus();
 
     try {
@@ -884,7 +853,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
         } else {
           localStorage.setItem('client_username', username);
           localStorage.setItem('active_user_folder', result.folderPath || `/Kcrish_Data/Users/${username}/`);
-          showStatus('Login successful! Security alert email dispatched.', 'success');
           setTimeout(() => {
             window.location.href = 'dashboard.html';
           }, 800);
@@ -901,7 +869,6 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
     }
   });
 
-  // OTP Verification Form Submit
   $('otpForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const otp = $('otpInput').value.trim();
@@ -951,7 +918,23 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; le
 
   $('forgotBtn').addEventListener('click', openModal);
   $('modalCloseBtn').addEventListener('click', closeModal);
-  $('resetModal').classList.remove('open');
+  $('resetModal').addEventListener('click', (e) => {
+    if (e.target === $('resetModal')) closeModal();
+  });
+
+  $('resetForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const val = $('resetEmail').value.trim();
+    const box = $('modalStatusBox');
+    box.style.display = 'flex';
+    if (!val) {
+      box.className = 'status-box error';
+      box.innerHTML = '<span>Please enter your registered email address.</span>';
+      return;
+    }
+    box.className = 'status-box success';
+    box.innerHTML = `<span>Recovery code dispatched to <strong>${val}</strong>. Please check your inbox.</span>`;
+  });
 
   $('googleSsoBtn').addEventListener('click', () => {
     if (tokenClient) {
