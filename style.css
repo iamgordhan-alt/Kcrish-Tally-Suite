@@ -135,7 +135,7 @@ body.sidebar-collapsed .main-content {
 
 /* UNIFIED CLEAN HEADER */
 .dashboard-header {
-  background: #ffffff;
+  background: var(--bg-glass);
   color: var(--text-dark);
   padding: 16px 20px;
   border-radius: var(--radius);
@@ -144,7 +144,7 @@ body.sidebar-collapsed .main-content {
   align-items: center;
   margin-bottom: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-glass);
 }
 
 .sidebar-toggle-btn {
@@ -177,9 +177,9 @@ body.sidebar-collapsed .main-content {
 
 /* MAIN CARD CONTAINER */
 .card {
-  background: #ffffff;
+  background: var(--card-glass);
   border-radius: var(--radius);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-glass);
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
