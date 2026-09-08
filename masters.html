@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Kcrish Automation Suite - Master Management Module">
+  <meta name="description" content="Kcrish Automation Suite - Unified Master & Ledger Management">
   <meta name="theme-color" content="#061219">
   <title>Kcrish Workspace • Master Management</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -45,30 +46,19 @@
       overflow-x: hidden;
     }
 
-    body.page-loaded {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    body.page-loaded { opacity: 1; transform: translateY(0); }
+    body.page-exiting { opacity: 0; transform: translateY(-8px); }
 
-    body.page-exiting {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-
-    /* Permanent Fixed Sidebar matching your exact buttons & theme */
     .sidebar {
       width: 260px;
       background: rgba(10, 22, 31, 0.95);
       border-right: 1px solid rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
       display: flex;
       flex-direction: column;
       padding: 16px 12px;
       position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
+      top: 0; left: 0; height: 100vh;
       z-index: 50;
       overflow-y: auto;
       box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
@@ -76,295 +66,116 @@
     }
 
     .brand-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 10px;
+      padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 14px;
     }
-
     .brand-logo {
       width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #06b6d4);
       display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22; font-size: 14px;
-      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
-      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3); flex-shrink: 0;
     }
+    .brand-title { font-size: 14px; font-weight: 800; color: #fff; white-space: nowrap; }
+    .brand-subtitle { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
 
-    .brand-title {
-      font-size: 14px; font-weight: 800; color: #fff; letter-spacing: -0.01em; white-space: nowrap;
-    }
-    .brand-subtitle {
-      font-size: 10px; color: var(--text-muted); white-space: nowrap;
-    }
-
-    /* Menu Section */
-    .menu-section-title {
-      font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); font-weight: 700; margin: 10px 0 6px 8px;
-    }
-
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
+    .menu-section-title { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); font-weight: 700; margin: 10px 0 6px 8px; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 3px; }
     .sidebar-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 9px 12px;
-      border-radius: 10px;
-      color: var(--text-muted);
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      border: 1px solid transparent;
-      white-space: nowrap;
+      display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 10px;
+      color: var(--text-muted); font-size: 12px; font-weight: 600; text-decoration: none;
+      transition: all 0.2s ease; border: 1px solid transparent; white-space: nowrap;
     }
-
-    .sidebar-link i {
-      font-size: 14px;
-      width: 18px;
-      text-align: center;
-      color: var(--text-dim);
-      transition: color 0.2s;
-      flex-shrink: 0;
-    }
-
+    .sidebar-link i { font-size: 14px; width: 18px; text-align: center; color: var(--text-dim); flex-shrink: 0; }
     .sidebar-link:hover, .sidebar-link.active {
-      background: rgba(16, 185, 129, 0.12);
-      border-color: rgba(16, 185, 129, 0.3);
-      color: #fff;
+      background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); color: #fff;
     }
+    .sidebar-link:hover i, .sidebar-link.active i { color: var(--primary-light); }
 
-    .sidebar-link:hover i, .sidebar-link.active i {
-      color: var(--primary-light);
-    }
+    body.sidebar-collapsed .sidebar { width: 72px; padding: 16px 8px; }
+    body.sidebar-collapsed .brand-title, body.sidebar-collapsed .brand-subtitle, body.sidebar-collapsed .menu-section-title, body.sidebar-collapsed .sidebar-link span, body.sidebar-collapsed .user-name-text, body.sidebar-collapsed .sidebar-user-btn i:last-child { display: none !important; }
+    body.sidebar-collapsed .main-content { margin-left: 72px; }
+    body.sidebar-collapsed .sidebar-user-btn { justify-content: center; padding: 10px; }
+    body.sidebar-collapsed .sidebar-link { justify-content: center; padding: 11px; }
+    body.sidebar-collapsed .brand-area { justify-content: center; }
 
-    /* Sidebar Collapse Modifier (Icon-Only Mode) */
-    body.sidebar-collapsed .sidebar {
-      width: 72px;
-      padding: 16px 8px;
-    }
-    body.sidebar-collapsed .brand-title,
-    body.sidebar-collapsed .brand-subtitle,
-    body.sidebar-collapsed .menu-section-title,
-    body.sidebar-collapsed .sidebar-link span,
-    body.sidebar-collapsed .user-name-text,
-    body.sidebar-collapsed .sidebar-user-btn i:last-child {
-      display: none !important;
-    }
-    body.sidebar-collapsed .main-content {
-      margin-left: 72px;
-    }
-    body.sidebar-collapsed .sidebar-user-btn {
-      justify-content: center;
-      padding: 10px;
-    }
-    body.sidebar-collapsed .sidebar-link {
-      justify-content: center;
-      padding: 11px;
-    }
-    body.sidebar-collapsed .brand-area {
-      justify-content: center;
-    }
-
-    /* User Account Widget inside Sidebar */
     .sidebar-user-btn {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: 12px;
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 10px;
-      color: #6ee7b7;
-      font-family: inherit;
-      width: 100%;
+      background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px;
+      padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+      margin-bottom: 10px; color: #6ee7b7; font-family: inherit; width: 100%;
     }
-    .sidebar-user-btn:hover {
-      background: rgba(16, 185, 129, 0.15);
-      border-color: rgba(16, 185, 129, 0.4);
-      color: #fff;
-    }
-    .user-info-left {
-      display: flex; align-items: center; gap: 8px; overflow: hidden;
-    }
-    .user-avatar-icon {
-      width: 28px; height: 28px; border-radius: 50%; background: rgba(6, 182, 212, 0.2);
-      display: flex; align-items: center; justify-content: center; color: var(--cyan); font-size: 12px; flex-shrink: 0;
-    }
-    .user-name-text {
-      font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;
-    }
+    .user-info-left { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+    .user-avatar-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(6, 182, 212, 0.2); display: flex; align-items: center; justify-content: center; color: var(--cyan); font-size: 12px; flex-shrink: 0; }
+    .user-name-text { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
 
-    /* Main Content Area with Sticky Top Header Bar */
-    .main-content {
-      margin-left: 260px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      overflow-y: auto;
-      transition: margin-left 0.3s ease;
-    }
-
+    .main-content { margin-left: 260px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; overflow-y: auto; transition: margin-left 0.3s ease; }
     .top-bar-header {
-      background: rgba(10, 22, 31, 0.85);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(20px);
-      padding: 12px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 40;
+      background: rgba(10, 22, 31, 0.85); border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px); padding: 12px 28px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 40;
     }
-
-    .top-bar-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
+    .top-bar-left { display: flex; align-items: center; gap: 16px; }
     .sidebar-toggle-btn {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-main);
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s;
+      background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-main);
+      width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
-    .sidebar-toggle-btn:hover {
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .top-bar-title h1 {
-      font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.01em;
-    }
-    .top-bar-title p {
-      font-size: 12px; color: var(--text-muted);
-    }
-
-    .top-bar-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .top-bar-title h1 { font-size: 18px; font-weight: 800; color: #fff; }
+    .top-bar-title p { font-size: 12px; color: var(--text-muted); }
 
     .live-sync-badge {
       display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 99px;
-      background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #6ee7b7; font-size: 11px; font-weight: 700;
+      background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #6ee7b7; font-size: 11px; font-weight: 700;
     }
     .live-sync-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 8px var(--primary); }
 
-    .content-body {
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
+    .content-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+
+    /* Tab Switcher Styles */
+    .master-tabs {
+      display: flex; gap: 12px; margin-bottom: 4px;
+    }
+    .tab-pill {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted);
+      padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;
+    }
+    .tab-pill.active {
+      background: rgba(16, 185, 129, 0.18); border-color: rgba(16, 185, 129, 0.4); color: #fff;
     }
 
-    .section-desc-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      border-radius: 16px;
-      padding: 20px 24px;
-      backdrop-filter: blur(20px);
-    }
-    .section-desc-box h3 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-    .section-desc-box p { font-size: 13px; color: var(--text-muted); }
+    .master-panel { display: none; }
+    .master-panel.active { display: flex; flex-direction: column; gap: 20px; }
 
-    .masters-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 28px;
+      backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; gap: 20px;
     }
+    .step-box { display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: var(--text-muted); background: rgba(255,255,255,0.02); padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); }
+    .btn-template { background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    
+    .dropzone {
+      border: 2px dashed rgba(255,255,255,0.15); border-radius: 16px; padding: 40px; text-align: center;
+      background: rgba(3, 14, 23, 0.4); cursor: pointer; transition: all 0.2s;
+    }
+    .dropzone:hover { border-color: var(--primary); background: rgba(16, 185, 129, 0.04); }
+    .dropzone .icon { font-size: 36px; color: var(--primary-light); margin-bottom: 12px; }
+    .dropzone .msg { font-size: 14px; font-weight: 600; color: #fff; }
 
-    .master-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      border-radius: 20px;
-      padding: 32px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      text-decoration: none;
-      transition: all 0.25s ease;
-      position: relative;
-      overflow: hidden;
+    .btn-action {
+      background: linear-gradient(135deg, #34d399, #10b981); color: #022c22; padding: 12px 20px; border-radius: 12px;
+      font-weight: 800; font-size: 14px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
     }
-    .master-card:hover {
-      border-color: rgba(16, 185, 129, 0.4);
-      transform: translateY(-4px);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 20px rgba(16, 185, 129, 0.1);
-    }
+    .btn-action:hover { opacity: 0.95; transform: translateY(-1px); }
+    .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; display: none; }
 
-    .master-icon-box {
-      width: 52px; height: 52px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center; font-size: 22px;
-      margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-    .master-card.item-master .master-icon-box {
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      color: #fff;
-    }
-    .master-card.general-ledger .master-icon-box {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #022c22;
-    }
-
-    .master-card h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-    .master-card h3 i { font-size: 14px; opacity: 0.5; transition: transform 0.2s; }
-    .master-card:hover h3 i { opacity: 1; transform: translateX(4px); color: var(--primary-light); }
-    .master-card p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; }
-
-    /* Modal Styles */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
-      display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
     .modal-overlay.open { display: flex; }
-    .modal-box {
-      background: #091722; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
-      width: 100%; max-width: 400px; padding: 28px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); position: relative;
-    }
-    .modal-close-btn {
-      position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.06); border: none; color: #94a3b8;
-      width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
+    .modal-box { background: #091722; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; width: 100%; max-width: 400px; padding: 28px; position: relative; }
+    .modal-close-btn { position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.06); border: none; color: #94a3b8; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .form-group { margin-bottom: 14px; }
     .form-label { display: block; font-size: 11px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
-    .form-input {
-      width: 100%; height: 42px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(3,14,23,0.6); color: #fff; padding: 0 12px; font-size: 13px; outline: none;
-    }
-    .btn-action {
-      background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399;
-      padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none;
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; width: 100%;
-    }
-    .btn-action:hover { background: rgba(16, 185, 129, 0.25); color: #fff; }
-
-    @media(max-width: 900px) {
-      .masters-grid { grid-template-columns: 1fr; }
-    }
+    .form-input { width: 100%; height: 42px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); background: rgba(3,14,23,0.6); color: #fff; padding: 0 12px; font-size: 13px; outline: none; }
   </style>
 </head>
 <body>
 
-<!-- Permanent Fixed Sidebar with exact user buttons & original theme -->
 <aside class="sidebar">
   <div class="brand-area">
     <div class="brand-logo">KA</div>
@@ -400,7 +211,6 @@
   </div>
 </aside>
 
-<!-- Main Content Area with Sticky Header Bar & Collapse Control -->
 <main class="main-content">
   <header class="top-bar-header">
     <div class="top-bar-left">
@@ -409,7 +219,7 @@
       </button>
       <div class="top-bar-title">
         <h1>Master Management</h1>
-        <p>Select a master type to configure and generate XML</p>
+        <p>Configure Item Stock &amp; General Ledger Accounts</p>
       </div>
     </div>
     <div class="top-bar-right">
@@ -418,31 +228,50 @@
   </header>
 
   <div class="content-body">
-    <div class="section-desc-box">
-      <h3>Available Masters</h3>
-      <p>Choose whether you want to manage stock inventory items or general accounts.</p>
+    <!-- Tab Navigation inside Masters Page -->
+    <div class="master-tabs">
+      <button type="button" class="tab-pill active" id="tabItemMaster" onclick="switchMasterTab('item')">
+        <i class="fa-solid fa-boxes-stacked"></i> Item Master
+      </button>
+      <button type="button" class="tab-pill" id="tabGeneralLedger" onclick="switchMasterTab('ledger')">
+        <i class="fa-solid fa-book"></i> General Ledger
+      </button>
     </div>
 
-    <div class="masters-grid">
-      <a href="item-master.html" class="master-card item-master">
-        <div>
-          <div class="master-icon-box">
-            <i class="fa-solid fa-boxes-stacked"></i>
-          </div>
-          <h3>Item Master <i class="fa-solid fa-arrow-right"></i></h3>
-          <p>Manage stock inventory items, units, and categories with ready XML sync.</p>
+    <!-- Panel 1: Item Master System -->
+    <div class="master-panel active" id="panelItemMaster">
+      <div class="card">
+        <div class="step-box">
+          <span>Download standard inventory stock item master template:</span>
+          <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
         </div>
-      </a>
+        <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
+          <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" style="display: none;" />
+          <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
+          <div class="msg">Upload Stock Inventory (Click or Drag &amp; Drop File Here)</div>
+          <div id="masterFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #34d399;"></div>
+        </div>
+        <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
+        <div id="alertBoxItem" class="alert"></div>
+      </div>
+    </div>
 
-      <a href="general-ledger.html" class="master-card general-ledger">
-        <div>
-          <div class="master-icon-box">
-            <i class="fa-solid fa-book"></i>
-          </div>
-          <h3>General Ledger <i class="fa-solid fa-arrow-right"></i></h3>
-          <p>Create and sync general ledgers, party accounts, and sundry creditors.</p>
+    <!-- Panel 2: General Ledger System -->
+    <div class="master-panel" id="panelGeneralLedger">
+      <div class="card">
+        <div class="step-box">
+          <span>Download standard general ledger account template:</span>
+          <button class="btn-template" onclick="downloadLedgerTemplate()"><i class="fa-solid fa-download"></i> Template</button>
         </div>
-      </a>
+        <div class="dropzone" onclick="document.getElementById('ledgerExcelFile').click()">
+          <input type="file" id="ledgerExcelFile" accept=".xlsx, .xls" onchange="fileSelected('ledgerExcelFile', 'ledgerFileName')" style="display: none;" />
+          <div class="icon"><i class="fa-solid fa-book-bookmark"></i></div>
+          <div class="msg">Upload Ledger Accounts (Click or Drag &amp; Drop File Here)</div>
+          <div id="ledgerFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #34d399;"></div>
+        </div>
+        <button class="btn-action" onclick="generateLedgerXML()"><i class="fa-solid fa-bolt"></i> Generate General Ledger XML &amp; Sync</button>
+        <div id="alertBoxLedger" class="alert"></div>
+      </div>
     </div>
   </div>
 </main>
@@ -473,38 +302,26 @@
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHmWpBKGd94Qj7NbGAweH5SZHeHUkVIw8lDBAA5HFqAy56dW2RkdTeXQ3eQRSIHwEmgQ/exec";
 
   document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => {
-      document.body.classList.add("page-loaded");
-    }, 40);
+    setTimeout(() => { document.body.classList.add("page-loaded"); }, 40);
 
-    // Sidebar collapse/expand toggle handler
     const sidebarToggle = document.getElementById('sidebarToggle');
     if (sidebarToggle) {
-      sidebarToggle.addEventListener('click', () => {
-        document.body.classList.toggle('sidebar-collapsed');
-      });
+      sidebarToggle.addEventListener('click', () => { document.body.classList.toggle('sidebar-collapsed'); });
     }
 
     document.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", function(e) {
         const targetUrl = this.getAttribute("href");
-        if (!targetUrl || targetUrl.startsWith("#") || (targetUrl.startsWith("http") && !targetUrl.includes(window.location.hostname))) {
-          return;
-        }
+        if (!targetUrl || targetUrl.startsWith("#") || (targetUrl.startsWith("http") && !targetUrl.includes(window.location.hostname))) return;
         e.preventDefault();
         document.body.classList.remove("page-loaded");
         document.body.classList.add("page-exiting");
-        setTimeout(() => {
-          window.location.href = targetUrl;
-        }, 350);
+        setTimeout(() => { window.location.href = targetUrl; }, 350);
       });
     });
 
     const username = localStorage.getItem('client_username');
-    if (!username) {
-      window.location.href = 'index.html';
-      return;
-    }
+    if (!username) { window.location.href = 'index.html'; return; }
 
     document.getElementById('headerUsernameText').textContent = username;
     document.getElementById('modalUsername').value = username;
@@ -513,62 +330,6 @@
     document.getElementById('openProfileModal').addEventListener('click', () => modal.classList.add('open'));
     document.getElementById('closeProfileModal').addEventListener('click', () => modal.classList.remove('open'));
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
-
-    document.getElementById('profileUpdateForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const oldUsername = localStorage.getItem('client_username');
-      const newUsername = document.getElementById('modalUsername').value.trim().toLowerCase();
-      const newPass = document.getElementById('modalNewPassword').value.trim();
-      const statusBox = document.getElementById('modalStatus');
-
-      if (!newUsername) {
-        statusBox.style.color = '#f87171';
-        statusBox.textContent = 'Username cannot be blank.';
-        return;
-      }
-
-      if (newPass && newPass.length < 8) {
-        statusBox.style.color = '#f87171';
-        statusBox.textContent = 'Password must be at least 8 characters.';
-        return;
-      }
-
-      statusBox.style.color = '#cbd5e1';
-      statusBox.textContent = 'Updating profile on server...';
-
-      try {
-        const res = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'update_profile',
-            oldUsername: oldUsername,
-            newUsername: newUsername,
-            newPassword: newPass
-          })
-        });
-        const result = await res.json();
-
-        if (result.success) {
-          localStorage.setItem('client_username', result.username);
-          localStorage.setItem('active_user_folder', result.folderPath);
-          document.getElementById('headerUsernameText').textContent = result.username;
-
-          statusBox.style.color = '#34d399';
-          statusBox.textContent = result.message;
-          document.getElementById('modalNewPassword').value = '';
-          setTimeout(() => { 
-            statusBox.textContent = ''; 
-            modal.classList.remove('open');
-          }, 1500);
-        } else {
-          statusBox.style.color = '#f87171';
-          statusBox.textContent = result.message;
-        }
-      } catch (err) {
-        statusBox.style.color = '#f87171';
-        statusBox.textContent = 'Network error. Server update failed.';
-      }
-    });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
       document.body.classList.remove("page-loaded");
@@ -581,6 +342,38 @@
       }, 350);
     });
   });
+
+  function switchMasterTab(type) {
+    const tabItem = document.getElementById('tabItemMaster');
+    const tabLedger = document.getElementById('tabGeneralLedger');
+    const panelItem = document.getElementById('panelItemMaster');
+    const panelLedger = document.getElementById('panelGeneralLedger');
+
+    if (type === 'item') {
+      tabItem.classList.add('active');
+      tabLedger.classList.remove('active');
+      panelItem.classList.add('active');
+      panelLedger.classList.remove('active');
+    } else {
+      tabLedger.classList.add('active');
+      tabItem.classList.remove('active');
+      panelLedger.classList.add('active');
+      panelItem.classList.remove('active');
+    }
+  }
+
+  function fileSelected(inputId, nameId) {
+    const fileInput = document.getElementById(inputId);
+    const fileNameDiv = document.getElementById(nameId);
+    if (fileInput.files.length > 0) {
+      fileNameDiv.textContent = "Selected: " + fileInput.files[0].name;
+    }
+  }
+
+  function downloadMasterTemplate() { alert("Item Master template download"); }
+  function generateMasterXML() { alert("Item Master XML generation"); }
+  function downloadLedgerTemplate() { alert("General Ledger template download"); }
+  function generateLedgerXML() { alert("General Ledger XML generation"); }
 </script>
 </body>
 </html>
