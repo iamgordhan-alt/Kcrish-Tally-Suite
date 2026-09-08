@@ -37,17 +37,17 @@
         <button class="btn-template" onclick="downloadPurchaseTemplate()"><i class="fa-solid fa-download"></i> Template</button>
       </div>
       <div class="dropzone" onclick="document.getElementById('purchExcelFile').click()">
-        <input type="file" id="purchExcelFile" accept=".xlsx, .xls" onchange="fileSelected('purchExcelFile', 'purchFileName')" />
+        <input type="file" id="purchExcelFile" accept=".xlsx, .xls" onchange="fileSelected('purchExcelFile', 'purchFileName')" style="display: none;" />
         <div class="icon"><i class="fa-solid fa-file-excel"></i></div>
         <div class="msg">Upload Purchase Excel (Click or Drag & Drop File Here)</div>
-        <div id="purchFileName" class="file-name"></div>
+        <div id="purchFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #059669;"></div>
       </div>
-      <div class="options-box">
-        <input type="checkbox" id="partyWiseCheck" />
-        <label for="partyWiseCheck" style="cursor: pointer; color: #334155; font-weight: 500;">Generate party-wise separate XML packages (ZIP archive)</label>
+      <div class="options-box" style="margin: 15px 0; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="partyWiseCheck" style="width: 16px; height: 16px;" />
+        <label for="partyWiseCheck" style="cursor: pointer; color: #334155; font-weight: 500; font-size: 13px;">Generate party-wise separate XML packages (ZIP archive)</label>
       </div>
       <button class="btn-action" onclick="generatePurchaseXML()"><i class="fa-solid fa-bolt"></i> Process & Sync to Personal Drive</button>
-      <div id="alertBox" class="alert"></div>
+      <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
 
   </div>
@@ -56,13 +56,9 @@
 <script src="sidebar.js"></script>
 <script src="app.js"></script>
 <script>
-  // Session check and sidebar toggle handler
   document.addEventListener("DOMContentLoaded", () => {
     const username = localStorage.getItem('client_username');
-    if (!username) {
-      window.location.href = 'index.html';
-    }
-
+    if (!username) { window.location.href = 'index.html'; }
     const sidebarToggle = document.getElementById('sidebarToggle');
     if (sidebarToggle) {
       sidebarToggle.addEventListener('click', () => {
