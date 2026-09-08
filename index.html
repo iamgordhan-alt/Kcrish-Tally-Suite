@@ -328,6 +328,12 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
 
       <button type="submit" class="btn-submit" id="submitBtn">
         <div class="spinner" id="spinner"></div>
+        <span id="submitIcon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </span>
         <span id="submitLabel">Sign In Securely</span>
       </button>
 
@@ -468,6 +474,7 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
 
       if ($('submitBtn')) $('submitBtn').disabled = true;
       if ($('spinner')) $('spinner').style.display = 'block';
+      if ($('submitIcon')) $('submitIcon').style.display = 'none';
       if ($('submitLabel')) $('submitLabel').textContent = 'Processing & Sending OTP...';
 
       try {
@@ -476,6 +483,7 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
 
         if ($('submitBtn')) $('submitBtn').disabled = false;
         if ($('spinner')) $('spinner').style.display = 'none';
+        if ($('submitIcon')) $('submitIcon').style.display = 'inline-flex';
         if ($('submitLabel')) $('submitLabel').textContent = isSignup ? 'Continue with Email OTP' : 'Sign In Securely';
 
         if (result.success) {
@@ -495,19 +503,26 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
       } catch (err) {
         if ($('submitBtn')) $('submitBtn').disabled = false;
         if ($('spinner')) $('spinner').style.display = 'none';
+        if ($('submitIcon')) $('submitIcon').style.display = 'inline-flex';
         if ($('submitLabel')) $('submitLabel').textContent = isSignup ? 'Continue with Email OTP' : 'Sign In Securely';
         showStatus('Network Error!', 'error');
       }
     });
   }
 
-  // 6-Box OTP Auto-navigation and Paste Logic
+  // 6-Box OTP Auto-navigation, Auto-submit on 6th digit, and Paste Logic
   const otpBoxes = document.querySelectorAll('.otp-box');
   otpBoxes.forEach((box, index) => {
     box.addEventListener('input', (e) => {
       const val = e.target.value;
       if (val && index < otpBoxes.length - 1) {
         otpBoxes[index + 1].focus();
+      }
+
+      let currentOtp = '';
+      otpBoxes.forEach(b => { currentOtp += b.value.trim(); });
+      if (currentOtp.length === 6) {
+        $('otpForm').requestSubmit();
       }
     });
 
@@ -525,6 +540,7 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
           b.value = pasteData[idx];
         });
         otpBoxes[otpBoxes.length - 1].focus();
+        $('otpForm').requestSubmit();
       }
     });
   });
