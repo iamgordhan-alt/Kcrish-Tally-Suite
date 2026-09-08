@@ -55,10 +55,10 @@ body.page-exiting {
   transform: translateY(-8px);
 }
 
-/* Glassmorphism Sidebar */
+/* Fixed Glassmorphism Sidebar */
 .sidebar {
   width: 280px;
-  background: rgba(10, 22, 31, 0.85);
+  background: rgba(10, 22, 31, 0.9);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
@@ -67,8 +67,8 @@ body.page-exiting {
   padding: 24px 18px;
   position: fixed;
   top: 0;
-  bottom: 0;
   left: 0;
+  height: 100vh;
   z-index: 50;
   box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
 }
@@ -210,7 +210,8 @@ body.page-exiting {
   padding: 32px;
   display: flex;
   flex-direction: column;
-  max-width: calc(100% - 280px);
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 .top-bar-header {
@@ -282,7 +283,7 @@ body.page-exiting {
 @media(max-width: 1100px) {
   .sidebar { width: 80px; padding: 20px 10px; }
   .brand-title, .brand-subtitle, .sidebar-link span, .menu-section-title, .logout-sidebar-btn span, .user-name-text, .sidebar-user-btn i:last-child { display: none; }
-  .main-content { margin-left: 80px; max-width: calc(100% - 80px); }
+  .main-content { margin-left: 80px; }
   .sidebar-user-btn { justify-content: center; padding: 10px; }
   .sidebar-link { justify-content: center; padding: 12px; }
   .sidebar-link i { font-size: 18px; width: auto; }
@@ -297,7 +298,7 @@ body.page-exiting {
 </head>
 <body>
 
-<!-- Liquid Glass Sidebar Navigation -->
+<!-- Fixed Glassmorphism Sidebar Navigation -->
 <aside class="sidebar">
   <div class="brand-area">
     <div class="brand-logo">KA</div>
