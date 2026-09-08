@@ -62,3 +62,33 @@ document.addEventListener("DOMContentLoaded", function() {
     window.location.href = 'index.html';
   });
 });
+// 30 Minutes Inactivity Auto-Logout System
+(function() {
+  let inactivityTimer;
+
+  function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    // 30 minutes = 30 * 60 * 1000 ms = 1800000 ms
+    inactivityTimer = setTimeout(performAutoLogout, 30 * 60 * 1000);
+  }
+
+  function performAutoLogout() {
+    const username = localStorage.getItem('client_username');
+    if (username) {
+      localStorage.removeItem('client_username');
+      localStorage.removeItem('active_user_folder');
+      alert("Session expired due to 30 minutes of inactivity. Please sign in again.");
+      window.location.href = 'index.html';
+    }
+  }
+
+  // Events to track user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart', 'click'];
+  
+  activityEvents.forEach(event => {
+    window.addEventListener(event, resetInactivityTimer, true);
+  });
+
+  // Initial call on page load
+  resetInactivityTimer();
+})();
