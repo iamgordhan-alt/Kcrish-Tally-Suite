@@ -35,16 +35,16 @@
         <span style="color:#334155; font-weight: 600;">Transform Tally XML exports into structured Debit & Credit spreadsheets</span>
       </div>
       <div class="dropzone" onclick="document.getElementById('xmlFile').click()">
-        <input type="file" id="xmlFile" accept=".xml" onchange="fileSelected('xmlFile', 'xmlFileName')" />
+        <input type="file" id="xmlFile" accept=".xml" onchange="fileSelected('xmlFile', 'xmlFileName')" style="display: none;" />
         <div class="icon"><i class="fa-solid fa-file-code"></i></div>
         <div class="msg">Select Tally XML File (Click or Drag & Drop File Here)</div>
-        <div id="xmlFileName" class="file-name"></div>
+        <div id="xmlFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #059669;"></div>
       </div>
       <button class="btn-action blue" onclick="convertXmlToExcel()"><i class="fa-solid fa-file-excel"></i> Convert XML to Excel</button>
-      <div id="previewContainer" class="preview-table-box">
+      <div id="previewContainer" class="preview-table-box" style="margin-top: 15px;">
         <table id="previewTable"><thead></thead><tbody></tbody></table>
       </div>
-      <div id="alertBox" class="alert"></div>
+      <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
 
   </div>
@@ -53,13 +53,9 @@
 <script src="sidebar.js"></script>
 <script src="app.js"></script>
 <script>
-  // Session check and sidebar toggle handler
   document.addEventListener("DOMContentLoaded", () => {
     const username = localStorage.getItem('client_username');
-    if (!username) {
-      window.location.href = 'index.html';
-    }
-
+    if (!username) { window.location.href = 'index.html'; }
     const sidebarToggle = document.getElementById('sidebarToggle');
     if (sidebarToggle) {
       sidebarToggle.addEventListener('click', () => {
