@@ -1,39 +1,4 @@
-/* app.js */
-window.onload = function() {
-  let savedToken = localStorage.getItem("google_access_token");
-  let savedUser = localStorage.getItem("client_username");
-  
-  if(!savedUser) {
-    window.location.href = "index.html";
-    return;
-  }
-  accessToken = savedToken || "";
-  if(savedUser) {
-    const titleEl = document.getElementById("welcomeClientTitle");
-    if(titleEl) titleEl.innerText = "Welcome, " + savedUser + " | Tally Suite";
-  }
-
-  // Smooth Entry Trigger for Liquid Glass UI
-  setTimeout(() => {
-    document.body.classList.add("page-loaded");
-  }, 40);
-
-  // Smooth Exit Handler for internal links
-  document.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", function(e) {
-      const target = this.getAttribute("href");
-      if (!target || target.startsWith("#") || target.startsWith("javascript:") || (target.startsWith("http") && !target.includes(window.location.hostname))) {
-        return;
-      }
-      e.preventDefault();
-      document.body.classList.remove("page-loaded");
-      document.body.classList.add("page-exiting");
-      setTimeout(() => {
-        window.location.href = target;
-      }, 300);
-    });
-  });
-};
+/* app.js - Unified & Fixed Session Management */
 const FIXED_COMPANY_NAME = "Kcrish";
 let accessToken = null;
 
@@ -41,14 +6,17 @@ window.onload = function() {
   let savedToken = localStorage.getItem("google_access_token");
   let savedUser = localStorage.getItem("client_username");
   
-  if(!savedToken) {
+  // Sirf username check karega, token optional rakhega taaki redirect loop na ho
+  if (!savedUser) {
     window.location.href = "index.html";
     return;
   }
-  accessToken = savedToken;
-  if(savedUser) {
-    const titleEl = document.getElementById("welcomeClientTitle");
-    if(titleEl) titleEl.innerText = "Welcome, " + savedUser + " | Tally Suite";
+  
+  accessToken = savedToken || "";
+  
+  const titleEl = document.getElementById("welcomeClientTitle");
+  if (titleEl) {
+    titleEl.innerText = "Welcome, " + savedUser + " | Tally Suite";
   }
 
   // Smooth Entry Trigger for Liquid Glass UI
