@@ -11,29 +11,56 @@
 </head>
 <body onload="loadPersonalDriveFiles()">
 
-<div class="app-container">
-  <div class="dashboard-header">
-    <div>
-      <h1>Google Drive Restore</h1>
-      <p>Audit and retrieve synced JSON archives from Drive</p>
+<!-- Permanent Locked Sidebar Injector via sidebar.js -->
+<main class="main-content" style="width: 100%;">
+  <div class="app-container" style="max-width: 1300px; margin: 0 auto;">
+    
+    <div class="dashboard-header">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <h1>Google Drive Restore</h1>
+          <p>Audit and retrieve synced JSON archives from Drive</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="sync-badge"><span></span> Live Sync</div>
+      </div>
     </div>
-    <div class="header-actions">
-      <a href="dashboard.html" class="btn-template" style="color:var(--text); text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="step-box" style="background:#f9fafb;">
-      <span style="color:var(--text); font-weight: 500;">Retrieve and audit synced JSON archives from personal Google Drive</span>
-      <button class="btn-template" onclick="loadPersonalDriveFiles()" style="border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-rotate"></i> Refresh</button>
+    <div class="card">
+      <div class="step-box" style="background:rgba(255,255,255,0.02);">
+        <span style="color:var(--text-dark); font-weight: 500;">Retrieve and audit synced JSON archives from personal Google Drive</span>
+        <button class="btn-template" onclick="loadPersonalDriveFiles()" style="border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+      <div id="driveJsonContainer" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border-glass); border-radius: 8px; padding: 16px; background: rgba(3,14,23,0.6); font-size: 12px; text-align: center; color: var(--text-muted); width: 100%;">
+        Loading files from your Drive...
+      </div>
+      <div id="alertBox" class="alert"></div>
     </div>
-    <div id="driveJsonContainer" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fafafa; font-size: 12px; text-align: center; color: var(--text-muted); width: 100%;">
-      Loading files from your Drive...
-    </div>
-    <div id="alertBox" class="alert"></div>
-  </div>
-</div>
 
+  </div>
+</main>
+
+<script src="sidebar.js"></script>
 <script src="app.js"></script>
+<script>
+  // Session check and sidebar toggle handler
+  document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem('client_username');
+    if (!username) {
+      window.location.href = 'index.html';
+    }
+
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        document.body.classList.toggle('sidebar-collapsed');
+      });
+    }
+  });
+</script>
 </body>
 </html>
