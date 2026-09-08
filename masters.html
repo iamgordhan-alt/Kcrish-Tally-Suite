@@ -10,39 +10,66 @@
 </head>
 <body>
 
-<div class="app-container">
-  <div class="dashboard-header">
-    <div>
-      <h1>Master Management</h1>
-      <p>Select a master type to configure and generate XML</p>
-    </div>
-    <div class="header-actions">
-      <a href="dashboard.html" class="btn-template"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2 style="margin-top:0; font-size:18px; font-weight:600; color:#f8fafc;">Available Masters</h2>
-    <p style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">Choose whether you want to manage stock items or general accounts.</p>
+<!-- Permanent Locked Sidebar Injector via sidebar.js -->
+<main class="main-content" style="width: 100%;">
+  <div class="app-container" style="max-width: 1300px; margin: 0 auto;">
     
-    <div class="menu-grid">
-      <!-- Item Master Option -->
-      <a href="master.html" class="menu-card blue">
-        <div class="icon-box" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 8px 20px rgba(139,92,246,0.35);"><i class="fa-solid fa-boxes-stacked"></i></div>
-        <h3>Item Master</h3>
-        <p>Manage stock inventory items, units, and categories with ready XML sync.</p>
-      </a>
-
-      <!-- General Ledger Option -->
-      <a href="ledger.html" class="menu-card">
-        <div class="icon-box" style="background: linear-gradient(135deg, #ec4899, #be185d); box-shadow: 0 8px 20px rgba(236,72,153,0.35);"><i class="fa-solid fa-address-book"></i></div>
-        <h3>General Ledger</h3>
-        <p>Create and sync general ledgers, party accounts, and sundry creditors.</p>
-      </a>
+    <div class="dashboard-header">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <h1>Master Management</h1>
+          <p>Select a master type to configure and generate XML</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="sync-badge"><span></span> Live Sync</div>
+      </div>
     </div>
-  </div>
-</div>
 
+    <div class="card">
+      <h2 style="margin-top:0; font-size:18px; font-weight:600; color:#f8fafc;">Available Masters</h2>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">Choose whether you want to manage stock items or general accounts.</p>
+      
+      <div class="menu-grid">
+        <!-- Item Master Option -->
+        <a href="master.html" class="menu-card blue">
+          <div class="icon-box" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 8px 20px rgba(139,92,246,0.35);"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <h3>Item Master</h3>
+          <p>Manage stock inventory items, units, and categories with ready XML sync.</p>
+        </a>
+
+        <!-- General Ledger Option -->
+        <a href="ledger.html" class="menu-card">
+          <div class="icon-box" style="background: linear-gradient(135deg, #ec4899, #be185d); box-shadow: 0 8px 20px rgba(236,72,153,0.35);"><i class="fa-solid fa-address-book"></i></div>
+          <h3>General Ledger</h3>
+          <p>Create and sync general ledgers, party accounts, and sundry creditors.</p>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="sidebar.js"></script>
 <script src="app.js"></script>
+<script>
+  // Session check and sidebar toggle handler
+  document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem('client_username');
+    if (!username) {
+      window.location.href = 'index.html';
+    }
+
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        document.body.classList.toggle('sidebar-collapsed');
+      });
+    }
+  });
+</script>
 </body>
 </html>
