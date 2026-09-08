@@ -72,7 +72,6 @@ header {
   display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22;
 }
 
-/* Header User Details / Profile Button (Replaced Folder Path) */
 .user-profile-btn {
   background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
   padding: 8px 16px; border-radius: 12px; font-size: 13px; color: #6ee7b7; display: flex; align-items: center; gap: 10px;
@@ -119,7 +118,6 @@ header {
 
 .stat-number { font-size: 28px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 8px; }
 
-/* Modal Overlay for Profile / Password Settings */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
   display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
@@ -155,7 +153,6 @@ header {
     </div>
   </div>
   <div style="display:flex; align-items:center; gap:12px;">
-    <!-- Header Profile Button showing Username -->
     <button class="user-profile-btn" id="openProfileModal">
       <i class="fa-solid fa-user-gear"></i> <span id="headerUsernameText">Account</span>
     </button>
@@ -174,7 +171,6 @@ header {
 </nav>
 
 <main class="container">
-  <!-- Card 1: System Overview -->
   <section class="card">
     <div>
       <h3><i class="fa-solid fa-server" style="color:var(--primary)"></i> System Overview</h3>
@@ -184,7 +180,6 @@ header {
     </div>
   </section>
 
-  <!-- Card 2: Quick Actions -->
   <section class="card">
     <div>
       <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
@@ -196,7 +191,6 @@ header {
     </div>
   </section>
 
-  <!-- Card 3: Storage & Security -->
   <section class="card">
     <div>
       <h3><i class="fa-solid fa-shield-halved" style="color:var(--warning)"></i> Local Storage</h3>
@@ -207,7 +201,6 @@ header {
   </section>
 </main>
 
-<!-- Profile & Password Settings Modal -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal-box">
     <button type="button" class="modal-close-btn" id="closeProfileModal">✕</button>
@@ -231,12 +224,10 @@ header {
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // Smooth Page Entry Fade-In
     setTimeout(() => {
       document.body.classList.add("page-loaded");
     }, 40);
 
-    // Smooth Page Exit Animation on internal navigation links
     document.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", function(e) {
         const targetUrl = this.getAttribute("href");
@@ -252,7 +243,7 @@ header {
       });
     });
 
-    // Session Management
+    // Session check: If username is missing, redirect to index.html
     const username = localStorage.getItem('client_username');
     if (!username) {
       window.location.href = 'index.html';
@@ -262,13 +253,11 @@ header {
     document.getElementById('headerUsernameText').textContent = username;
     document.getElementById('modalUsername').value = username;
 
-    // Modal Handlers
     const modal = document.getElementById('profileModal');
     document.getElementById('openProfileModal').addEventListener('click', () => modal.classList.add('open'));
     document.getElementById('closeProfileModal').addEventListener('click', () => modal.classList.remove('open'));
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
 
-    // Profile Update Handler
     document.getElementById('profileUpdateForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const newPass = document.getElementById('modalNewPassword').value.trim();
@@ -289,7 +278,6 @@ header {
       }, 1500);
     });
 
-    // Logout Handler
     document.getElementById('logoutBtn').addEventListener('click', () => {
       document.body.classList.remove("page-loaded");
       document.body.classList.add("page-exiting");
