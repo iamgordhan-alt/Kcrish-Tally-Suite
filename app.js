@@ -567,57 +567,111 @@ function convertXmlToExcel() {
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
-      const xmlDoc = new DOMParser().parseFromString(e.target.result, "text/xml");
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(e.target.result, "text/xml");
+      
+      const parseError = xmlDoc.getElementsByTagName("parsererror");
+      if (parseError.length > 0) {
+        throw new Error("Invalid XML format or corrupted file structure.");
+      }
+
       let extractedData = [];
       const vouchers = xmlDoc.getElementsByTagName("VOUCHER");
 
+      if (vouchers.length === 0) {
+        throw new Error("No <VOUCHER> tags found in the uploaded XML file.");
+      }
+
       for (let v = 0; v < vouchers.length; v++) {
         const vch = vouchers[v];
-        let vDate = formatTallyDate(vch.getElementsByTagName("DATE")[0] ? vch.getElementsByTagName("DATE")[0].textContent.trim() : "");
-        let vNo = vch.getElementsByTagName("VOUCHERNUMBER")[0] ? vch.getElementsByTagName("VOUCHERNUMBER")[0].textContent.trim() : "";
-        let party = vch.getElementsByTagName("PARTYLEDGERNAME")[0] ? vch.getElementsByTagName("PARTYLEDGERNAME")[0].textContent.trim() : "Rsbcl";
+        
+        let vDateTag = vch.getElementsByTagName("DATE")[0];
+        let vNoTag = vch.getElementsByTagName("VOUCHERNUMBER")[0];
+        let partyTag = vch.getElementsByTagName("PARTYLEDGERNAME")[0];
+
+        let vDate = formatTallyDate(vDateTag ? vDateTag.textContent.trim() : "");
+        let vNo = vNoTag ? vNoTag.textContent.trim() : "";
+        let party = partyTag ? partyTag.textContent.trim() : "Rsbcl";
         
         let invEntries = vch.getElementsByTagName("ALLINVENTORYENTRIES.LIST");
         for (let j = 0; j < invEntries.length; j++) {
           let it = invEntries[j];
-          let amt = Math.abs(parseFloat(it.getElementsByTagName("AMOUNT")[0].textContent.trim() || 0));
+          let stockItemTag = it.getElementsByTagName("STOCKITEMNAME")[0];
+          let amountTag = it.getElementsByTagName("AMOUNT")[0];
+          let qtyTag = it.getElementsByTagName("BILLEDQTY")[0];
+          let rateTag = it.getElementsByTagName("RATE")[0];
+
+          let itemName = stockItemTag ? stockItemTag.textContent.trim() : "Unknown Item";
+          let amt = amountTag ? Math.abs(parseFloat(amountTag.textContent.trim() || 0)) : 0;
+          let qty = qtyTag ? qtyTag.textContent.trim() : "";
+          let rate = rateTag ? rateTag.textContent.trim() : "";
+
           extractedData.push({
-            "Date": vDate, "Voucher No": vNo, "Party Name": party,
-            "Item / Ledger": it.getElementsByTagName("STOCKITEMNAME")[0].textContent.trim(),
-            "Qty": it.getElementsByTagName("BILLEDQTY")[0] ? it.getElementsByTagName("BILLEDQTY")[0].textContent.trim() : "",
-            "Rate": it.getElementsByTagName("RATE")[0] ? it.getElementsByTagName("RATE")[0].textContent.trim() : "",
-            "Type": "Dr", "Debit Amount": amt, "Credit Amount": 0
+            "Date": vDate, 
+            "Voucher No": vNo, 
+            "Party Name": party,
+            "Item / Ledger": itemName,
+            "Qty": qty,
+            "Rate": rate,
+            "Type": "Dr", 
+            "Debit Amount": amt, 
+            "Credit Amount": 0
           });
         }
 
         let ledEntries = vch.getElementsByTagName("LEDGERENTRIES.LIST");
         for (let l = 0; l < ledEntries.length; l++) {
           let led = ledEntries[l];
-          let name = led.getElementsByTagName("LEDGERNAME")[0].textContent.trim();
-          let amt = Math.abs(parseFloat(led.getElementsByTagName("AMOUNT")[0].textContent.trim() || 0));
+          let ledgerNameTag = led.getElementsByTagName("LEDGERNAME")[0];
+          let amountTag = led.getElementsByTagName("AMOUNT")[0];
+
+          if (!ledgerNameTag) continue;
+          let name = ledgerNameTag.textContent.trim();
+          let amt = amountTag ? Math.abs(parseFloat(amountTag.textContent.trim() || 0)) : 0;
+
           if (name.toLowerCase() === party.toLowerCase()) {
             extractedData.push({
-              "Date": vDate, "Voucher No": vNo, "Party Name": party,
-              "Item / Ledger": name, "Qty": "-", "Rate": "-",
-              "Type": "Cr", "Debit Amount": 0, "Credit Amount": amt
+              "Date": vDate, 
+              "Voucher No": vNo, 
+              "Party Name": party,
+              "Item / Ledger": name, 
+              "Qty": "-", 
+              "Rate": "-",
+              "Type": "Cr", 
+              "Debit Amount": 0, 
+              "Credit Amount": amt
             });
           } else {
             extractedData.push({
-              "Date": vDate, "Voucher No": vNo, "Party Name": party,
-              "Item / Ledger": name, "Qty": "-", "Rate": "-",
-              "Type": "Dr", "Debit Amount": amt, "Credit Amount": 0
+              "Date": vDate, 
+              "Voucher No": vNo, 
+              "Party Name": party,
+              "Item / Ledger": name, 
+              "Qty": "-", 
+              "Rate": "-",
+              "Type": "Dr", 
+              "Debit Amount": amt, 
+              "Credit Amount": 0
             });
           }
         }
       }
 
+      if (extractedData.length === 0) {
+        throw new Error("Vouchers were found, but no inventory or ledger records could be extracted.");
+      }
+
       renderTablePreview(extractedData);
+      
       const ws = XLSX.utils.json_to_sheet(extractedData);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Data");
+      XLSX.utils.book_append_sheet(wb, ws, "TallyData");
       XLSX.writeFile(wb, "Tally_Dr_Cr_Data.xlsx");
-      showAlert(`Converted ${extractedData.length} records.`, "success");
-    } catch (err) { showAlert("Error: " + err.message, "error"); }
+      
+      showAlert(`Successfully converted ${extractedData.length} records across ${vouchers.length} vouchers.`, "success");
+    } catch (err) { 
+      showAlert("Error: " + err.message, "error"); 
+    }
   };
   reader.readAsText(fileInput.files[0]);
 }
