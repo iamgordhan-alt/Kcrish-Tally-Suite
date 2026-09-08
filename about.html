@@ -129,6 +129,43 @@ kbd {
           <em>Tip:</em> All shortcut keys are globally active across the suite modules when using <kbd>Alt</kbd> modifier keys.
         </div>
       </section>
+
+      <!-- Full-Width Author Profile Card -->
+      <section class="card" style="grid-column: 1 / -1; margin-top: 4px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+          
+          <!-- Author Photo Container -->
+          <div style="position: relative; width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); flex-shrink: 0;">
+            <img src="kcrish-saran.jpg" alt="Kcrish Saran" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div style="display: none; width: 100%; height: 100%; background: rgba(16,185,129,0.1); align-items: center; justify-content: center; color: var(--primary); font-size: 32px;">
+              <i class="fa-solid fa-user"></i>
+            </div>
+          </div>
+
+          <!-- Author Info & Profession -->
+          <div style="flex: 1; min-width: 250px;">
+            <h3 style="margin: 0 0 4px 0; display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-user-gear" style="color:var(--success)"></i> Kcrish Saran
+            </h3>
+            <p style="margin: 0 0 8px 0; font-size: 13px; color: #34d399; font-weight: 600;">
+              Professional Accountant &amp; Tally Automation Specialist (Wine Shop Accounting)
+            </p>
+            <p style="margin: 0; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+              The <strong>Kcrish Automation Suite</strong> was created by Kcrish Saran, working as a professional accountant with specialized expertise in <strong>Wine Shop Accounting</strong> and managing records inside Tally. Built client-side tools utilizing vanilla HTML/JS and SheetJS for fast Excel-to-XML conversion, purchase vouchers, general ledgers, and item masters without server dependency.
+            </p>
+          </div>
+        </div>
+
+        <!-- Action Links / Clickable Buttons -->
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08);">
+          <a href="https://github.com" target="_blank" class="btn-template" style="text-decoration: none;">
+            <i class="fa-brands fa-github" style="color: #fff;"></i> GitHub Repository
+          </a>
+          <a href="dashboard.html" class="btn-template" style="text-decoration: none; border-color: rgba(16,185,129,0.4); color: #34d399;">
+            <i class="fa-solid fa-chart-line"></i> Open Automation Suite
+          </a>
+        </div>
+      </section>
     </div>
 
   </div>
