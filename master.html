@@ -36,13 +36,13 @@
         <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
       </div>
       <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
-        <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" />
+        <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" style="display: none;" />
         <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
         <div class="msg">Upload Stock Inventory (Click or Drag & Drop File Here)</div>
-        <div id="masterFileName" class="file-name"></div>
+        <div id="masterFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #059669;"></div>
       </div>
       <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML & Sync</button>
-      <div id="alertBox" class="alert"></div>
+      <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
 
   </div>
@@ -51,13 +51,9 @@
 <script src="sidebar.js"></script>
 <script src="app.js"></script>
 <script>
-  // Session check and sidebar toggle handler
   document.addEventListener("DOMContentLoaded", () => {
     const username = localStorage.getItem('client_username');
-    if (!username) {
-      window.location.href = 'index.html';
-    }
-
+    if (!username) { window.location.href = 'index.html'; }
     const sidebarToggle = document.getElementById('sidebarToggle');
     if (sidebarToggle) {
       sidebarToggle.addEventListener('click', () => {
