@@ -28,6 +28,19 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+body.page-loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.page-exiting {
+  opacity: 0;
+  transform: translateY(-6px);
 }
 
 /* FULL SCREEN FLUID CONTAINER WITH ENTRY ANIMATION */
@@ -118,7 +131,6 @@ body {
   padding: 36px 24px;
   text-align: center;
   cursor: pointer;
-  /* Smooth transform & box-shadow animation on hover */
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
   color: #ffffff;
