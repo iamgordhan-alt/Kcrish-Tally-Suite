@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="style.css">
 <style>
-/* Page-specific inline overrides if any needed */
-.container {
+/* Page-specific overrides */
+.container-grid-about {
   max-width: 1300px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
 }
 .shortcut-table {
@@ -35,14 +35,14 @@ kbd {
   animation: slideUp 0.3s ease;
 }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@media(max-width: 1000px) { .container { grid-template-columns: 1fr; } }
+@media(max-width: 1000px) { .container-grid-about { grid-template-columns: 1fr; } }
 </style>
 </head>
-<body>
+<body class="page-loaded">
 
 <!-- Permanent Locked Sidebar Injector via sidebar.js -->
-<main class="main-content" style="width: 100%;">
-  <div class="app-container" style="max-width: 1300px; margin: 0 auto;">
+<main class="main-content">
+  <div class="app-container">
     
     <header class="dashboard-header">
       <div style="display: flex; align-items: center; gap: 14px;">
@@ -62,7 +62,7 @@ kbd {
       </div>
     </header>
 
-    <div class="container">
+    <div class="container-grid-about">
       <!-- Left Panel: Engineering Philosophy & Architecture Learnings -->
       <section class="card">
         <h3><i class="fa-solid fa-lightbulb" style="color:var(--primary)"></i> Engineering Philosophy &amp; Learnings</h3>
@@ -146,17 +146,20 @@ kbd {
 
 <script src="sidebar.js"></script>
 <script>
-  const username = localStorage.getItem('client_username');
-  const userFolder = localStorage.getItem('active_user_folder');
+  document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem('client_username');
+    const userFolder = localStorage.getItem('active_user_folder');
 
-  if (!username) {
-    window.location.href = 'index.html';
-  }
+    if (!username) {
+      window.location.href = 'index.html';
+      return;
+    }
 
-  const userPathElem = document.getElementById('userPathText');
-  if(userPathElem) {
-    userPathElem.textContent = userFolder || '/Kcrish_Data/Users/Default/';
-  }
+    const userPathElem = document.getElementById('userPathText');
+    if(userPathElem) {
+      userPathElem.textContent = userFolder || '/Kcrish_Data/Users/Default/';
+    }
+  });
 
   function triggerLogout() {
     localStorage.removeItem('client_username');
