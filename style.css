@@ -266,3 +266,13 @@ table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: lef
 th, td { padding: 14px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); white-space: nowrap; }
 th { background: rgba(15, 23, 42, 0.9); position: sticky; top: 0; color: #f8fafc; font-weight: 600; z-index: 2; }
 td { color: #cbd5e1; }
+/* Prevent overlapping login box inside active workspace modules */
+body:not(.auth-page) .card:has(form input[type="password"]) {
+  display: none !important;
+}
+
+/* Ensure main app container doesn't overflow or clip on the right side */
+.app-container {
+  max-width: 100% !important;
+  overflow: hidden;
+}
