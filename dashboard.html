@@ -3,10 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kcrish Automation Workspace - Enterprise Grade Excel to Tally Processing Engine">
+<meta name="description" content="Kcrish Automation Suite - Enterprise Workspace Dashboard">
 <meta name="theme-color" content="#061219">
-<title>Kcrish • Excel to Tally Automation Suite</title>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<title>Kcrish Workspace • Enterprise Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -16,210 +15,301 @@
   --primary: #10b981;
   --primary-hover: #059669;
   --primary-light: #34d399;
-  --primary-glow: rgba(16, 185, 129, 0.35);
   --cyan: #06b6d4;
   --bg-dark: #061118;
   --bg-card: rgba(12, 26, 36, 0.75);
   --border-card: rgba(255, 255, 255, 0.12);
-  --border-input: rgba(255, 255, 255, 0.14);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --success: #10b981;
   --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { min-height: 100%; }
 
 body {
   font-family: var(--font-main);
   background-color: var(--bg-dark);
   color: var(--text-main);
-  line-height: 1.5;
-  position: relative;
-  overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.15) 0%, transparent 45%),
-    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.14) 0%, transparent 40%),
-    radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-    linear-gradient(180deg, #050e14 0%, #081620 50%, #050c12 100%);
-  background-attachment: fixed;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 32px 16px;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+    linear-gradient(180deg, #050e14 0%, #081620 100%);
+  background-attachment: fixed;
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
+  overflow-x: hidden;
 }
 
-body.page-loaded { opacity: 1; transform: translateY(0); }
-body.page-exiting { opacity: 0; transform: translateY(-8px); }
-
-.orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(60px); will-change: transform; }
-.orb-1 { width: 400px; height: 400px; left: -80px; top: 15%; background: rgba(16, 185, 129, 0.14); }
-.orb-2 { width: 380px; height: 380px; right: -90px; bottom: 10%; background: rgba(6, 182, 212, 0.12); }
-
-.grid-bg {
-  position: fixed; inset: 0; background-size: 40px 40px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  pointer-events: none; z-index: 0;
+body.page-loaded {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.shell {
-  position: relative; z-index: 1; width: 100%; max-width: 1240px; margin: auto;
-  display: grid; grid-template-columns: 1.15fr 0.95fr; gap: 56px; align-items: center;
+body.page-exiting {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 
-.showcase { display: flex; flex-direction: column; gap: 24px; }
-.badge {
-  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
-  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.28);
-  color: #a7f3d0; font-size: 12px; font-weight: 600; width: fit-content;
-}
-.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background-color: var(--primary-light); box-shadow: 0 0 8px var(--primary-light); }
-
-.brand-header { display: flex; align-items: center; gap: 12px; }
-.brand-logo-icon {
-  width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-  display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
-}
-.brand-title { font-size: 24px; font-weight: 800; color: #ffffff; }
-.brand-title span { color: var(--primary-light); }
-
-h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; color: #ffffff; }
-.gradient-text { background: linear-gradient(90deg, #ffffff 10%, #a7f3d0 60%, #67e8f9 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.desc { color: var(--text-muted); font-size: 16px; line-height: 1.65; max-width: 580px; }
-
-.sync-preview-card {
-  background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 20px;
-  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.45); backdrop-filter: blur(20px); display: flex; flex-direction: column; gap: 16px; max-width: 560px;
-}
-.sync-card-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px; }
-.sync-title { font-size: 13px; font-weight: 700; color: #cbd5e1; display: flex; align-items: center; gap: 8px; }
-.sync-status-tag { font-size: 11px; font-family: var(--font-mono); background: rgba(16, 185, 129, 0.15); color: #6ee7b7; padding: 3px 8px; border-radius: 6px; }
-
-.sync-flow { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
-.sync-node { background: rgba(3, 14, 23, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
-.sync-node-label { font-size: 11px; text-transform: uppercase; color: var(--text-dim); font-weight: 700; }
-.sync-node-val { font-size: 13px; font-weight: 600; color: #f1f5f9; display: flex; align-items: center; gap: 6px; }
-.sync-arrow { color: var(--primary); display: flex; align-items: center; justify-content: center; }
-
-.sync-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.metric-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 8px 12px; text-align: center; }
-.metric-box .val { font-size: 15px; font-weight: 800; color: #38bdf8; font-family: var(--font-mono); }
-.metric-box .lbl { font-size: 10px; color: var(--text-dim); font-weight: 600; }
-
-.pills { display: flex; flex-wrap: wrap; gap: 10px; }
-.pill { padding: 7px 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); font-size: 12px; color: #cbd5e1; display: flex; align-items: center; gap: 6px; }
-.pill svg { color: var(--primary); }
-
-.login-card {
-  position: relative; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 28px; padding: 36px 32px;
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6); backdrop-filter: blur(28px); overflow: hidden;
+/* Permanent Fixed Sidebar matching your exact buttons & theme */
+.sidebar {
+  width: 260px;
+  background: rgba(10, 22, 31, 0.95);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 50;
+  overflow-y: auto;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  transition: width 0.3s ease;
 }
 
-.tabs-container {
-  display: grid; grid-template-columns: 1fr 1fr; background: rgba(3, 14, 23, 0.6); padding: 4px; border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 22px;
-}
-.tab-btn {
-  border: none; background: transparent; color: var(--text-muted); padding: 10px 12px; border-radius: 10px;
-  font-weight: 700; font-size: 13px; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.tab-btn.active { color: #ffffff; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.3); }
-
-.auth-header { margin-bottom: 20px; }
-.auth-header h2 { font-size: 24px; font-weight: 800; color: #ffffff; }
-.auth-header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
-
-.form-group { margin-bottom: 16px; position: relative; }
-.form-label { display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
-.input-wrapper { position: relative; display: flex; align-items: center; }
-.input-icon { position: absolute; left: 14px; color: var(--text-dim); pointer-events: none; }
-.form-input {
-  width: 100%; height: 48px; border-radius: 12px; border: 1px solid var(--border-input); background: rgba(3, 14, 23, 0.55);
-  color: #ffffff; padding: 0 42px 0 42px; font-family: inherit; font-size: 14px; outline: none;
-}
-.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
-
-.eye-toggle {
-  position: absolute; right: 10px; width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent;
-  color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-
-.signup-extra-fields { display: none; }
-.form-options { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin: 6px 0 20px; color: var(--text-muted); }
-.checkbox-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.link-btn { background: none; border: none; color: var(--primary-light); font-size: 13px; font-weight: 600; cursor: pointer; }
-
-.btn-submit {
-  width: 100%; height: 50px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%); color: #022c22; font-size: 15px; font-weight: 800;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 25px var(--primary-glow);
-}
-.spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(2, 44, 34, 0.3); border-top-color: #022c22; border-radius: 50%; animation: spin 0.7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.status-box { min-height: 20px; margin-top: 14px; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; display: none; }
-.status-box.error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
-.status-box.success { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #6ee7b7; }
-
-.auth-divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 16px; color: var(--text-dim); font-size: 12px; }
-.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.08); }
-
-.sso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.sso-btn {
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 9px 12px;
-  color: #e2e8f0; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-
-.card-foot { text-align: center; margin-top: 22px; font-size: 11px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; gap: 6px; }
-.card-foot a { color: var(--cyan); text-decoration: none; font-weight: 600; margin-left: 8px; }
-
-/* 6-Digit Split OTP Boxes Layout */
-.otp-inputs-container {
+.brand-area {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 20px 0;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 14px;
 }
 
-.otp-box {
-  width: 45px;
-  height: 52px;
-  text-align: center;
-  font-size: 22px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  color: #ffffff;
-  background: rgba(3, 14, 23, 0.7);
-  border: 1px solid var(--border-input);
-  border-radius: 12px;
-  outline: none;
+.brand-logo {
+  width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #06b6d4);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #022c22; font-size: 14px;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+  flex-shrink: 0;
+}
+
+.brand-title {
+  font-size: 14px; font-weight: 800; color: #fff; letter-spacing: -0.01em; white-space: nowrap;
+}
+.brand-subtitle {
+  font-size: 10px; color: var(--text-muted); white-space: nowrap;
+}
+
+/* Menu Section */
+.menu-section-title {
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); font-weight: 700; margin: 10px 0 6px 8px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
 }
 
-.otp-box:focus {
-  border-color: var(--primary);
-  background: rgba(3, 14, 23, 0.95);
-  box-shadow: 0 0 0 3px var(--primary-glow);
-}
-
-.otp-separator {
+.sidebar-link i {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
   color: var(--text-dim);
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0 2px;
+  transition: color 0.2s;
+  flex-shrink: 0;
 }
 
+.sidebar-link:hover, .sidebar-link.active {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #fff;
+}
+
+.sidebar-link:hover i, .sidebar-link.active i {
+  color: var(--primary-light);
+}
+
+/* Sidebar Collapse Modifier (Icon-Only Mode) */
+body.sidebar-collapsed .sidebar {
+  width: 72px;
+  padding: 16px 8px;
+}
+body.sidebar-collapsed .brand-title,
+body.sidebar-collapsed .brand-subtitle,
+body.sidebar-collapsed .menu-section-title,
+body.sidebar-collapsed .sidebar-link span,
+body.sidebar-collapsed .user-name-text,
+body.sidebar-collapsed .sidebar-user-btn i:last-child {
+  display: none !important;
+}
+body.sidebar-collapsed .main-content {
+  margin-left: 72px;
+}
+body.sidebar-collapsed .sidebar-user-btn {
+  justify-content: center;
+  padding: 10px;
+}
+body.sidebar-collapsed .sidebar-link {
+  justify-content: center;
+  padding: 11px;
+}
+body.sidebar-collapsed .brand-area {
+  justify-content: center;
+}
+
+/* User Account Widget inside Sidebar */
+.sidebar-user-btn {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 10px;
+  color: #6ee7b7;
+  font-family: inherit;
+  width: 100%;
+}
+.sidebar-user-btn:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #fff;
+}
+.user-info-left {
+  display: flex; align-items: center; gap: 8px; overflow: hidden;
+}
+.user-avatar-icon {
+  width: 28px; height: 28px; border-radius: 50%; background: rgba(6, 182, 212, 0.2);
+  display: flex; align-items: center; justify-content: center; color: var(--cyan); font-size: 12px; flex-shrink: 0;
+}
+.user-name-text {
+  font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;
+}
+
+/* Main Content Area with Sticky Top Header Bar */
+.main-content {
+  margin-left: 260px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
+}
+
+.top-bar-header {
+  background: rgba(10, 22, 31, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  padding: 12px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sidebar-toggle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.sidebar-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.top-bar-title h1 {
+  font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.01em;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.top-icon-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  transition: all 0.2s;
+}
+.top-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.content-body {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.container-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.card h3 { font-size: 18px; margin-bottom: 12px; color: #fff; display: flex; align-items: center; gap: 10px; }
+.card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+
+.btn-action {
+  background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399;
+  padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;
+}
+.btn-action:hover { background: rgba(16, 185, 129, 0.25); color: #fff; }
+
+.stat-number { font-size: 28px; font-weight: 800; color: var(--primary); font-family: var(--font-mono); margin-top: 8px; }
+
+/* Modal Styles */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
   display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px;
@@ -227,414 +317,249 @@ h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.1; font-weight: 800; co
 .modal-overlay.open { display: flex; }
 .modal-box {
   background: #091722; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
-  width: 100%; max-width: 440px; padding: 28px; position: relative;
+  width: 100%; max-width: 400px; padding: 28px; box-shadow: 0 25px 50px rgba(0,0,0,0.7); position: relative;
 }
 .modal-close-btn {
-  position: absolute; top: 18px; right: 18px; background: rgba(255, 255, 255, 0.06); border: none; color: #94a3b8;
+  position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.06); border: none; color: #94a3b8;
   width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
-.modal-box h3 { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 8px; }
-.modal-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+.form-input {
+  width: 100%; height: 42px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(3,14,23,0.6); color: #fff; padding: 0 12px; font-size: 13px; outline: none;
+}
+
+@media(max-width: 900px) {
+  .container-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
-<div class="grid-bg"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-
-<main class="shell">
-  <section class="showcase">
-    <div class="badge"><span class="pulse-dot"></span><span>TallyPrime &amp; ERP 9 Engine v4.2 • Ready</span></div>
-    <div class="brand-header">
-      <div class="brand-logo-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h6v6H4z"/><path d="M14 4h6v6h-6z"/><path d="M4 14h6v6H4z"/><path d="M17 14v6"/><path d="M14 17h6"/></svg></div>
-      <div class="brand-title">Kcrish <span>Automation</span></div>
+<!-- Permanent Fixed Sidebar with exact user buttons & original theme -->
+<aside class="sidebar">
+  <div class="brand-area">
+    <div class="brand-logo">KA</div>
+    <div>
+      <div class="brand-title">Kcrish Suite</div>
+      <div class="brand-subtitle">Automation v4.2</div>
     </div>
-    <h1>Excel to Tally.<br><span class="gradient-text">Beautifully Automated.</span></h1>
-    <p class="desc">The high-performance workspace for accounting firms and enterprises. Automatically parse, validate GST, map chart-of-accounts, and push thousands of vouchers directly to Tally in seconds.</p>
-    
-    <div class="sync-preview-card">
-      <div class="sync-card-header">
-        <span class="sync-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> Live Pipeline Simulation</span>
-        <span class="sync-status-tag">STATUS: IDLE • READY</span>
-      </div>
-      <div class="sync-flow">
-        <div class="sync-node"><span class="sync-node-label">Source Input</span><span class="sync-node-val">Sales_Register.xlsx</span></div>
-        <div class="sync-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
-        <div class="sync-node"><span class="sync-node-label">Target Engine</span><span class="sync-node-val">Tally XML (Port 9000)</span></div>
-      </div>
-      <div class="sync-metrics">
-        <div class="metric-box"><div class="val">99.98%</div><div class="lbl">GST Match</div></div>
-        <div class="metric-box"><div class="val">10,000+</div><div class="lbl">Rows / Minute</div></div>
-        <div class="metric-box"><div class="val">0.00s</div><div class="lbl">Lag</div></div>
-      </div>
+  </div>
+
+  <button class="sidebar-user-btn" id="openProfileModal" title="Account Settings">
+    <div class="user-info-left">
+      <div class="user-avatar-icon"><i class="fa-solid fa-user"></i></div>
+      <span class="user-name-text" id="headerUsernameText">Account</span>
     </div>
+    <i class="fa-solid fa-chevron-down" style="font-size: 10px; opacity: 0.7;"></i>
+  </button>
 
-    <div class="pills">
-      <span class="pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> 256-Bit Encryption</span>
-      <span class="pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Multi-GSTIN Ready</span>
-    </div>
-  </section>
+  <div class="menu-section-title">Navigation Menu</div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="sidebar-link active"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a>
+    <a href="converter.html" class="sidebar-link"><i class="fa-solid fa-file-excel"></i> <span>Converter</span></a>
+    <a href="ledger.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Ledgers</span></a>
+    <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-database"></i> <span>Masters</span></a>
+    <a href="purchase.html" class="sidebar-link"><i class="fa-solid fa-cart-shopping"></i> <span>Purchase</span></a>
+    <a href="restore.html" class="sidebar-link"><i class="fa-solid fa-rotate-left"></i> <span>Restore</span></a>
+    <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>About &amp; Info</span></a>
+  </nav>
 
-  <section class="login-card">
-    <div class="tabs-container" role="tablist">
-      <button type="button" class="tab-btn active" id="loginTab">Sign In</button>
-      <button type="button" class="tab-btn" id="signupTab">Create Account</button>
-    </div>
+  <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
+    <button class="sidebar-link" id="logoutBtn" style="width: 100%; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.25); color: #fca5a5; cursor: pointer; text-align: left;">
+      <i class="fa-solid fa-right-from-bracket" style="color: #f87171;"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</aside>
 
-    <div class="auth-header">
-      <h2 id="authTitle">Welcome back</h2>
-      <p id="authSubtitle">Enter your credentials to access your Kcrish automation workspace.</p>
-    </div>
-
-    <form id="form" novalidate>
-      <div class="form-group signup-extra-fields" id="groupFullName">
-        <label class="form-label" for="fullName">Full Name</label>
-        <div class="input-wrapper">
-          <input id="fullName" class="form-input" type="text" placeholder="Ashok Gitiyal">
-          <span class="input-icon"><i class="fa-solid fa-user"></i></span>
-        </div>
-      </div>
-
-      <div class="form-group signup-extra-fields" id="groupEmail">
-        <label class="form-label" for="signupEmail">Work Email (For OTP)</label>
-        <div class="input-wrapper">
-          <input id="signupEmail" class="form-input" type="email" placeholder="name@company.com">
-          <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="user">Username or Email</label>
-        <div class="input-wrapper">
-          <input id="user" class="form-input" type="text" placeholder="Enter username or email" required>
-          <span class="input-icon"><i class="fa-solid fa-user-shield"></i></span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="pass">Password</label>
-        <div class="input-wrapper">
-          <input id="pass" class="form-input" type="password" placeholder="Enter your password" required>
-          <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
-          <button type="button" id="eyeBtn" class="eye-toggle"><i class="fa-solid fa-eye"></i></button>
-        </div>
-      </div>
-
-      <div class="form-options">
-        <label class="checkbox-wrap"><input type="checkbox" id="rememberMe"><span id="rememberLabel">Remember me</span></label>
-        <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
-      </div>
-
-      <button type="submit" class="btn-submit" id="submitBtn">
-        <div class="spinner" id="spinner"></div>
-        <span id="submitIcon">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
-        </span>
-        <span id="submitLabel">Sign In Securely</span>
+<!-- Main Content Area with Sticky Header Bar & Collapse Control -->
+<main class="main-content">
+  <header class="top-bar-header">
+    <div class="top-bar-left">
+      <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+        <i class="fa-solid fa-bars"></i>
       </button>
-
-      <div class="status-box" id="statusBox"></div>
-
-      <div class="auth-divider">Or authenticate via</div>
-      <div class="sso-grid">
-        <button type="button" class="sso-btn" id="googleSsoBtn"><i class="fa-brands fa-google" style="color:#ea4335;"></i> Google Drive</button>
-        <button type="button" class="sso-btn" id="tallySsoBtn"><i class="fa-solid fa-bolt" style="color:#10b981;"></i> Workspace Sync</button>
+      <div class="top-bar-title">
+        <h1>Enterprise Dashboard</h1>
       </div>
-    </form>
-
-    <div class="card-foot">
-      <span>Kcrish Secure Automation Engine • 256-Bit TLS</span>
-      <a href="about.html"><i class="fa-solid fa-circle-info"></i> About</a>
     </div>
-  </section>
+    <div class="top-bar-right">
+      <button class="top-icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></button>
+      <button class="top-icon-btn" title="Grid Apps"><i class="fa-solid fa-border-all"></i></button>
+      <button class="top-icon-btn" title="Fullscreen" onclick="if(!document.fullscreenElement){document.documentElement.requestFullscreen();}else{document.exitFullscreen();}"><i class="fa-solid fa-expand"></i></button>
+    </div>
+  </header>
+
+  <div class="content-body">
+    <div class="container-grid">
+      <section class="card">
+        <div>
+          <h3><i class="fa-solid fa-server" style="color:var(--primary)"></i> System Overview</h3>
+          <p>Your workspace is active and securely connected to your isolated local directory path.</p>
+          <div class="stat-number">0 Active</div>
+          <span style="font-size: 11px; color: var(--text-dim);">Vouchers queued for local processing</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div>
+          <h3><i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> Quick Actions</h3>
+          <p>Jump straight into your most frequently used modules to manage data instantly.</p>
+        </div>
+        <div style="display: flex; gap: 10px; flex-direction: column;">
+          <a href="about.html" class="btn-action"><i class="fa-solid fa-circle-info"></i> View About &amp; Shortcuts</a>
+          <a href="converter.html" class="btn-action" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.35); color: #67e8f9;"><i class="fa-solid fa-file-excel"></i> Go to Converter</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div>
+          <h3><i class="fa-solid fa-shield-halved" style="color:var(--warning)"></i> Local Storage</h3>
+          <p>Encrypted local directory tracking enabled for seamless offline record keeping.</p>
+          <div class="stat-number" style="color: var(--cyan);">256-Bit</div>
+          <span style="font-size: 11px; color: var(--text-dim);">Client-side security active</span>
+        </div>
+      </section>
+    </div>
+  </div>
 </main>
 
-<!-- Security Check & 6-Box Split OTP Verification Modal -->
-<div class="modal-overlay" id="otpModal" role="dialog" aria-modal="true" aria-labelledby="otpHeading">
+<!-- Profile Settings Modal -->
+<div class="modal-overlay" id="profileModal">
   <div class="modal-box">
-    <button type="button" class="modal-close-btn" id="otpCloseBtn" aria-label="Close modal">✕</button>
-    <h3 id="otpHeading">Security Verification</h3>
-    <p id="otpSubText">Enter your code. We sent a 6-digit code to verify your email.</p>
+    <button type="button" class="modal-close-btn" id="closeProfileModal">✕</button>
+    <h3 style="font-size:18px; color:#fff; margin-bottom:6px;">Profile Settings</h3>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Manage your profile credentials securely.</p>
     
-    <form id="otpForm" novalidate>
+    <form id="profileUpdateForm">
       <div class="form-group">
-        <label class="form-label" style="text-align: center;">Enter the 6-digit code</label>
-        
-        <div class="otp-inputs-container">
-          <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required autocomplete="one-time-code" />
-          <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-          <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-          <span class="otp-separator">-</span>
-          <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-          <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-          <input type="text" class="otp-box" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-        </div>
-        <div style="text-align: center; font-size: 11px; color: var(--text-dim); margin-top: -6px;">Tip: paste to fill every box at once.</div>
+        <label class="form-label">USERNAME</label>
+        <input type="text" id="modalUsername" class="form-input" />
       </div>
-
-      <button type="submit" class="btn-submit" style="height: 46px; font-size: 14px;">Verify &amp; Continue</button>
-      <div class="status-box" id="otpStatusBox" style="margin-top: 12px;"></div>
+      <div class="form-group">
+        <label class="form-label">NEW PASSWORD</label>
+        <input type="password" id="modalNewPassword" placeholder="Minimum 8 characters" class="form-input" />
+      </div>
+      <button type="submit" class="btn-action" style="width: 100%; height: 44px; margin-top: 6px;">Save Changes</button>
+      <div id="modalStatus" style="font-size: 12px; text-align: center; margin-top: 10px; min-height: 18px;"></div>
     </form>
   </div>
 </div>
 
 <script>
-(() => {
-  const $ = id => document.getElementById(id);
-  let isSignup = false;
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHmWpBKGd94Qj7NbGAweH5SZHeHUkVIw8lDBAA5HFqAy56dW2RkdTeXQ3eQRSIHwEmgQ/exec";
-  const CLIENT_ID = "306902298167-6o9o8o84955pu92k5k07u5al7djhp6op.apps.googleusercontent.com";
-  const SCOPES = "https://www.googleapis.com/auth/drive.file";
-  let tokenClient;
-  let targetEmail = "";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfRYRe2_jB_0Qq7Ss9RPffs5IVlVkiItHJh3dZM3o0fW0XpW4TNefK5puQ8xJ33oXW0Q/exec";
 
-  window.addEventListener("DOMContentLoaded", () => {
-    document.body.classList.add("page-loaded");
-  });
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      document.body.classList.add("page-loaded");
+    }, 40);
 
-  window.onload = function() {
-    let savedToken = localStorage.getItem("google_access_token");
-    if(savedToken && localStorage.getItem("client_username")) {
-      window.location.href = "dashboard.html";
-    }
-
-    if (typeof google !== 'undefined' && google.accounts) {
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        callback: (response) => {
-          if (response.error !== undefined) {
-            showStatus("Google Authentication failed.", "error");
-            return;
-          }
-          localStorage.setItem("google_access_token", response.access_token);
-          const gUser = "Google_User_Drive";
-          localStorage.setItem("client_username", gUser);
-          localStorage.setItem("active_user_folder", `/Kcrish_Data/Users/${gUser}/`);
-          window.location.href = "dashboard.html";
-        },
+    // Sidebar collapse/expand toggle handler
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        document.body.classList.toggle('sidebar-collapsed');
       });
     }
-  };
 
-  const setAuthMode = (signup) => {
-    isSignup = signup;
-    if ($('loginTab')) $('loginTab').classList.toggle('active', !signup);
-    if ($('signupTab')) $('signupTab').classList.toggle('active', signup);
-    if ($('authTitle')) $('authTitle').textContent = signup ? 'Create Account' : 'Welcome back';
-    if ($('authSubtitle')) $('authSubtitle').textContent = signup 
-      ? 'Get started with high-speed automated Excel to Tally integration.' 
-      : 'Enter your credentials to access your Kcrish automation workspace.';
-    if ($('submitLabel')) $('submitLabel').textContent = signup ? 'Continue with Email OTP' : 'Sign In Securely';
-    
-    document.querySelectorAll('.signup-extra-fields').forEach(el => el.style.display = signup ? 'block' : 'none');
-    if ($('forgotBtn')) $('forgotBtn').style.display = signup ? 'none' : 'inline-block';
-    if ($('statusBox')) $('statusBox').style.display = 'none';
-  };
-
-  if ($('loginTab')) $('loginTab').addEventListener('click', () => setAuthMode(false));
-  if ($('signupTab')) $('signupTab').addEventListener('click', () => setAuthMode(true));
-
-  if ($('eyeBtn')) {
-    $('eyeBtn').addEventListener('click', () => {
-      const pass = $('pass');
-      if (pass) pass.type = pass.type === 'password' ? 'text' : 'password';
+    document.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", function(e) {
+        const targetUrl = this.getAttribute("href");
+        if (!targetUrl || targetUrl.startsWith("#") || (targetUrl.startsWith("http") && !targetUrl.includes(window.location.hostname))) {
+          return;
+        }
+        e.preventDefault();
+        document.body.classList.remove("page-loaded");
+        document.body.classList.add("page-exiting");
+        setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 350);
+      });
     });
-  }
 
-  const formEl = $('form');
-  if (formEl) {
-    formEl.addEventListener('submit', async (e) => {
+    const username = localStorage.getItem('client_username');
+    if (!username) {
+      window.location.href = 'index.html';
+      return;
+    }
+
+    document.getElementById('headerUsernameText').textContent = username;
+    document.getElementById('modalUsername').value = username;
+
+    const modal = document.getElementById('profileModal');
+    document.getElementById('openProfileModal').addEventListener('click', () => modal.classList.add('open'));
+    document.getElementById('closeProfileModal').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+
+    document.getElementById('profileUpdateForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const username = $('user') ? $('user').value.trim() : '';
-      const password = $('pass') ? $('pass').value : '';
+      const oldUsername = localStorage.getItem('client_username');
+      const newUsername = document.getElementById('modalUsername').value.trim().toLowerCase();
+      const newPass = document.getElementById('modalNewPassword').value.trim();
+      const statusBox = document.getElementById('modalStatus');
 
-      let payload = {
-        action: isSignup ? 'signup' : 'login',
-        username: username,
-        password: password
-      };
-
-      if (isSignup) {
-        payload.fullName = $('fullName') ? $('fullName').value.trim() : '';
-        payload.email = $('signupEmail') ? $('signupEmail').value.trim() : '';
-        targetEmail = payload.email;
-        if (!payload.fullName) {
-          showStatus('Please enter your full name.', 'error');
-          return;
-        }
-        if (!payload.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
-          showStatus('Please enter a valid work email address.', 'error');
-          return;
-        }
-        if (!username) {
-          showStatus('Please choose a username.', 'error');
-          return;
-        }
-        if (password.length < 8) {
-          showStatus('Password must be at least 8 characters long.', 'error');
-          return;
-        }
-      } else {
-        targetEmail = username;
-        if (!username || !password) {
-          showStatus('Please enter both username and password.', 'error');
-          return;
-        }
-      }
-
-      if ($('submitBtn')) $('submitBtn').disabled = true;
-      if ($('spinner')) $('spinner').style.display = 'block';
-      if ($('submitIcon')) $('submitIcon').style.display = 'none';
-      if ($('submitLabel')) $('submitLabel').textContent = 'Processing & Sending OTP...';
-
-      try {
-        const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-        const result = await res.json();
-
-        if ($('submitBtn')) $('submitBtn').disabled = false;
-        if ($('spinner')) $('spinner').style.display = 'none';
-        if ($('submitIcon')) $('submitIcon').style.display = 'inline-flex';
-        if ($('submitLabel')) $('submitLabel').textContent = isSignup ? 'Continue with Email OTP' : 'Sign In Securely';
-
-        if (result.success) {
-          if (result.requiresOtp || isSignup) {
-            if (result.email) targetEmail = result.email;
-            if ($('otpHeading')) $('otpHeading').textContent = isSignup ? 'Email Verification OTP' : 'Login Verification OTP';
-            if ($('otpModal')) $('otpModal').classList.add('open');
-            showStatus(result.message, 'success');
-          } else {
-            localStorage.setItem('client_username', result.username || username);
-            localStorage.setItem('active_user_folder', result.folderPath);
-            window.location.href = 'dashboard.html';
-          }
-        } else {
-          showStatus(result.message, 'error');
-        }
-      } catch (err) {
-        if ($('submitBtn')) $('submitBtn').disabled = false;
-        if ($('spinner')) $('spinner').style.display = 'none';
-        if ($('submitIcon')) $('submitIcon').style.display = 'inline-flex';
-        if ($('submitLabel')) $('submitLabel').textContent = isSignup ? 'Continue with Email OTP' : 'Sign In Securely';
-        showStatus('Network connection error. Please try again.', 'error');
-      }
-    });
-  }
-
-  // 6-Box OTP Auto-navigation, Auto-submit on 6th digit, and Paste Logic
-  const otpBoxes = document.querySelectorAll('.otp-box');
-  otpBoxes.forEach((box, index) => {
-    box.addEventListener('input', (e) => {
-      const val = e.target.value;
-      if (val && index < otpBoxes.length - 1) {
-        otpBoxes[index + 1].focus();
-      }
-
-      let currentOtp = '';
-      otpBoxes.forEach(b => { currentOtp += b.value.trim(); });
-      if (currentOtp.length === 6) {
-        if (otpFormEl) otpFormEl.requestSubmit ? otpFormEl.requestSubmit() : otpFormEl.dispatchEvent(new Event('submit', { cancelable: true }));
-      }
-    });
-
-    box.addEventListener('keydown', (e) => {
-      if (e.key === 'Backspace' && !box.value && index > 0) {
-        otpBoxes[index - 1].focus();
-      }
-    });
-
-    box.addEventListener('paste', (e) => {
-      e.preventDefault();
-      const pasteData = e.clipboardData.getData('text').trim();
-      if (pasteData.length === otpBoxes.length) {
-        otpBoxes.forEach((b, idx) => {
-          b.value = pasteData[idx];
-        });
-        otpBoxes[otpBoxes.length - 1].focus();
-        if (otpFormEl) otpFormEl.requestSubmit ? otpFormEl.requestSubmit() : otpFormEl.dispatchEvent(new Event('submit', { cancelable: true }));
-      }
-    });
-  });
-
-  const otpFormEl = $('otpForm');
-  if (otpFormEl) {
-    otpFormEl.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      let otp = '';
-      otpBoxes.forEach(box => { otp += box.value.trim(); });
-
-      const box = $('otpStatusBox');
-      if (box) box.style.display = 'flex';
-
-      if (otp.length !== 6) {
-        if (box) {
-          box.className = 'status-box error';
-          box.innerHTML = '<span>Please enter a valid 6-digit verification code.</span>';
-        }
+      if (!newUsername) {
+        statusBox.style.color = '#f87171';
+        statusBox.textContent = 'Username blank nahi ho sakta.';
         return;
       }
+
+      if (newPass && newPass.length < 8) {
+        statusBox.style.color = '#f87171';
+        statusBox.textContent = 'Password must be at least 8 characters.';
+        return;
+      }
+
+      statusBox.style.color = '#cbd5e1';
+      statusBox.textContent = 'Updating profile on server...';
 
       try {
         const res = await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
-          body: JSON.stringify({ action: 'verify_otp', identifier: targetEmail, otp: otp })
+          body: JSON.stringify({
+            action: 'update_profile',
+            oldUsername: oldUsername,
+            newUsername: newUsername,
+            newPassword: newPass
+          })
         });
         const result = await res.json();
 
         if (result.success) {
-          if (box) {
-            box.className = 'status-box success';
-            box.innerHTML = `<span>${result.message}</span>`;
-          }
           localStorage.setItem('client_username', result.username);
           localStorage.setItem('active_user_folder', result.folderPath);
-          setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+          document.getElementById('headerUsernameText').textContent = result.username;
+
+          statusBox.style.color = '#34d399';
+          statusBox.textContent = result.message;
+          document.getElementById('modalNewPassword').value = '';
+          setTimeout(() => { 
+            statusBox.textContent = ''; 
+            modal.classList.remove('open');
+          }, 1500);
         } else {
-          if (box) {
-            box.className = 'status-box error';
-            box.innerHTML = `<span>${result.message}</span>`;
-          }
+          statusBox.style.color = '#f87171';
+          statusBox.textContent = result.message;
         }
       } catch (err) {
-        if (box) {
-          box.className = 'status-box error';
-          box.innerHTML = '<span>Verification failed. Please check your connection.</span>';
-        }
+        statusBox.style.color = '#f87171';
+        statusBox.textContent = 'Network error. Server update fail ho gaya.';
       }
     });
-  }
 
-  if ($('otpCloseBtn')) {
-    $('otpCloseBtn').addEventListener('click', () => { 
-      if ($('otpModal')) $('otpModal').classList.remove('open'); 
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      document.body.classList.remove("page-loaded");
+      document.body.classList.add("page-exiting");
+      setTimeout(() => {
+        localStorage.removeItem('client_username');
+        localStorage.removeItem('active_user_folder');
+        localStorage.removeItem('google_access_token');
+        window.location.href = 'index.html';
+      }, 350);
     });
-  }
-
-  if ($('googleSsoBtn')) {
-    $('googleSsoBtn').addEventListener('click', () => {
-      if (tokenClient) {
-        tokenClient.requestAccessToken({ prompt: 'consent' });
-      } else {
-        const googleUser = 'Google_User_Drive';
-        localStorage.setItem('client_username', googleUser);
-        localStorage.setItem('active_user_folder', `/Kcrish_Data/Users/${googleUser}/`);
-        window.location.href = 'dashboard.html';
-      }
-    });
-  }
-
-  function showStatus(msg, type) {
-    const box = $('statusBox');
-    if (!box) return;
-    box.style.display = 'block';
-    box.className = 'status-box ' + type;
-    box.innerText = msg;
-  }
-})();
+  });
 </script>
 </body>
 </html>
