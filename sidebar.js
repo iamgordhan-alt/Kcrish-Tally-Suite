@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  // 1. Sidebar HTML Injector with Token Counter
+  // 1. Sidebar HTML Injector with Token Counter (Ledgers link removed)
   const sidebarHTML = `
     <aside class="sidebar">
       <div class="brand-area">
@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", function() {
         <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a>
         <a href="purchase.html" class="sidebar-link"><i class="fa-solid fa-cart-shopping"></i> <span>Purchase</span></a>
         <a href="converter.html" class="sidebar-link"><i class="fa-solid fa-file-excel"></i> <span>Converter</span></a>
-        <a href="ledger.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Ledgers</span></a>
         <a href="masters.html" class="sidebar-link"><i class="fa-solid fa-database"></i> <span>Masters</span></a>
         <a href="restore.html" class="sidebar-link"><i class="fa-solid fa-rotate-left"></i> <span>Restore</span></a>
         <a href="about.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>About &amp; Info</span></a>
