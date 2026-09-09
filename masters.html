@@ -141,7 +141,7 @@
     .section-desc-box p { font-size: 13.5px; color: var(--text-muted); }
 
     .masters-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 4px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 20px;
     }
     .master-card {
       background: rgba(3, 14, 23, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 28px;
@@ -174,7 +174,7 @@
     .btn-action { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
     .btn-action:hover { background: rgba(16, 185, 129, 0.25); color: #fff; }
 
-    @media(max-width: 900px) { .masters-grid { grid-template-columns: 1fpx; } }
+    @media(max-width: 900px) { .masters-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -236,8 +236,8 @@
       <p>Choose whether you want to manage stock items or general accounts.</p>
       
       <div class="masters-grid">
-        <!-- Item Master Card links to master.html -->
-        <a href="master.html" class="master-card item-master">
+        <!-- Item Master Card linked to item-master.html -->
+        <a href="item-master.html" class="master-card item-master">
           <div>
             <div class="master-icon-box">
               <i class="fa-solid fa-boxes-stacked"></i>
@@ -247,7 +247,7 @@
           </div>
         </a>
 
-        <!-- General Ledger Card links to ledger.html -->
+        <!-- General Ledger Card linked to ledger.html -->
         <a href="ledger.html" class="master-card general-ledger">
           <div>
             <div class="master-icon-box">
