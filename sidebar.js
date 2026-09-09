@@ -49,8 +49,17 @@ document.addEventListener("DOMContentLoaded", function() {
   // Insert sidebar at the very beginning of body
   document.body.insertAdjacentHTML('afterbegin', sidebarHTML);
 
-  // Set active link based on current filename
+  // Auto-inject Back Button for Sub-pages (item-master.html, ledger-master.html)
   const currentFileName = window.location.pathname.split("/").pop() || "dashboard.html";
+  if (currentFileName === 'item-master.html' || currentFileName === 'ledger-master.html') {
+    const headerRight = document.querySelector('.top-bar-right');
+    if (headerRight && !headerRight.querySelector('.btn-back')) {
+      const backBtnHTML = `<a href="masters.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back</a>`;
+      headerRight.insertAdjacentHTML('beforeend', backBtnHTML);
+    }
+  }
+
+  // Set active link based on current filename
   document.querySelectorAll('.sidebar-nav a').forEach(link => {
     if (link.getAttribute('href') === currentFileName) {
       link.classList.add('active');
