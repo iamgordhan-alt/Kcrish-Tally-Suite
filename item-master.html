@@ -213,9 +213,8 @@
   function downloadMasterTemplate() {
     try {
       const sampleData = [
-        ["Item Name", "Under Group", "Unit Part 1", "Unit Part 2", "Unit Part 3", "Alternate Unit", "Alt Qty", "Base Qty"],
-        ["Demo 750 1", "Demo", "Case", 12, "Btl", "ml", 750, 1],
-        ["Demo 700 2", "Demo", "Case", 12, "Btl", "ml", 700, 1]
+        ["Item Name", "Part Number", "Group", "Category", "Base Unit", "Alternate Unit", "Qty In Box"],
+        ["Tuborg Strong", "TBS650", "English", "650", "Btl", "case", 12]
       ];
       const ws = XLSX.utils.aoa_to_sheet(sampleData);
       const wb = XLSX.utils.book_new();
@@ -265,43 +264,40 @@
         const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         let itemsXML = '';
+        // Col A: Item Name (0)
+        // Col B: Part Number (1)
+        // Col C: Group (2)
+        // Col D: Category (3)
+        // Col E: Base Unit (4)
+        // Col F: Alternate Unit (5)
+        // Col G: Qty In Box (6)
         for (let i = 1; i < jsonRows.length; i++) {
           const row = jsonRows[i];
           if (row.length > 0 && row[0]) {
             const itemName = String(row[0]).trim();
-            const parentGroup = row[1] ? String(row[1]).trim() : 'Primary';
-            const u1 = row[2] ? String(row[2]).trim() : ''; // Case
-            const u2 = row[3] ? String(row[3]).trim() : ''; // 12
-            const u3 = row[4] ? String(row[4]).trim() : ''; // Btl
-            const altUnit = row[5] ? String(row[5]).trim() : ''; // ml
-            
-            // Yahan Excel ke Column G (Alt Qty) aur Column H (Base Qty) ko properly read kiya ja raha hai
-            const altQty = (row[6] !== undefined && row[6] !== null && String(row[6]).trim() !== '') ? String(row[6]).trim() : '0'; 
-            const baseQty = (row[7] !== undefined && row[7] !== null && String(row[7]).trim() !== '') ? String(row[7]).trim() : '1'; 
+            const partNum = row[1] ? String(row[1]).trim() : '';
+            const groupName = row[2] ? String(row[2]).trim() : 'Primary';
+            const category = row[3] ? String(row[3]).trim() : '';
+            const baseUnit = row[4] ? String(row[4]).trim() : 'Btl';
+            const altUnit = row[5] ? String(row[5]).trim() : '';
+            const qtyInBox = (row[6] !== undefined && row[6] !== null && String(row[6]).trim() !== '') ? String(row[6]).trim() : '1';
 
-            let finalBaseUnit = u1;
-            if (u1 && u2 && u3) {
-              finalBaseUnit = u1 + " of " + u2 + " " + u3;
-            } else if (u1 && u3) {
-              finalBaseUnit = u1 + " of " + u3;
+            // Automatic Compound Unit creation: jaise "case of 12 Btl"
+            let finalBaseUnit = baseUnit;
+            if (altUnit && qtyInBox) {
+              finalBaseUnit = altUnit + " of " + qtyInBox + " " + baseUnit;
             }
 
             let unitXML = "";
             if (finalBaseUnit) {
               unitXML += "<BASEUNITS>" + escapeXml(finalBaseUnit) + "</BASEUNITS>";
             }
-            if (altUnit) {
-              unitXML += `
-      <ADDITIONALUNITS>` + escapeXml(altUnit) + `</ADDITIONALUNITS>
-      <DENOMINATOR>` + baseQty + `</DENOMINATOR>
-      <MULTIPLIER>` + altQty + `</MULTIPLIER>`;
-            }
 
             itemsXML += `
     <TALLYMESSAGE xmlns:UDF="TallyUDF">
      <STOCKITEM NAME="` + escapeXml(itemName) + `" RESERVEDNAME="">
       <ACTION>Create</ACTION>
-      <PARENT>` + escapeXml(parentGroup) + `</PARENT>
+      <PARENT>` + escapeXml(groupName) + `</PARENT>
       ` + unitXML + `
       <GSTAPPLICABLE>As per Company/Group</GSTAPPLICABLE>
       <GSTTYPEOFSUPPLY>Goods</GSTTYPEOFSUPPLY>
