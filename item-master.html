@@ -48,6 +48,7 @@
     body.page-loaded { opacity: 1; transform: translateY(0); }
     body.page-exiting { opacity: 0; transform: translateY(-8px); }
 
+    /* Main Content Area */
     .main-content {
       margin-left: 260px;
       flex: 1;
@@ -126,14 +127,6 @@
     .dropzone .icon { font-size: 36px; color: var(--primary-light); margin-bottom: 12px; }
     .dropzone .msg { font-size: 14px; font-weight: 600; color: #fff; }
 
-    .form-group { display: flex; flex-direction: column; gap: 8px; }
-    .form-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
-    .form-group input {
-      background: rgba(3, 14, 23, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-      padding: 12px 16px; color: #fff; font-size: 14px; outline: none;
-    }
-    .form-group input:focus { border-color: var(--primary); }
-
     .btn-action {
       background: linear-gradient(135deg, #34d399, #10b981); color: #022c22; padding: 14px 20px; border-radius: 14px;
       font-weight: 800; font-size: 14.5px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -141,12 +134,11 @@
     }
     .btn-action:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4); }
     .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; display: none; }
-    .alert.success { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; display: block; }
-    .alert.error { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; display: block; }
   </style>
 </head>
 <body>
 
+<!-- Permanent Locked Sidebar Injector via sidebar.js -->
 <main class="main-content">
   <header class="top-bar-header">
     <div class="top-bar-left">
@@ -155,7 +147,7 @@
       </button>
       <div class="top-bar-title">
         <h1>Item Stock Master</h1>
-        <p>Manage Inventory and Stock Items</p>
+        <p>Manage Inventory and Stock Items with Dynamic Alternate Units</p>
       </div>
     </div>
     <div class="top-bar-right">
@@ -165,25 +157,18 @@
 
   <div class="content-body">
     <div class="card">
-      <div class="form-group">
-        <label for="companyNameInput">Tally Company Name:</label>
-        <input type="text" id="companyNameInput" value="Kcrish" />
-      </div>
-
       <div class="step-box">
-        <span>Download standard inventory stock item master template:</span>
+        <span>Download standard inventory stock item master template (Fully Editable Units):</span>
         <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
       </div>
-      
       <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
-        <input type="file" id="masterExcelFile" accept=".xlsx, .xls, .csv" onchange="fileSelected('masterExcelFile', 'masterFileName')" style="display: none;" />
+        <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" style="display: none;" />
         <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
         <div class="msg">Upload Stock Inventory (Click or Drag &amp; Drop File Here)</div>
         <div id="masterFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #34d399;"></div>
       </div>
-
       <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
-      <div id="alertBox" class="alert"></div>
+      <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
   </div>
 </main>
@@ -202,53 +187,46 @@
     }
   });
 
+  // Display selected file name helper
   function fileSelected(inputId, nameId) {
-    const input = document.getElementById(inputId);
-    const nameDiv = document.getElementById(nameId);
-    if (input.files && input.files[0]) {
-      nameDiv.textContent = "Selected: " + input.files[0].name;
+    const fileInput = document.getElementById(inputId);
+    const fileNameDiv = document.getElementById(nameId);
+    if (fileInput.files && fileInput.files[0]) {
+      fileNameDiv.textContent = "Selected File: " + fileInput.files[0].name;
     }
   }
 
+  // Download Standard Template with Fully Open Alternate Unit & Qty In Box columns
   function downloadMasterTemplate() {
-    try {
-      const sampleData = [
-        ["Item Name", "Part Number", "Group", "Category", "Base Unit", "Alternate Unit", "Qty In Box"],
-        ["Tuborg Strong", "TBS650", "English", "650", "Btl", "case", 12]
-      ];
-      const ws = XLSX.utils.aoa_to_sheet(sampleData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Items");
-      XLSX.writeFile(wb, "Smart_Sample_Tally_Items.xlsx");
-    } catch (err) {
-      showAlert("Template download error: " + err.message, "error");
-    }
-  }
-
-  function showAlert(msg, type) {
-    const box = document.getElementById("alertBox");
-    box.className = "alert " + type;
-    box.textContent = msg;
-  }
-
-  function escapeXml(unsafe) {
-    return String(unsafe).replace(/[<>&'"]/g, function (c) {
-      switch (c) {
-        case '<': return '&lt;';
-        case '>': return '&gt;';
-        case '&': return '&amp;';
-        case '\'': return '&apos;';
-        case '"': return '&quot;';
+    const templateData = [
+      {
+        "Item Name": "Tuborg Strong Beer (650 ML)",
+        "Part Number": "TBS650",
+        "Group": "English",
+        "Category": "650",
+        "Base Unit": "Btl",
+        "Alternate Unit": "case", // Aap yahan 'case', 'box', 'cartoon' kuch bhi manually likh sakte hain
+        "Qty In Box": 12          // Iske aage wali quantity aap apne hisab se daal sakte hain
       }
-    });
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(templateData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Item Master");
+    XLSX.writeFile(workbook, "Item_Master_Template.xlsx");
   }
 
+  // Generate XML dynamically reading the Excel file columns entered by user
   function generateMasterXML() {
-    const fileInput = document.getElementById("masterExcelFile");
-    const companyInput = document.getElementById("companyNameInput").value.trim() || "Kcrish";
+    const fileInput = document.getElementById('masterExcelFile');
+    const alertBox = document.getElementById('alertBox');
 
     if (!fileInput.files || fileInput.files.length === 0) {
-      showAlert("Please select or drop an Excel file first!", "error");
+      alertBox.style.display = 'block';
+      alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+      alertBox.style.color = '#fca5a5';
+      alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+      alertBox.textContent = 'Please select or upload an Excel file first!';
       return;
     }
 
@@ -261,86 +239,95 @@
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-        const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        const rows = XLSX.utils.sheet_to_json(worksheet);
 
-        let itemsXML = '';
-        // Col A: Item Name (0)
-        // Col B: Part Number (1)
-        // Col C: Group (2)
-        // Col D: Category (3)
-        // Col E: Base Unit (4)
-        // Col F: Alternate Unit (5)
-        // Col G: Qty In Box (6)
-        for (let i = 1; i < jsonRows.length; i++) {
-          const row = jsonRows[i];
-          if (row.length > 0 && row[0]) {
-            const itemName = String(row[0]).trim();
-            const partNum = row[1] ? String(row[1]).trim() : '';
-            const groupName = row[2] ? String(row[2]).trim() : 'Primary';
-            const category = row[3] ? String(row[3]).trim() : '';
-            const baseUnit = row[4] ? String(row[4]).trim() : 'Btl';
-            const altUnit = row[5] ? String(row[5]).trim() : '';
-            const qtyInBox = (row[6] !== undefined && row[6] !== null && String(row[6]).trim() !== '') ? String(row[6]).trim() : '1';
-
-            // Automatic Compound Unit creation: jaise "case of 12 Btl"
-            let finalBaseUnit = baseUnit;
-            if (altUnit && qtyInBox) {
-              finalBaseUnit = altUnit + " of " + qtyInBox + " " + baseUnit;
-            }
-
-            let unitXML = "";
-            if (finalBaseUnit) {
-              unitXML += "<BASEUNITS>" + escapeXml(finalBaseUnit) + "</BASEUNITS>";
-            }
-
-            itemsXML += `
-    <TALLYMESSAGE xmlns:UDF="TallyUDF">
-     <STOCKITEM NAME="` + escapeXml(itemName) + `" RESERVEDNAME="">
-      <ACTION>Create</ACTION>
-      <PARENT>` + escapeXml(groupName) + `</PARENT>
-      ` + unitXML + `
-      <GSTAPPLICABLE>As per Company/Group</GSTAPPLICABLE>
-      <GSTTYPEOFSUPPLY>Goods</GSTTYPEOFSUPPLY>
-      <LANGUAGENAME.LIST>
-       <NAME.LIST TYPE="String">
-        <NAME>` + escapeXml(itemName) + `</NAME>
-       </NAME.LIST>
-       <LANGUAGEID> 1033</LANGUAGEID>
-      </LANGUAGENAME.LIST>
-     </STOCKITEM>
-    </TALLYMESSAGE>`;
-          }
+        if (rows.length === 0) {
+          throw new Error("The uploaded Excel file is empty.");
         }
 
-        const finalXML = `<ENVELOPE>
- <HEADER>
-  <TALLYREQUEST>Import Data</TALLYREQUEST>
- </HEADER>
- <BODY>
-  <IMPORTDATA>
-   <REQUESTDESC>
-    <REPORTNAME>All Masters</REPORTNAME>
-    <STATICVARIABLES>
-     <SVCURRENTCOMPANY>` + escapeXml(companyInput) + `</SVCURRENTCOMPANY>
-    </STATICVARIABLES>
-   </REQUESTDESC>
-   <REQUESTDATA>` + itemsXML + `
-   </REQUESTDATA>
-  </IMPORTDATA>
- </BODY>
-</ENVELOPE>`;
+        // Tally XML Generation Header
+        let xmlContent = `<ENVELOPE>\n`;
+        xmlContent += `  <HEADER>\n`;
+        xmlContent += `    <TALLYREQUEST>Import Data</TALLYREQUEST>\n`;
+        xmlContent += `  </HEADER>\n`;
+        xmlContent += `  <BODY>\n`;
+        xmlContent += `    <IMPORTDATA>\n`;
+        xmlContent += `      <REQUESTDESC>\n`;
+        xmlContent += `        <REPORTNAME>Stock Item</REPORTNAME>\n`;
+        xmlContent += `      </REQUESTDESC>\n`;
+        xmlContent += `      <REQUESTDATA>\n`;
 
-        const blob = new Blob([finalXML], { type: 'application/xml' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Smart_StockItems.xml';
-        a.click();
-        URL.revokeObjectURL(url);
+        rows.forEach(row => {
+          // Flexible key lookup to avoid casing or spacing issues
+          const getItem = (keys) => {
+            for (let k of keys) {
+              if (row[k] !== undefined) return row[k];
+            }
+            return '';
+          };
 
-        showAlert("Item Master XML successfully generated and downloaded!", "success");
+          const itemName = getItem(['Item Name', 'item_name', 'ItemName']);
+          const partNo = getItem(['Part Number', 'part_number', 'PartNo']);
+          const group = getItem(['Group', 'group']) || 'Primary';
+          const category = getItem(['Category', 'category']);
+          const baseUnit = getItem(['Base Unit', 'base_unit', 'BaseUnit']) || 'Nos';
+          
+          // Fully Dynamic Alternate Unit and Qty in Box entered by user
+          const altUnit = String(getItem(['Alternate Unit', 'alternate_unit', 'AlternateUnit']) || '').trim();
+          const qtyInBox = parseFloat(getItem(['Qty In Box', 'qty_in_box', 'QtyInBox', 'Conversion'])) || 0;
+
+          if (!itemName) return; // Skip empty item rows
+
+          xmlContent += `        <TALLYMESSAGE>\n`;
+          xmlContent += `          <STOCKITEM NAME="${itemName}" ACTION="Create">\n`;
+          xmlContent += `            <NAME>${itemName}</NAME>\n`;
+          xmlContent += `            <PARENT>${group}</PARENT>\n`;
+          xmlContent += `            <CATEGORY>${category}</CATEGORY>\n`;
+          xmlContent += `            <BASEUNITS>${baseUnit}</BASEUNITS>\n`;
+
+          // Agar user ne alternate unit aur qty di hai toh dynamic compound unit tag apply hoga
+          if (altUnit && qtyInBox > 0) {
+            xmlContent += `            <ADDITIONALUNITS>${altUnit}</ADDITIONALUNITS>\n`;
+            // Tally compound conversion formatting
+            xmlContent += `            <DENOMINATOR>1</DENOMINATOR>\n`;
+            xmlContent += `            <CONVERSION>${qtyInBox}</CONVERSION>\n`;
+          }
+
+          if (partNo) {
+            xmlContent += `            <DESCRIPTION>${partNo}</DESCRIPTION>\n`;
+          }
+
+          xmlContent += `          </STOCKITEM>\n`;
+          xmlContent += `        </TALLYMESSAGE>\n`;
+        });
+
+        xmlContent += `      </REQUESTDATA>\n`;
+        xmlContent += `    </IMPORTDATA>\n`;
+        xmlContent += `  </BODY>\n`;
+        xmlContent += `</ENVELOPE>`;
+
+        // Trigger XML file download for Tally import
+        const blob = new Blob([xmlContent], { type: 'application/xml;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "Item_Master_Sync.xml";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Success Alert
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
+        alertBox.style.color = '#6ee7b7';
+        alertBox.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+        alertBox.textContent = 'Item Master XML generated successfully with dynamic units!';
+
       } catch (err) {
-        showAlert("Error processing Excel file: " + err.message, "error");
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        alertBox.style.color = '#fca5a5';
+        alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+        alertBox.textContent = 'Error parsing file: ' + err.message;
       }
     };
 
