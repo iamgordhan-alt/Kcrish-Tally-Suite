@@ -48,6 +48,7 @@
     body.page-loaded { opacity: 1; transform: translateY(0); }
     body.page-exiting { opacity: 0; transform: translateY(-8px); }
 
+    /* Main Content Area */
     .main-content {
       margin-left: 260px;
       flex: 1;
@@ -96,6 +97,7 @@
 
     .content-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
 
+    /* Glassmorphic Card Layout matching style.css */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
@@ -137,6 +139,7 @@
 </head>
 <body>
 
+<!-- Permanent Locked Sidebar Injector via sidebar.js -->
 <main class="main-content">
   <header class="top-bar-header">
     <div class="top-bar-left">
@@ -165,15 +168,22 @@
         <div class="msg">Upload Stock Inventory (Click or Drag &amp; Drop File Here)</div>
         <div id="masterFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #34d399;"></div>
       </div>
-      <button class="btn-action" onclick="generateMasterXMLCustom()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
+      <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
       <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
   </div>
 </main>
 
 <script src="sidebar.js"></script>
-<script src="app.js"></script>
 <script>
+  function fileSelected(inputId, nameId) {
+    const input = document.getElementById(inputId);
+    const nameDiv = document.getElementById(nameId);
+    if (input.files && input.files[0]) {
+      nameDiv.innerText = "Selected File: " + input.files[0].name;
+    }
+  }
+
   function downloadMasterTemplate() {
     const ws_data = [
       ["Item Name", "Part Number", "Group", "Category", "Base Unit", "Alternate Unit", "Conversion", "Denominator"],
@@ -185,7 +195,7 @@
     XLSX.writeFile(wb, "Kcrish_Master_Template.xlsx");
   }
 
-  function generateMasterXMLCustom() {
+  function generateMasterXML() {
     const fileInput = document.getElementById('masterExcelFile');
     const alertBox = document.getElementById('alertBox');
     
@@ -226,6 +236,7 @@
           const baseUnit = getVal(['Base Unit', 'Base_Unit', 'BASE UNIT']);
           const altUnit = getVal(['Alternate Unit', 'Alternate_Unit', 'ALTERNATE UNIT']);
           
+          // Reading Conversion and Denominator explicitly from Excel cells
           const conversionVal = getVal(['Conversion', 'CONVERSION']);
           const denominatorVal = getVal(['Denominator', 'DENOMINATOR']);
 
