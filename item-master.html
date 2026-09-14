@@ -193,7 +193,7 @@
     }
   }
 
-  // Template jisme headers update kar diye gaye hain: "Qty of Alternate Unit" aur "Qty in Alternate Box"
+  // Template jisme alternate unit ke baad wale column ka naam "Qty of base unit in alternate unit" kar diya gaya hai
   function downloadMasterTemplate() {
     const templateData = [
       {
@@ -203,8 +203,8 @@
         "Category": "650",
         "Base Unit": "Btl",
         "Alternate Unit": "case",
-        "Qty of Alternate Unit": 1,     // Case ke turant baad wala column name update kar diya gaya hai
-        "Qty in Alternate Box": 12      // Aakhiri column ka naam update karke 'Qty in Alternate Box' kar diya gaya hai
+        "Qty of base unit in alternate unit": 1, // Updated column name as requested
+        "Qty In Box": 12
       }
     ];
 
@@ -263,8 +263,8 @@
           const category = row[keys[3]] || '';
           const baseUnit = row[keys[4]] || 'Nos';
           const altUnit = String(row[keys[5]] || '').trim();
-          const ratioVal = parseFloat(row[keys[6]]) || 1;  // Qty of Alternate Unit (Index 6)
-          const qtyInBox = parseFloat(row[keys[7]]) || 0; // Qty in Alternate Box (Index 7)
+          const ratioVal = parseFloat(row[keys[6]]) || 1;  // Qty of base unit in alternate unit (Index 6)
+          const qtyInBox = parseFloat(row[keys[7]]) || 0; // Qty In Box (Index 7)
 
           if (!itemName) return;
 
@@ -306,7 +306,7 @@
         alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
         alertBox.style.color = '#6ee7b7';
         alertBox.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-        alertBox.textContent = 'Item Master XML generated successfully with updated header names!';
+        alertBox.textContent = 'Item Master XML generated successfully with "Qty of base unit in alternate unit" header!';
 
       } catch (err) {
         alertBox.style.display = 'block';
