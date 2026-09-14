@@ -174,7 +174,19 @@
 <script src="sidebar.js"></script>
 <script src="app.js"></script>
 <script>
-  // Custom XML Generator override to handle separate Conversion and Denominator columns
+  // Template downloader with separate Conversion and Denominator columns
+  function downloadMasterTemplate() {
+    const ws_data = [
+      ["Item Name", "Part Number", "Group", "Category", "Base Unit", "Alternate Unit", "Conversion", "Denominator"],
+      ["Tuborg Strong Beer_(650 Ml)", "TBS650", "English", "650", "Btl", "case", 1, 12]
+    ];
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "Items");
+    XLSX.writeFile(wb, "Kcrish_Master_Template.xlsx");
+  }
+
+  // XML Generator reading separate Conversion and Denominator from Excel
   function generateMasterXMLCustom() {
     const fileInput = document.getElementById('masterExcelFile');
     const alertBox = document.getElementById('alertBox');
@@ -208,8 +220,10 @@
           const category = row['Category'] || '';
           const baseUnit = row['Base Unit'] || '';
           const altUnit = row['Alternate Unit'] || '';
-          const conversion = row['Conversion'] !== undefined ? row['Conversion'] : 1;
-          const denominator = row['Denominator'] !== undefined ? row['Denominator'] : 1;
+          
+          // Reading Conversion and Denominator explicitly from Excel cells (editable)
+          const conversion = (row['Conversion'] !== undefined && row['Conversion'] !== '') ? row['Conversion'] : 1;
+          const denominator = (row['Denominator'] !== undefined && row['Denominator'] !== '') ? row['Denominator'] : 1;
 
           if (itemName) {
             xmlContent += `          <STOCKITEM NAME="${itemName}" ACTION="Alter" RESERVEDNAME="">\n`;
@@ -230,7 +244,7 @@
         const blob = new Blob([xmlContent], { type: 'application/xml' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'Tally_Ready_Masters_Custom.xml';
+        link.download = 'Tally_Ready_Masters.xml';
         link.click();
 
         alertBox.style.display = 'block';
