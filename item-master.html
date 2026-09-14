@@ -193,17 +193,18 @@
     }
   }
 
-  // Exact template format as requested, matching columns and sample values from your image reference
+  // Template matching the exact column order and sample values from the uploaded file:
+  // 1. Item Name, 2. Part Number, 3. Group, 4. Category, 5. Base Unit, 6. Alternate Unit, 7. Qty In Box, 8. Qty of base unit in alternate unit
   function downloadMasterTemplate() {
     const templateData = [
       {
-        "Item Name": "Demo 1",
-        "Part Number": "",
+        "Item Name": "Tuborg Strong Beer (650 ML)",
+        "Part Number": "TBS650",
         "Group": "English",
-        "Category": 650,
-        "Base Unit": "Case of Btl 12",
-        "Alternate Unit": "ml",
-        "Qty In Box": 750,
+        "Category": "650",
+        "Base Unit": "ml",
+        "Alternate Unit": "Case of Btl 12",
+        "Qty In Box": 650,
         "Qty of base unit in alternate unit": 1
       }
     ];
@@ -264,7 +265,7 @@
           const baseUnit = row[keys[4]] || 'Nos';
           const altUnit = String(row[keys[5]] || '').trim();
           
-          // Index mapping based on your exact requested column order:
+          // Index mapping based on exact template column order:
           // Index 6 -> Qty In Box (Conversion)
           // Index 7 -> Qty of base unit in alternate unit (Denominator)
           const qtyInBox = parseFloat(row[keys[6]]) || 0; 
@@ -310,7 +311,7 @@
         alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
         alertBox.style.color = '#6ee7b7';
         alertBox.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-        alertBox.textContent = 'Item Master XML generated successfully after interchanging columns!';
+        alertBox.textContent = 'Item Master XML generated successfully!';
 
       } catch (err) {
         alertBox.style.display = 'block';
