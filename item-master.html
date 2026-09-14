@@ -174,7 +174,6 @@
 <script src="sidebar.js"></script>
 <script src="app.js"></script>
 <script>
-  // Template downloader with separate Conversion and Denominator columns
   function downloadMasterTemplate() {
     const ws_data = [
       ["Item Name", "Part Number", "Group", "Category", "Base Unit", "Alternate Unit", "Conversion", "Denominator"],
@@ -186,7 +185,6 @@
     XLSX.writeFile(wb, "Kcrish_Master_Template.xlsx");
   }
 
-  // XML Generator reading separate Conversion and Denominator from Excel
   function generateMasterXMLCustom() {
     const fileInput = document.getElementById('masterExcelFile');
     const alertBox = document.getElementById('alertBox');
@@ -215,15 +213,24 @@
         let xmlContent = `<?xml version="1.0"?>\n<ENVELOPE>\n  <HEADER>\n    <TALLYREQUEST>Import Data</TALLYREQUEST>\n  </HEADER>\n  <BODY>\n    <IMPORTDATA>\n      <REQUESTDESC>\n        <REPORTNAME>All Masters</REPORTNAME>\n        <STATICVARIABLES>\n          <SVCURRENTCOMPANY>Kcrish</SVCURRENTCOMPANY>\n        </STATICVARIABLES>\n      </REQUESTDESC>\n      <REQUESTDATA>\n        <TALLYMESSAGE xmlns:UDF="TallyUDF">\n`;
 
         json.forEach(row => {
-          const itemName = row['Item Name'] || '';
-          const group = row['Group'] || '';
-          const category = row['Category'] || '';
-          const baseUnit = row['Base Unit'] || '';
-          const altUnit = row['Alternate Unit'] || '';
+          const getVal = (keys) => {
+            for (let k of keys) {
+              if (row[k] !== undefined && row[k] !== '') return row[k];
+            }
+            return '';
+          };
+
+          const itemName = getVal(['Item Name', 'Item_Name', 'ITEM NAME']);
+          const group = getVal(['Group', 'GROUP', 'Under']);
+          const category = getVal(['Category', 'CATEGORY']);
+          const baseUnit = getVal(['Base Unit', 'Base_Unit', 'BASE UNIT']);
+          const altUnit = getVal(['Alternate Unit', 'Alternate_Unit', 'ALTERNATE UNIT']);
           
-          // Reading Conversion and Denominator explicitly from Excel cells (editable)
-          const conversion = (row['Conversion'] !== undefined && row['Conversion'] !== '') ? row['Conversion'] : 1;
-          const denominator = (row['Denominator'] !== undefined && row['Denominator'] !== '') ? row['Denominator'] : 1;
+          const conversionVal = getVal(['Conversion', 'CONVERSION']);
+          const denominatorVal = getVal(['Denominator', 'DENOMINATOR']);
+
+          const conversion = (conversionVal !== '') ? conversionVal : 1;
+          const denominator = (denominatorVal !== '') ? denominatorVal : 1;
 
           if (itemName) {
             xmlContent += `          <STOCKITEM NAME="${itemName}" ACTION="Alter" RESERVEDNAME="">\n`;
@@ -240,7 +247,6 @@
 
         xmlContent += `        </TALLYMESSAGE>\n      </REQUESTDATA>\n    </IMPORTDATA>\n  </BODY>\n</ENVELOPE>`;
 
-        // Download XML File automatically
         const blob = new Blob([xmlContent], { type: 'application/xml' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
