@@ -193,18 +193,16 @@
     }
   }
 
-  // Template matching the exact column order and sample values from the uploaded file:
-  // 1. Item Name, 2. Part Number, 3. Group, 4. Category, 5. Base Unit, 6. Alternate Unit, 7. Qty In Box, 8. Qty of base unit in alternate unit
   function downloadMasterTemplate() {
     const templateData = [
       {
-        "Item Name": "Tuborg Strong Beer (650 ML)",
-        "Part Number": "TBS650",
+        "Item Name": "Demo 1",
+        "Part Number": "",
         "Group": "English",
-        "Category": "650",
-        "Base Unit": "ml",
-        "Alternate Unit": "Case of Btl 12",
-        "Qty In Box": 650,
+        "Category": 650,
+        "Base Unit": "Case of Btl 12",
+        "Alternate Unit": "ml",
+        "Qty In Box": 750,
         "Qty of base unit in alternate unit": 1
       }
     ];
@@ -264,10 +262,6 @@
           const category = row[keys[3]] || '';
           const baseUnit = row[keys[4]] || 'Nos';
           const altUnit = String(row[keys[5]] || '').trim();
-          
-          // Index mapping based on exact template column order:
-          // Index 6 -> Qty In Box (Conversion)
-          // Index 7 -> Qty of base unit in alternate unit (Denominator)
           const qtyInBox = parseFloat(row[keys[6]]) || 0; 
           const ratioVal = parseFloat(row[keys[7]]) || 1;  
 
