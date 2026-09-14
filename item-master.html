@@ -48,7 +48,6 @@
     body.page-loaded { opacity: 1; transform: translateY(0); }
     body.page-exiting { opacity: 0; transform: translateY(-8px); }
 
-    /* Main Content Area */
     .main-content {
       margin-left: 260px;
       flex: 1;
@@ -97,7 +96,6 @@
 
     .content-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
 
-    /* Glassmorphic Card Layout matching style.css */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
@@ -139,7 +137,6 @@
 </head>
 <body>
 
-<!-- Permanent Locked Sidebar Injector via sidebar.js -->
 <main class="main-content">
   <header class="top-bar-header">
     <div class="top-bar-left">
@@ -168,7 +165,7 @@
         <div class="msg">Upload Stock Inventory (Click or Drag &amp; Drop File Here)</div>
         <div id="masterFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #34d399;"></div>
       </div>
-      <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
+      <button class="btn-action" onclick="generateMasterXMLCustom()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
       <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
   </div>
@@ -177,6 +174,79 @@
 <script src="sidebar.js"></script>
 <script src="app.js"></script>
 <script>
+  // Custom XML Generator override to handle separate Conversion and Denominator columns
+  function generateMasterXMLCustom() {
+    const fileInput = document.getElementById('masterExcelFile');
+    const alertBox = document.getElementById('alertBox');
+    
+    if (!fileInput.files || fileInput.files.length === 0) {
+      alertBox.style.display = 'block';
+      alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+      alertBox.style.color = '#fca5a5';
+      alertBox.innerText = 'कृपया पहले एक्सेल फाइल अपलोड करें!';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
+
+        if (json.length === 0) {
+          throw new Error("एक्सेल शीट खाली है!");
+        }
+
+        let xmlContent = `<?xml version="1.0"?>\n<ENVELOPE>\n  <HEADER>\n    <TALLYREQUEST>Import Data</TALLYREQUEST>\n  </HEADER>\n  <BODY>\n    <IMPORTDATA>\n      <REQUESTDESC>\n        <REPORTNAME>All Masters</REPORTNAME>\n        <STATICVARIABLES>\n          <SVCURRENTCOMPANY>Kcrish</SVCURRENTCOMPANY>\n        </STATICVARIABLES>\n      </REQUESTDESC>\n      <REQUESTDATA>\n        <TALLYMESSAGE xmlns:UDF="TallyUDF">\n`;
+
+        json.forEach(row => {
+          const itemName = row['Item Name'] || '';
+          const group = row['Group'] || '';
+          const category = row['Category'] || '';
+          const baseUnit = row['Base Unit'] || '';
+          const altUnit = row['Alternate Unit'] || '';
+          const conversion = row['Conversion'] !== undefined ? row['Conversion'] : 1;
+          const denominator = row['Denominator'] !== undefined ? row['Denominator'] : 1;
+
+          if (itemName) {
+            xmlContent += `          <STOCKITEM NAME="${itemName}" ACTION="Alter" RESERVEDNAME="">\n`;
+            if (group) xmlContent += `            <PARENT>${group}</PARENT>\n`;
+            if (category) xmlContent += `            <CATEGORY>${category}</CATEGORY>\n`;
+            if (baseUnit) xmlContent += `            <BASEUNITS>${baseUnit}</BASEUNITS>\n`;
+            if (altUnit) xmlContent += `            <ADDITIONALUNITS>${altUnit}</ADDITIONALUNITS>\n`;
+            xmlContent += `            <DENOMINATOR>${denominator}</DENOMINATOR>\n`;
+            xmlContent += `            <CONVERSION>${conversion}</CONVERSION>\n`;
+            xmlContent += `            <LANGUAGENAME.LIST><NAME.LIST TYPE="String"><NAME>${itemName}</NAME></NAME.LIST></LANGUAGENAME.LIST>\n`;
+            xmlContent += `          </STOCKITEM>\n`;
+          }
+        });
+
+        xmlContent += `        </TALLYMESSAGE>\n      </REQUESTDATA>\n    </IMPORTDATA>\n  </BODY>\n</ENVELOPE>`;
+
+        // Download XML File automatically
+        const blob = new Blob([xmlContent], { type: 'application/xml' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'Tally_Ready_Masters_Custom.xml';
+        link.click();
+
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
+        alertBox.style.color = '#6ee7b7';
+        alertBox.innerText = 'XML फाइल सफलतापूर्वक जनरेट और डाउनलोड हो गई है!';
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        alertBox.style.color = '#fca5a5';
+        alertBox.innerText = 'एरर: ' + err.message;
+      }
+    };
+    reader.readAsArrayBuffer(fileInput.files[0]);
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => { document.body.classList.add("page-loaded"); }, 40);
     const username = localStorage.getItem('client_username');
