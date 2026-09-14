@@ -48,7 +48,6 @@
     body.page-loaded { opacity: 1; transform: translateY(0); }
     body.page-exiting { opacity: 0; transform: translateY(-8px); }
 
-    /* Main Content Area */
     .main-content {
       margin-left: 260px;
       flex: 1;
@@ -97,7 +96,6 @@
 
     .content-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
 
-    /* Glassmorphic Card Layout matching style.css */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
@@ -134,12 +132,11 @@
       box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3); transition: all 0.2s; width: 100%;
     }
     .btn-action:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4); }
-    .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; display: none; }
+    .alert { padding: 12px 16px; border-radius: 10px; font-size: 13.5px; display: none; }
   </style>
 </head>
 <body>
 
-<!-- Permanent Locked Sidebar Injector via sidebar.js -->
 <main class="main-content">
   <header class="top-bar-header">
     <div class="top-bar-left">
@@ -148,7 +145,7 @@
       </button>
       <div class="top-bar-title">
         <h1>Item Stock Master</h1>
-        <p>Manage Inventory and Stock Items</p>
+        <p>Manage Inventory and Stock Items with Custom Units &amp; Ratios</p>
       </div>
     </div>
     <div class="top-bar-right">
@@ -175,7 +172,6 @@
 </main>
 
 <script src="sidebar.js"></script>
-<script src="app.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => { document.body.classList.add("page-loaded"); }, 40);
@@ -189,7 +185,15 @@
     }
   });
 
-  // Fixed downloadMasterTemplate function matching your exact requested columns & sample layout in app.js / inline
+  function fileSelected(inputId, nameId) {
+    const fileInput = document.getElementById(inputId);
+    const fileNameDiv = document.getElementById(nameId);
+    if (fileInput.files && fileInput.files[0]) {
+      fileNameDiv.textContent = "Selected File: " + fileInput.files[0].name;
+    }
+  }
+
+  // Exact template format as requested, matching columns and sample values from your image reference
   function downloadMasterTemplate() {
     const templateData = [
       {
@@ -208,6 +212,116 @@
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Item Master");
     XLSX.writeFile(workbook, "Item_Master_Template.xlsx");
+  }
+
+  function generateMasterXML() {
+    const fileInput = document.getElementById('masterExcelFile');
+    const alertBox = document.getElementById('alertBox');
+
+    if (!fileInput.files || fileInput.files.length === 0) {
+      alertBox.style.display = 'block';
+      alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+      alertBox.style.color = '#fca5a5';
+      alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+      alertBox.textContent = 'Please select or upload an Excel file first!';
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        
+        const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+        if (rows.length === 0) {
+          throw new Error("The uploaded Excel file is empty.");
+        }
+
+        let xmlContent = `<ENVELOPE>\n`;
+        xmlContent += `  <HEADER>\n`;
+        xmlContent += `    <TALLYREQUEST>Import Data</TALLYREQUEST>\n`;
+        xmlContent += `  </HEADER>\n`;
+        xmlContent += `  <BODY>\n`;
+        xmlContent += `    <IMPORTDATA>\n`;
+        xmlContent += `      <REQUESTDESC>\n`;
+        xmlContent += `        <REPORTNAME>Stock Item</REPORTNAME>\n`;
+        xmlContent += `      </REQUESTDESC>\n`;
+        xmlContent += `      <REQUESTDATA>\n`;
+
+        rows.forEach(row => {
+          const keys = Object.keys(row);
+          
+          const itemName = row[keys[0]] || '';
+          const partNo = row[keys[1]] || '';
+          const group = row[keys[2]] || 'Primary';
+          const category = row[keys[3]] || '';
+          const baseUnit = row[keys[4]] || 'Nos';
+          const altUnit = String(row[keys[5]] || '').trim();
+          
+          // Index mapping based on your exact requested column order:
+          // Index 6 -> Qty In Box (Conversion)
+          // Index 7 -> Qty of base unit in alternate unit (Denominator)
+          const qtyInBox = parseFloat(row[keys[6]]) || 0; 
+          const ratioVal = parseFloat(row[keys[7]]) || 1;  
+
+          if (!itemName) return;
+
+          xmlContent += `        <TALLYMESSAGE>\n`;
+          xmlContent += `          <STOCKITEM NAME="${itemName}" ACTION="Create">\n`;
+          xmlContent += `            <NAME>${itemName}</NAME>\n`;
+          xmlContent += `            <PARENT>${group}</PARENT>\n`;
+          xmlContent += `            <CATEGORY>${category}</CATEGORY>\n`;
+          xmlContent += `            <BASEUNITS>${baseUnit}</BASEUNITS>\n`;
+
+          if (altUnit && qtyInBox > 0) {
+            xmlContent += `            <ADDITIONALUNITS>${altUnit}</ADDITIONALUNITS>\n`;
+            xmlContent += `            <DENOMINATOR>${ratioVal}</DENOMINATOR>\n`;
+            xmlContent += `            <CONVERSION>${qtyInBox}</CONVERSION>\n`;
+          }
+
+          if (partNo) {
+            xmlContent += `            <DESCRIPTION>${partNo}</DESCRIPTION>\n`;
+          }
+
+          xmlContent += `          </STOCKITEM>\n`;
+          xmlContent += `        </TALLYMESSAGE>\n`;
+        });
+
+        xmlContent += `      </REQUESTDATA>\n`;
+        xmlContent += `    </IMPORTDATA>\n`;
+        xmlContent += `  </BODY>\n`;
+        xmlContent += `</ENVELOPE>`;
+
+        const blob = new Blob([xmlContent], { type: 'application/xml;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "Item_Master_Sync.xml";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
+        alertBox.style.color = '#6ee7b7';
+        alertBox.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+        alertBox.textContent = 'Item Master XML generated successfully after interchanging columns!';
+
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        alertBox.style.color = '#fca5a5';
+        alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+        alertBox.textContent = 'Error parsing file: ' + err.message;
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
   }
 </script>
 </body>
