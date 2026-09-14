@@ -193,9 +193,8 @@
     }
   }
 
-  // Template jisme Alternate Unit ke turant baad ratio column (e.g. 1) aur fir Qty in Box hai
+  // Template jisme headers update kar diye gaye hain: "Qty of Alternate Unit" aur "Qty in Alternate Box"
   function downloadMasterTemplate() {
-    // XLSX utils object mapping taaki column ka order exact waisa hi rahe jaisa aapne image mein dikhaya hai
     const templateData = [
       {
         "Item Name": "Tuborg Strong Beer (650 ML)",
@@ -204,8 +203,8 @@
         "Category": "650",
         "Base Unit": "Btl",
         "Alternate Unit": "case",
-        "": 1,              // Alternate unit ke just baad wala column jisme by default 1 rahega (editable)
-        "Qty In Box": 12
+        "Qty of Alternate Unit": 1,     // Case ke turant baad wala column name update kar diya gaya hai
+        "Qty in Alternate Box": 12      // Aakhiri column ka naam update karke 'Qty in Alternate Box' kar diya gaya hai
       }
     ];
 
@@ -238,7 +237,6 @@
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
         
-        // Raw rows object array mein convert karna taaki saare columns safely read ho sakein
         const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
         if (rows.length === 0) {
@@ -257,8 +255,6 @@
         xmlContent += `      <REQUESTDATA>\n`;
 
         rows.forEach(row => {
-          // Object ke keys ki array nikal kar index ya naam se data pick karna 
-          // (Kyunki beech wale blank/ratio column ka key '' ya koi specific header ho sakta hai)
           const keys = Object.keys(row);
           
           const itemName = row[keys[0]] || '';
@@ -267,8 +263,8 @@
           const category = row[keys[3]] || '';
           const baseUnit = row[keys[4]] || 'Nos';
           const altUnit = String(row[keys[5]] || '').trim();
-          const ratioVal = parseFloat(row[keys[6]]) || 1;  // Alternate unit ke just aage wala column (e.g. 1)
-          const qtyInBox = parseFloat(row[keys[7]]) || 0; // Qty in Box column
+          const ratioVal = parseFloat(row[keys[6]]) || 1;  // Qty of Alternate Unit (Index 6)
+          const qtyInBox = parseFloat(row[keys[7]]) || 0; // Qty in Alternate Box (Index 7)
 
           if (!itemName) return;
 
@@ -279,7 +275,6 @@
           xmlContent += `            <CATEGORY>${category}</CATEGORY>\n`;
           xmlContent += `            <BASEUNITS>${baseUnit}</BASEUNITS>\n`;
 
-          // Agar Alternate Unit di gayi hai
           if (altUnit && qtyInBox > 0) {
             xmlContent += `            <ADDITIONALUNITS>${altUnit}</ADDITIONALUNITS>\n`;
             xmlContent += `            <DENOMINATOR>${ratioVal}</DENOMINATOR>\n`;
@@ -311,7 +306,7 @@
         alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
         alertBox.style.color = '#6ee7b7';
         alertBox.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-        alertBox.textContent = 'Item Master XML generated successfully with correct column sequence!';
+        alertBox.textContent = 'Item Master XML generated successfully with updated header names!';
 
       } catch (err) {
         alertBox.style.display = 'block';
