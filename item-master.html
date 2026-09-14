@@ -132,7 +132,7 @@
       box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3); transition: all 0.2s; width: 100%;
     }
     .btn-action:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4); }
-    .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; display: none; }
+    .alert { padding: 12px 16px; border-radius: 10px; font-size: 13.5px; display: none; }
   </style>
 </head>
 <body>
@@ -193,7 +193,9 @@
     }
   }
 
-  // Template jisme alternate unit ke baad wale column ka naam "Qty of base unit in alternate unit" kar diya gaya hai
+  // Excel template mein columns ki aapas mein jagah change kar di gayi hai:
+  // Pehle 'Qty In Box' aur uske baad 'Qty of base unit in alternate unit' aayega.
+  // Code ka internal calculation / mapping same rahega taaki Tally XML mein koi problem na aaye.
   function downloadMasterTemplate() {
     const templateData = [
       {
@@ -203,8 +205,8 @@
         "Category": "650",
         "Base Unit": "Btl",
         "Alternate Unit": "case",
-        "Qty of base unit in alternate unit": 1, // Updated column name as requested
-        "Qty In Box": 12
+        "Qty In Box": 12,                       // Interchanged to position 7
+        "Qty of base unit in alternate unit": 1 // Interchanged to position 8
       }
     ];
 
@@ -263,8 +265,11 @@
           const category = row[keys[3]] || '';
           const baseUnit = row[keys[4]] || 'Nos';
           const altUnit = String(row[keys[5]] || '').trim();
-          const ratioVal = parseFloat(row[keys[6]]) || 1;  // Qty of base unit in alternate unit (Index 6)
-          const qtyInBox = parseFloat(row[keys[7]]) || 0; // Qty In Box (Index 7)
+          
+          // Yahan index update kar diye gaye hain kyunki Excel mein dono columns ki jagah aapas mein badal di gayi hai:
+          // Index 6 ab 'Qty In Box' hai aur Index 7 ab 'Qty of base unit in alternate unit' hai.
+          const qtyInBox = parseFloat(row[keys[6]]) || 0; 
+          const ratioVal = parseFloat(row[keys[7]]) || 1;  
 
           if (!itemName) return;
 
@@ -306,7 +311,7 @@
         alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
         alertBox.style.color = '#6ee7b7';
         alertBox.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-        alertBox.textContent = 'Item Master XML generated successfully with "Qty of base unit in alternate unit" header!';
+        alertBox.textContent = 'Item Master XML generated successfully after interchanging columns!';
 
       } catch (err) {
         alertBox.style.display = 'block';
