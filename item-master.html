@@ -193,6 +193,8 @@
     }
   }
 
+  // Template matching the exact column order and sample values from the uploaded file:
+  // 1. Item Name, 2. Part Number, 3. Group, 4. Category, 5. Base Unit, 6. Alternate Unit, 7. Qty In Box, 8. Qty of base unit in alternate unit
   function downloadMasterTemplate() {
     const templateData = [
       {
@@ -262,6 +264,10 @@
           const category = row[keys[3]] || '';
           const baseUnit = row[keys[4]] || 'Nos';
           const altUnit = String(row[keys[5]] || '').trim();
+          
+          // Index mapping based on exact template column order:
+          // Index 6 -> Qty In Box (Conversion)
+          // Index 7 -> Qty of base unit in alternate unit (Denominator)
           const qtyInBox = parseFloat(row[keys[6]]) || 0; 
           const ratioVal = parseFloat(row[keys[7]]) || 1;  
 
