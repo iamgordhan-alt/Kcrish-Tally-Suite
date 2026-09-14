@@ -193,9 +193,8 @@
     }
   }
 
-  // Excel template mein columns ki aapas mein jagah change kar di gayi hai:
-  // Pehle 'Qty In Box' aur uske baad 'Qty of base unit in alternate unit' aayega.
-  // Code ka internal calculation / mapping same rahega taaki Tally XML mein koi problem na aaye.
+  // Template jisme columns ka exact sequence aapke latest image ke anusaar set kar diya gaya hai:
+  // 1. Item Name, 2. Part Number, 3. Group, 4. Category, 5. Base Unit, 6. Alternate Unit, 7. Qty In Box, 8. Qty of base unit in alternate unit
   function downloadMasterTemplate() {
     const templateData = [
       {
@@ -203,10 +202,10 @@
         "Part Number": "TBS650",
         "Group": "English",
         "Category": "650",
-        "Base Unit": "Btl",
-        "Alternate Unit": "case",
-        "Qty In Box": 12,                       // Interchanged to position 7
-        "Qty of base unit in alternate unit": 1 // Interchanged to position 8
+        "Base Unit": "ml",
+        "Alternate Unit": "Case of Btl 12",
+        "Qty In Box": 650,
+        "Qty of base unit in alternate unit": 1
       }
     ];
 
@@ -266,8 +265,9 @@
           const baseUnit = row[keys[4]] || 'Nos';
           const altUnit = String(row[keys[5]] || '').trim();
           
-          // Yahan index update kar diye gaye hain kyunki Excel mein dono columns ki jagah aapas mein badal di gayi hai:
-          // Index 6 ab 'Qty In Box' hai aur Index 7 ab 'Qty of base unit in alternate unit' hai.
+          // Naye sequence ke anusaar index mapping:
+          // Index 6 -> Qty In Box (Conversion factor)
+          // Index 7 -> Qty of base unit in alternate unit (Denominator)
           const qtyInBox = parseFloat(row[keys[6]]) || 0; 
           const ratioVal = parseFloat(row[keys[7]]) || 1;  
 
@@ -311,7 +311,7 @@
         alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
         alertBox.style.color = '#6ee7b7';
         alertBox.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-        alertBox.textContent = 'Item Master XML generated successfully after interchanging columns!';
+        alertBox.textContent = 'Item Master XML generated successfully with exact column sequence matching your image!';
 
       } catch (err) {
         alertBox.style.display = 'block';
