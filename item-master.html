@@ -189,25 +189,26 @@
     }
   });
 
-  // Updated Template download function with separate Default Sales & Purchase Ledger columns per item
+  // Updated Template matching your original fields + Default Ledger columns
   function downloadMasterTemplate() {
     const headers = [
       "Item Name", 
-      "Parent Group", 
+      "Part Number", 
+      "Group", 
       "Category", 
-      "Units", 
-      "Opening Balance", 
-      "Opening Rate", 
-      "Opening Value",
+      "Base Unit", 
+      "Alternate Unit", 
+      "Qty In Box", 
+      "Qty of base unit",
       "Default Sales Ledger",
       "Default Purchase Ledger"
     ];
 
     const ws_data = [
       headers,
-      ["Tuborg Strong 650ml", "Beer", "650", "Btl", 10, 200, 2000, "Beer Sales Account", "Beer Purchase Account"],
-      ["100 Pipers Whisky", "IMFL", "750", "Btl of 750 ML", 5, 1000, 5000, "IMFL Sales Account", "IMFL Purchase Account"],
-      ["Aloo Paratha", "Starter", "Pcs", "Pcs", 0, 0, 0, "Food Sales Account", "Food Purchase Account"]
+      ["Tuborg Strong", "TBS650", "English", "650", "Btl", "case", 12, 1, "Beer Sales Account", "Beer Purchase Account"],
+      ["100 Pipers Whisky", "PIP750", "IMFL", "750", "Btl", "case", 12, 1, "IMFL Sales Account", "IMFL Purchase Account"],
+      ["Aloo Paratha", "ALOO01", "Starter", "Pcs", "Pcs", "Pcs", 1, 1, "Food Sales Account", "Food Purchase Account"]
     ];
 
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
