@@ -48,7 +48,6 @@
     body.page-loaded { opacity: 1; transform: translateY(0); }
     body.page-exiting { opacity: 0; transform: translateY(-8px); }
 
-    /* Main Content Area */
     .main-content {
       margin-left: 260px;
       flex: 1;
@@ -97,7 +96,6 @@
 
     .content-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
 
-    /* Glassmorphic Card Layout */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
@@ -113,41 +111,6 @@
       display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: var(--text-muted);
       background: rgba(3, 14, 23, 0.5); padding: 14px 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);
     }
-    
-    /* Ledger Allocation Fields */
-    .allocation-box {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      background: rgba(3, 14, 23, 0.5);
-      padding: 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .form-group label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-    .form-group input {
-      background: rgba(12, 26, 36, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: #fff;
-      font-size: 13px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .form-group input:focus {
-      border-color: var(--primary);
-    }
-
     .btn-template {
       background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9;
       padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 12.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
@@ -182,7 +145,7 @@
       </button>
       <div class="top-bar-title">
         <h1>Item Stock Master</h1>
-        <p>Manage Inventory and Stock Items with Ledger Allocation</p>
+        <p>Manage Inventory with Item-wise Custom Ledgers</p>
       </div>
     </div>
     <div class="top-bar-right">
@@ -193,30 +156,18 @@
   <div class="content-body">
     <div class="card">
       <div class="step-box">
-        <span>Download standard inventory stock item master template:</span>
+        <span>Download inventory template (Includes individual Sales & Purchase Ledger columns per item):</span>
         <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
-      </div>
-
-      <!-- Default Ledger Allocation Settings Box -->
-      <div class="allocation-box">
-        <div class="form-group">
-          <label for="defaultSalesLedger"><i class="fa-solid fa-file-invoice-dollar"></i> Default Sales Ledger</label>
-          <input type="text" id="defaultSalesLedger" placeholder="e.g. Sales Account" value="Sales Account" />
-        </div>
-        <div class="form-group">
-          <label for="defaultPurchaseLedger"><i class="fa-solid fa-file-invoice"></i> Default Purchase Ledger</label>
-          <input type="text" id="defaultPurchaseLedger" placeholder="e.g. Purchase Account" value="Purchase Account" />
-        </div>
       </div>
 
       <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
         <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" style="display: none;" />
         <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
-        <div class="msg">Upload Stock Inventory (Click or Drag &amp; Drop File Here)</div>
+        <div class="msg">Upload Stock Inventory Excel File Here</div>
         <div id="masterFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #34d399;"></div>
       </div>
 
-      <button class="btn-action" onclick="generateMasterXMLWithLedgers()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
+      <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
       <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
   </div>
@@ -237,7 +188,7 @@
     }
   });
 
-  // Updated Template download function including ledger columns
+  // Template download with individual ledger columns and multiple sample categories
   function downloadMasterTemplate() {
     const headers = [
       "Item Name", 
@@ -253,28 +204,15 @@
 
     const ws_data = [
       headers,
-      ["Sample Item Name", "IMFL", "750", "Btl of 750 ML", 1, 500, 500, "Sales Account", "Purchase Account"]
+      ["Tuborg Strong 650ml", "Beer", "650", "Btl", 10, 200, 2000, "Beer Sales Account", "Beer Purchase Account"],
+      ["100 Pipers Whisky", "IMFL", "750", "Btl of 750 ML", 5, 1000, 5000, "IMFL Sales Account", "IMFL Purchase Account"],
+      ["Aloo Paratha", "Starter", "Pcs", "Pcs", 0, 0, 0, "Food Sales Account", "Food Purchase Account"]
     ];
 
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Item Master Template");
     XLSX.writeFile(wb, "Item_Master_Template.xlsx");
-  }
-
-  // Wrapper function to send field values to app.js script
-  function generateMasterXMLWithLedgers() {
-    const salesLedger = document.getElementById('defaultSalesLedger').value;
-    const purchaseLedger = document.getElementById('defaultPurchaseLedger').value;
-    
-    if (typeof generateMasterXML === 'function') {
-      generateMasterXML(salesLedger, purchaseLedger);
-    } else if (typeof window.generateMasterXML === 'function') {
-      window.generateMasterXML(salesLedger, purchaseLedger);
-    } else {
-      console.log("Sales Ledger:", salesLedger, "Purchase Ledger:", purchaseLedger);
-      alert("Please ensure app.js supports parameters or handles default ledgers.");
-    }
   }
 </script>
 </body>
