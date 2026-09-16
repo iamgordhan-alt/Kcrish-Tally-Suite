@@ -97,7 +97,7 @@
 
     .content-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
 
-    /* Glassmorphic Card Layout matching style.css */
+    /* Glassmorphic Card Layout */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
@@ -197,7 +197,7 @@
         <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
       </div>
 
-      <!-- Default Ledger Allocation Settings for Items -->
+      <!-- Default Ledger Allocation Settings Box -->
       <div class="allocation-box">
         <div class="form-group">
           <label for="defaultSalesLedger"><i class="fa-solid fa-file-invoice-dollar"></i> Default Sales Ledger</label>
@@ -237,20 +237,43 @@
     }
   });
 
-  // Function to pass ledger values along with XML generation
+  // Updated Template download function including ledger columns
+  function downloadMasterTemplate() {
+    const headers = [
+      "Item Name", 
+      "Parent Group", 
+      "Category", 
+      "Units", 
+      "Opening Balance", 
+      "Opening Rate", 
+      "Opening Value",
+      "Default Sales Ledger",
+      "Default Purchase Ledger"
+    ];
+
+    const ws_data = [
+      headers,
+      ["Sample Item Name", "IMFL", "750", "Btl of 750 ML", 1, 500, 500, "Sales Account", "Purchase Account"]
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Item Master Template");
+    XLSX.writeFile(wb, "Item_Master_Template.xlsx");
+  }
+
+  // Wrapper function to send field values to app.js script
   function generateMasterXMLWithLedgers() {
     const salesLedger = document.getElementById('defaultSalesLedger').value;
     const purchaseLedger = document.getElementById('defaultPurchaseLedger').value;
     
-    // Pass these values to your app.js function or handle them here
     if (typeof generateMasterXML === 'function') {
       generateMasterXML(salesLedger, purchaseLedger);
+    } else if (typeof window.generateMasterXML === 'function') {
+      window.generateMasterXML(salesLedger, purchaseLedger);
     } else {
       console.log("Sales Ledger:", salesLedger, "Purchase Ledger:", purchaseLedger);
-      // Fallback if app.js handles it globally
-      if(typeof window.generateMasterXML === 'function') {
-        window.generateMasterXML();
-      }
+      alert("Please ensure app.js supports parameters or handles default ledgers.");
     }
   }
 </script>
