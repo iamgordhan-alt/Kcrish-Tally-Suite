@@ -48,6 +48,7 @@
     body.page-loaded { opacity: 1; transform: translateY(0); }
     body.page-exiting { opacity: 0; transform: translateY(-8px); }
 
+    /* Main Content Area */
     .main-content {
       margin-left: 260px;
       flex: 1;
@@ -96,6 +97,7 @@
 
     .content-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
 
+    /* Glassmorphic Card Layout matching style.css */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
@@ -137,6 +139,7 @@
 </head>
 <body>
 
+<!-- Permanent Locked Sidebar Injector via sidebar.js -->
 <main class="main-content">
   <header class="top-bar-header">
     <div class="top-bar-left">
@@ -145,7 +148,7 @@
       </button>
       <div class="top-bar-title">
         <h1>Item Stock Master</h1>
-        <p>Manage Inventory with Item-wise Custom Ledgers</p>
+        <p>Manage Inventory and Stock Items</p>
       </div>
     </div>
     <div class="top-bar-right">
@@ -156,17 +159,15 @@
   <div class="content-body">
     <div class="card">
       <div class="step-box">
-        <span>Download inventory template (Includes individual Sales & Purchase Ledger columns per item):</span>
+        <span>Download standard inventory stock item master template:</span>
         <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
       </div>
-
       <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
         <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" style="display: none;" />
         <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
-        <div class="msg">Upload Stock Inventory Excel File Here</div>
+        <div class="msg">Upload Stock Inventory (Click or Drag &amp; Drop File Here)</div>
         <div id="masterFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #34d399;"></div>
       </div>
-
       <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
       <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
@@ -188,7 +189,7 @@
     }
   });
 
-  // Template download with individual ledger columns and multiple sample categories
+  // Updated Template download function with separate Default Sales & Purchase Ledger columns per item
   function downloadMasterTemplate() {
     const headers = [
       "Item Name", 
