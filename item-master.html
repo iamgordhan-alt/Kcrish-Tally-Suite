@@ -113,6 +113,41 @@
       display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: var(--text-muted);
       background: rgba(3, 14, 23, 0.5); padding: 14px 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);
     }
+    
+    /* Ledger Allocation Fields */
+    .allocation-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      background: rgba(3, 14, 23, 0.5);
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .form-group input {
+      background: rgba(12, 26, 36, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus {
+      border-color: var(--primary);
+    }
+
     .btn-template {
       background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: #67e8f9;
       padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 12.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
@@ -139,7 +174,6 @@
 </head>
 <body>
 
-<!-- Permanent Locked Sidebar Injector via sidebar.js -->
 <main class="main-content">
   <header class="top-bar-header">
     <div class="top-bar-left">
@@ -148,7 +182,7 @@
       </button>
       <div class="top-bar-title">
         <h1>Item Stock Master</h1>
-        <p>Manage Inventory and Stock Items</p>
+        <p>Manage Inventory and Stock Items with Ledger Allocation</p>
       </div>
     </div>
     <div class="top-bar-right">
@@ -162,13 +196,27 @@
         <span>Download standard inventory stock item master template:</span>
         <button class="btn-template" onclick="downloadMasterTemplate()"><i class="fa-solid fa-download"></i> Template</button>
       </div>
+
+      <!-- Default Ledger Allocation Settings for Items -->
+      <div class="allocation-box">
+        <div class="form-group">
+          <label for="defaultSalesLedger"><i class="fa-solid fa-file-invoice-dollar"></i> Default Sales Ledger</label>
+          <input type="text" id="defaultSalesLedger" placeholder="e.g. Sales Account" value="Sales Account" />
+        </div>
+        <div class="form-group">
+          <label for="defaultPurchaseLedger"><i class="fa-solid fa-file-invoice"></i> Default Purchase Ledger</label>
+          <input type="text" id="defaultPurchaseLedger" placeholder="e.g. Purchase Account" value="Purchase Account" />
+        </div>
+      </div>
+
       <div class="dropzone" onclick="document.getElementById('masterExcelFile').click()">
         <input type="file" id="masterExcelFile" accept=".xlsx, .xls" onchange="fileSelected('masterExcelFile', 'masterFileName')" style="display: none;" />
         <div class="icon"><i class="fa-solid fa-boxes-packing"></i></div>
         <div class="msg">Upload Stock Inventory (Click or Drag &amp; Drop File Here)</div>
         <div id="masterFileName" class="file-name" style="margin-top: 8px; font-weight: 600; color: #34d399;"></div>
       </div>
-      <button class="btn-action" onclick="generateMasterXML()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
+
+      <button class="btn-action" onclick="generateMasterXMLWithLedgers()"><i class="fa-solid fa-bolt"></i> Generate Item Master XML &amp; Sync</button>
       <div id="alertBox" class="alert" style="margin-top: 15px;"></div>
     </div>
   </div>
@@ -188,6 +236,23 @@
       });
     }
   });
+
+  // Function to pass ledger values along with XML generation
+  function generateMasterXMLWithLedgers() {
+    const salesLedger = document.getElementById('defaultSalesLedger').value;
+    const purchaseLedger = document.getElementById('defaultPurchaseLedger').value;
+    
+    // Pass these values to your app.js function or handle them here
+    if (typeof generateMasterXML === 'function') {
+      generateMasterXML(salesLedger, purchaseLedger);
+    } else {
+      console.log("Sales Ledger:", salesLedger, "Purchase Ledger:", purchaseLedger);
+      // Fallback if app.js handles it globally
+      if(typeof window.generateMasterXML === 'function') {
+        window.generateMasterXML();
+      }
+    }
+  }
 </script>
 </body>
 </html>
